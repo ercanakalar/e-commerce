@@ -1,7 +1,17 @@
 import mongoose from 'mongoose';
 
-export interface ProductAttrs {
+interface SubCategory {
+  name: string;
+}
 
+export interface ProductAttrs {
+  category: string;
+  subCategory: SubCategory[];
+  name: string;
+  price: number;
+  photo?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface ProductModal extends mongoose.Model<ProductDoc> {
@@ -9,5 +19,11 @@ export interface ProductModal extends mongoose.Model<ProductDoc> {
 }
 
 export interface ProductDoc extends mongoose.Document {
-
+  category: string;
+  subCategory: SubCategory[];
+  name: string;
+  price: number;
+  photo?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }

@@ -1,6 +1,18 @@
 import mongoose from 'mongoose';
 import { ProductAttrs, ProductDoc, ProductModal } from '../../types/product';
 
+const subCategorySchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  createdAt: {
+    type: Date,
+  },
+  updatedAt: {
+    type: Date,
+  },
+});
 
 const productSchema = new mongoose.Schema(
   {
@@ -8,10 +20,7 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    subCategory: {
-      type: String,
-      required: true,
-    },
+    subCategory: [subCategorySchema],
     name: {
       type: String,
       required: true,
@@ -25,7 +34,6 @@ const productSchema = new mongoose.Schema(
     photo: {
       type: String,
     },
-
     createdAt: {
       type: Date,
     },
@@ -43,6 +51,8 @@ const productSchema = new mongoose.Schema(
     },
   }
 );
+
+
 
 productSchema.statics.build = (attrs: ProductAttrs) => {
   return new Product(attrs);
