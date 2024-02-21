@@ -1,6 +1,6 @@
 import { buildSchema } from 'graphql';
 
-const typeDefs = buildSchema(`
+const profileTypeDefs = buildSchema(`
     type Profile {
         id: ID
         userId: String
@@ -8,6 +8,7 @@ const typeDefs = buildSchema(`
         lastName: String
         email: String
         photo: String
+        active: Boolean
     }
 
     type ProfileResponse {
@@ -21,12 +22,13 @@ const typeDefs = buildSchema(`
     }
 
     type Mutation {
-        updateProfile(firstName: String, lastName: String, photo: String): ProfileResponse
+        updateProfile(firstName: String, lastName: String, photo: String, active: Boolean): ProfileResponse
     }
 
     type Query {
-        getProfileById(profileId: ID): Profile
+        getProfileById(userId: ID): Profile
+        getOwnProfile: ProfileResponse
     }
 `);
 
-export default typeDefs;
+export default profileTypeDefs;

@@ -9,8 +9,9 @@ import {
 } from '../../controllers/auth';
 import { User } from './user-model';
 import { currentUserMiddleware, protect } from '../../middlewares';
+import { createProfile } from '../../controllers/profile';
 
-const resolvers = {
+const authResolvers = {
   Query: {
     getAllUsers: async () => {
       const users = await User.find();
@@ -27,7 +28,11 @@ const resolvers = {
   },
   Mutation: {
     signUp: async (_: any, args: any, context: any) => {
-      return await signUp(args, context);
+      const signUpResult = await signUp(args, context);
+      if(signUpResult) {
+        await createProfile(args, context.req, context.res);
+        return signUpResult;
+      }
     },
     signIn: async (_: any, args: any, context: any) => {
       return await signIn(args, context);
@@ -48,4 +53,4 @@ const resolvers = {
   },
 };
 
-export default resolvers;
+export default authResolvers;

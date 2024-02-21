@@ -7,12 +7,14 @@ import http from 'http';
 import cors from 'cors';
 import { json } from 'body-parser';
 
-import typeDefs from './models/auth-model/user-schema';
-import resolvers from './models/auth-model/user-resolvers';
+import authResolvers from './models/auth-model/user-resolvers';
 import { userRouter } from './routes/userRoutes';
 import { NotFoundError } from './errors';
 import { errorHandler } from './middlewares';
 import { profileRouter } from './routes/profileRouter';
+import profileResolvers from './models/profile-model/profile-resolvers';
+import authTypeDefs from './models/auth-model/user-schema';
+import profileTypeDefs from './models/profile-model/profile-schema';
 
 class App {
   public app: express.Application;
@@ -32,7 +34,7 @@ class App {
     this.app.use('/api/profiles', profileRouter)
 
     this.app.all('*', async () => {
-      throw new NotFoundError();
+      throw new NotFoundError('Route not found!');
     });
     this.app.use(errorHandler);
   }
@@ -40,8 +42,8 @@ class App {
   public async run(): Promise<void> {
     this.middleware();
     this.server = new ApolloServer({
-      typeDefs: typeDefs,
-      resolvers: resolvers,
+      typeDefs: [authTypeDefs, profileTypeDefs],
+      resolvers: [authResolvers, profileResolvers],
       plugins: [
         ApolloServerPluginDrainHttpServer({ httpServer: this.httpServer }),
 
