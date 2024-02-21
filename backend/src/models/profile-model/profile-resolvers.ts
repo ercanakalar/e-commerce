@@ -1,6 +1,6 @@
 import { createProfile, updateProfile } from '../../controllers/profile';
 import { getOwnProfile } from '../../controllers/profile/getOwnProfile';
-import { requireProfile } from '../../middlewares';
+import { protect, requireProfile } from '../../middlewares';
 import { ICurrentUserBasicInfo } from '../../types/user/userModalType';
 import { Profile } from './profile-model';
 
@@ -24,6 +24,8 @@ const profileResolvers = {
       const { isThereProfile, currentUser }: any = await requireProfile(
         context.req
       ); 
+
+      await protect(context.req, context.res, () => {});
       
       if (!isThereProfile) {
         return await createProfile(currentUser, context.req, context.res);

@@ -11,8 +11,14 @@ const protect = async (req: Request, res: Response, next: NextFunction) => {
       'You are not logged in! Please log in to get access.'
     );
   }
-  let token = req.headers.cookie.split('=')[1];
-
+  const tokenArray = req.headers.cookie.split(' ')
+  let userToken = '';
+  tokenArray.forEach((token: string) => { 
+    if (token.startsWith('user=')) {
+      userToken = token.split('user=')[1];
+    }
+  });
+  
   // 2) Verification token
   const decoded: {
     id: string;
@@ -20,7 +26,7 @@ const protect = async (req: Request, res: Response, next: NextFunction) => {
     firstName: string;
     lastName: string;
     iat: number;
-  } = jwt_decode(token);
+  } = jwt_decode(userToken);
 
   // 3) Check if user still exists
   const currentUser = await User.findById(decoded.id);
