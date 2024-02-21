@@ -7,6 +7,8 @@ export interface ProfileAttrs {
   email: string;
   photo: string;
   active: boolean;
+  createdAt: Date;
+  updatedAt?: Date;
 }
 
 export interface ProfileModal extends mongoose.Model<ProfileDoc> {

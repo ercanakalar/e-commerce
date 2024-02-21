@@ -7,14 +7,17 @@ import http from 'http';
 import cors from 'cors';
 import { json } from 'body-parser';
 
-import authResolvers from './models/auth-model/user-resolvers';
 import { userRouter } from './routes/userRoutes';
 import { NotFoundError } from './errors';
 import { errorHandler } from './middlewares';
 import { profileRouter } from './routes/profileRouter';
+
+import authResolvers from './models/auth-model/user-resolvers';
 import profileResolvers from './models/profile-model/profile-resolvers';
+import productResolvers from './models/product-model/product-resolvers';
 import authTypeDefs from './models/auth-model/user-schema';
 import profileTypeDefs from './models/profile-model/profile-schema';
+import productTypeDefs from './models/product-model/product-schema';
 
 class App {
   public app: express.Application;
@@ -42,8 +45,8 @@ class App {
   public async run(): Promise<void> {
     this.middleware();
     this.server = new ApolloServer({
-      typeDefs: [authTypeDefs, profileTypeDefs],
-      resolvers: [authResolvers, profileResolvers],
+      typeDefs: [authTypeDefs, profileTypeDefs, productTypeDefs],
+      resolvers: [authResolvers, profileResolvers, productResolvers],
       plugins: [
         ApolloServerPluginDrainHttpServer({ httpServer: this.httpServer }),
 
