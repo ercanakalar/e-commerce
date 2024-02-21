@@ -3,6 +3,7 @@ import { Request } from 'express';
 import { NotAuthorizedError } from '../errors';
 import { ControlManager } from '../utils';
 import { Profile } from '../models/profile-model/profile-model';
+import { ICurrentUserBasicInfo } from '../types/user/userModalType';
 
 export const requireProfile = async (req: Request) => {
   if (!req.headers.cookie) {
@@ -12,14 +13,14 @@ export const requireProfile = async (req: Request) => {
 
   if(!cookie.user) throw new NotAuthorizedError();
 
-  const currentUser = await ControlManager.verifyToken(cookie.user);
+  const currentUser: ICurrentUserBasicInfo = await ControlManager.verifyToken(cookie.user);
 
   if (!currentUser) throw new NotAuthorizedError();
 
   const existingProfile = await Profile.findOne({ userId: currentUser.id });
   if (!existingProfile) {
-    return { isThereProfile: false, currentUser: currentUser };
+    return { isThereProfile: false, currentUser };
   }
 
-  return { isThereProfile: true, currentUser: currentUser };
+  return { isThereProfile: true, currentUser };
 };
