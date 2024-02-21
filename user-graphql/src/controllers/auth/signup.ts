@@ -1,5 +1,4 @@
-import { Request, Response } from 'express';
-import jwt, { Jwt } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
 import { User } from '../../models/auth-model/user-model';
 import { PasswordManager } from '../../utils';
@@ -47,6 +46,12 @@ const signUp = async (args: IArgs, context: IContext) => {
   );
 
   context.res.cookie('user', userJwt, { httpOnly: true });
+  context.req.currentUser = {
+    id: newUser.id,
+    email: newUser.email,
+    expireToken: newUser.expireToken!,
+    iat: Date.now(),
+  };
 
   return {
     message: 'You have successfully registered.',

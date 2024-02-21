@@ -5,18 +5,19 @@ import jwt, { Jwt } from 'jsonwebtoken';
 import { ICurrentUserBasicInfo } from '../../types/user/userModalType';
 
 const createProfile = async (
-  currentUser: ICurrentUserBasicInfo,
-  args: any,
+  args: ICurrentUserBasicInfo,
   req: Request,
   res: Response
 ) => {
-  const { id, firstName, lastName, email } = currentUser;
+  const { id, firstName, lastName, email, photo } = args;
 
   const newProfile = Profile.build({
-    userId: id,
+    userId: req.currentUser?.id || id,
     firstName,
     lastName,
     email,
+    photo: photo || '',
+    active: true,
   });
   await newProfile.save();
 
@@ -27,6 +28,7 @@ const createProfile = async (
       firstName: newProfile.firstName,
       lastName: newProfile.lastName,
       email: newProfile.email,
+      photo: newProfile.photo,
     },
     process.env.JWT_KEY!
   );
@@ -41,6 +43,7 @@ const createProfile = async (
       firstName: newProfile.firstName,
       lastName: newProfile.lastName,
       email: newProfile.email,
+      photo: newProfile.photo,
     },
     token: profileJwt,
   };
