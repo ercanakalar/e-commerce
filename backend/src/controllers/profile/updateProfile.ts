@@ -24,7 +24,7 @@ const updateProfile = async (
 
   await Profile.findOneAndUpdate(
     { userId: id },
-    { firstName, lastName, photo, active }
+    { firstName, lastName, photo, active, updatedAt: new Date() }
   );
 
   const profileJwt: Jwt | string = jwt.sign(
@@ -34,7 +34,7 @@ const updateProfile = async (
       firstName,
       lastName,
       photo,
-      active
+      active,
     },
     process.env.JWT_KEY!
   );
@@ -49,9 +49,9 @@ const updateProfile = async (
       firstName,
       lastName,
       photo,
-      active
+      active,
     },
-    token: profileJwt
+    token: profileJwt,
   };
 };
 

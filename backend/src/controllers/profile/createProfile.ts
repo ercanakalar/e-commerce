@@ -18,6 +18,7 @@ const createProfile = async (
     email,
     photo: photo || '',
     active: true,
+    createdAt: new Date(),
   });
   await newProfile.save();
 
