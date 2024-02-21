@@ -50,5 +50,6 @@ export interface ICurrentUserBasicInfo {
   firstName: string;
   lastName: string;
   email: string;
-  iat: number;
+  photo?: string;
+  active: boolean;
 }

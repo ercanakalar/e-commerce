@@ -5,7 +5,8 @@ export interface ProfileAttrs {
   firstName: string;
   lastName: string;
   email: string;
-  photo?: string;
+  photo: string;
+  active: boolean;
 }
 
 export interface ProfileModal extends mongoose.Model<ProfileDoc> {
@@ -18,6 +19,7 @@ export interface ProfileDoc extends mongoose.Document {
   lastName: string;
   email: string;
   photo: string;
+  active: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
