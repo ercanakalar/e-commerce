@@ -14,10 +14,10 @@ import { profileRouter } from './routes/profileRouter';
 
 import authResolvers from './models/auth-model/user-resolvers';
 import profileResolvers from './models/profile-model/profile-resolvers';
-import productResolvers from './models/product-model/product-resolvers';
+import categoryResolvers from './models/category-model/category-resolvers';
 import authTypeDefs from './models/auth-model/user-schema';
 import profileTypeDefs from './models/profile-model/profile-schema';
-import productTypeDefs from './models/product-model/product-schema';
+import categoryTypeDefs from './models/category-model/category-schema';
 
 class App {
   public app: express.Application;
@@ -45,8 +45,8 @@ class App {
   public async run(): Promise<void> {
     this.middleware();
     this.server = new ApolloServer({
-      typeDefs: [authTypeDefs, profileTypeDefs, productTypeDefs],
-      resolvers: [authResolvers, profileResolvers, productResolvers],
+      typeDefs: [authTypeDefs, profileTypeDefs, categoryTypeDefs],
+      resolvers: [authResolvers, profileResolvers, categoryResolvers],
       plugins: [
         ApolloServerPluginDrainHttpServer({ httpServer: this.httpServer }),
 

@@ -4,7 +4,7 @@ interface SubCategory {
   name: string;
 }
 
-export interface ProductAttrs {
+export interface CategoryAttrs {
   category: string;
   subCategory: SubCategory[];
   name: string;
@@ -14,11 +14,11 @@ export interface ProductAttrs {
   updatedAt?: Date;
 }
 
-export interface ProductModal extends mongoose.Model<ProductDoc> {
-  build(attrs: ProductAttrs): ProductDoc;
+export interface CategoryModal extends mongoose.Model<CategoryDoc> {
+  build(attrs: CategoryAttrs): CategoryDoc;
 }
 
-export interface ProductDoc extends mongoose.Document {
+export interface CategoryDoc extends mongoose.Document {
   category: string;
   subCategory: SubCategory[];
   name: string;

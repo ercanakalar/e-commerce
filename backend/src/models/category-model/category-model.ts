@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { ProductAttrs, ProductDoc, ProductModal } from '../../types/product';
+import { CategoryAttrs, CategoryDoc, CategoryModal } from '../../types/category';
 
 const subCategorySchema = new mongoose.Schema({
   name: {
@@ -14,7 +14,7 @@ const subCategorySchema = new mongoose.Schema({
   },
 });
 
-const productSchema = new mongoose.Schema(
+const categorySchema = new mongoose.Schema(
   {
     category: {
       type: String,
@@ -54,13 +54,13 @@ const productSchema = new mongoose.Schema(
 
 
 
-productSchema.statics.build = (attrs: ProductAttrs) => {
-  return new Product(attrs);
+categorySchema.statics.build = (attrs: CategoryAttrs) => {
+  return new category(attrs);
 };
 
-const Product = mongoose.model<ProductDoc, ProductModal>(
-  'product',
-  productSchema
+const category = mongoose.model<CategoryDoc, CategoryModal>(
+  'category',
+  categorySchema
 );
 
-export { Product };
+export { category };
