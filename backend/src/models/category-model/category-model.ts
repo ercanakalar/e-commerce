@@ -1,38 +1,17 @@
 import mongoose from 'mongoose';
 import { CategoryAttrs, CategoryDoc, CategoryModal } from '../../types/category';
 
-const subCategorySchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  createdAt: {
-    type: Date,
-  },
-  updatedAt: {
-    type: Date,
-  },
-});
-
 const categorySchema = new mongoose.Schema(
   {
-    category: {
-      type: String,
-      required: true,
-    },
-    subCategory: [subCategorySchema],
     name: {
       type: String,
       required: true,
       trim: true,
       lowercase: true,
     },
-    price: {
-      type: Number,
+    groupIds: {
+      type: [String],
       required: true,
-    },
-    photo: {
-      type: String,
     },
     createdAt: {
       type: Date,
@@ -55,12 +34,12 @@ const categorySchema = new mongoose.Schema(
 
 
 categorySchema.statics.build = (attrs: CategoryAttrs) => {
-  return new category(attrs);
+  return new Category(attrs);
 };
 
-const category = mongoose.model<CategoryDoc, CategoryModal>(
+const Category = mongoose.model<CategoryDoc, CategoryModal>(
   'category',
   categorySchema
 );
 
-export { category };
+export { Category };

@@ -1,20 +1,20 @@
 import { buildSchema } from 'graphql';
 
-const productTypeDefs = buildSchema(`
-    type product {
+const categoryTypeDefs = buildSchema(`
+    type Category {
         id: ID
     }
 
-    type productResponse {
+    type CategoryResponse {
         message: String
-        data: product
+        data: Category
         token: String
     }
 
     type Mutation {
-        createProduct(category: String): productResponse
+        createCategory(category: String): CategoryResponse
     }
 
 `);
 
-export default productTypeDefs;
+export default categoryTypeDefs;

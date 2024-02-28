@@ -1,6 +1,6 @@
-const productResolvers = {
+const categoryResolvers = {
   Query: {},
   Mutation: {},
 };
 
-export default productResolvers;
+export default categoryResolvers;
