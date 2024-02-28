@@ -18,6 +18,8 @@ import categoryResolvers from './models/category-model/category-resolvers';
 import authTypeDefs from './models/auth-model/user-schema';
 import profileTypeDefs from './models/profile-model/profile-schema';
 import categoryTypeDefs from './models/category-model/category-schema';
+import categoryGroupResolvers from './models/category-model/category-group-model/category-group-resolvers';
+import categoryGroupTypeDefs from './models/category-model/category-group-model/category-group-schema';
 
 class App {
   public app: express.Application;
@@ -45,8 +47,8 @@ class App {
   public async run(): Promise<void> {
     this.middleware();
     this.server = new ApolloServer({
-      typeDefs: [authTypeDefs, profileTypeDefs, categoryTypeDefs],
-      resolvers: [authResolvers, profileResolvers, categoryResolvers],
+      typeDefs: [authTypeDefs, profileTypeDefs, categoryTypeDefs, categoryGroupTypeDefs],
+      resolvers: [authResolvers, profileResolvers, categoryResolvers, categoryGroupResolvers],
       plugins: [
         ApolloServerPluginDrainHttpServer({ httpServer: this.httpServer }),
 
