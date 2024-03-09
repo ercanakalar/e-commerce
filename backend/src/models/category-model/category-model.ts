@@ -9,14 +9,7 @@ const categorySchema = new mongoose.Schema(
       trim: true,
       lowercase: true,
     },
-    groupIds: {
-      type: [String],
-      required: true,
-    },
     createdAt: {
-      type: Date,
-    },
-    updatedAt: {
       type: Date,
     },
   },

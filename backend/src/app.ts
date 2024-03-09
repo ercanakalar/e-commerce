@@ -20,6 +20,10 @@ import profileTypeDefs from './models/profile-model/profile-schema';
 import categoryTypeDefs from './models/category-model/category-schema';
 import categoryGroupResolvers from './models/category-model/category-group-model/category-group-resolvers';
 import categoryGroupTypeDefs from './models/category-model/category-group-model/category-group-schema';
+import categoryChildrenTypeDefs from './models/category-model/children-model/category-children-schema';
+import categoryChildrenResolvers from './models/category-model/children-model/category-children-resolvers';
+import subCategoryTypeDefs from './models/category-model/subCategory-model/sub-category-schema';
+import subCategoryResolvers from './models/category-model/subCategory-model/sub-category-resolvers';
 
 class App {
   public app: express.Application;
@@ -47,8 +51,8 @@ class App {
   public async run(): Promise<void> {
     this.middleware();
     this.server = new ApolloServer({
-      typeDefs: [authTypeDefs, profileTypeDefs, categoryTypeDefs, categoryGroupTypeDefs],
-      resolvers: [authResolvers, profileResolvers, categoryResolvers, categoryGroupResolvers],
+      typeDefs: [authTypeDefs, profileTypeDefs, categoryTypeDefs, categoryGroupTypeDefs, categoryChildrenTypeDefs, subCategoryTypeDefs],
+      resolvers: [authResolvers, profileResolvers, categoryResolvers, categoryGroupResolvers, categoryChildrenResolvers, subCategoryResolvers],
       plugins: [
         ApolloServerPluginDrainHttpServer({ httpServer: this.httpServer }),
 

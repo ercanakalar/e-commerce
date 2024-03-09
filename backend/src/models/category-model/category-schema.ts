@@ -10,11 +10,6 @@ const categoryTypeDefs = buildSchema(`
         data: Category
         token: String
     }
-
-    type Mutation {
-        createCategory(category: String): CategoryResponse
-    }
-
 `);
 
 export default categoryTypeDefs;

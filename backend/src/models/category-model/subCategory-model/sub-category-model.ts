@@ -1,11 +1,11 @@
 import mongoose from 'mongoose';
 import {
-  CategoryGroupAttrs,
-  CategoryGroupDoc,
-  CategoryGroupModal,
+  SubCategoryAttrs,
+  SubCategoryDoc,
+  SubCategoryModal,
 } from '../../../types/category';
 
-const categoryGroupSchema = new mongoose.Schema(
+const subCategorySchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -28,13 +28,13 @@ const categoryGroupSchema = new mongoose.Schema(
   }
 );
 
-categoryGroupSchema.statics.build = (attrs: CategoryGroupAttrs) => {
-  return new CategoryGroup(attrs);
+subCategorySchema.statics.build = (attrs: SubCategoryAttrs) => {
+  return new SubCategory(attrs);
 };
 
-const CategoryGroup = mongoose.model<CategoryGroupDoc, CategoryGroupModal>(
-  'categoryGroup',
-  categoryGroupSchema
+const SubCategory = mongoose.model<SubCategoryDoc, SubCategoryModal>(
+  'subCategory',
+  subCategorySchema
 );
 
-export { CategoryGroup };
+export { SubCategory };
