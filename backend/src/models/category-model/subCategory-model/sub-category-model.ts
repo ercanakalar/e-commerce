@@ -33,7 +33,7 @@ subCategorySchema.statics.build = (attrs: SubCategoryAttrs) => {
 };
 
 const SubCategory = mongoose.model<SubCategoryDoc, SubCategoryModal>(
-  'subCategory',
+  'SubCategory',
   subCategorySchema
 );
 

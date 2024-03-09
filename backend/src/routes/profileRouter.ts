@@ -1,9 +1,9 @@
 import express from 'express';
-import resolvers from '../models/profile-model/profile-resolvers';
+import profileResolvers from '../models/profile-model/profile-resolvers';
 
 const router = express.Router();
 
-router.use('/get-own-profile', resolvers.Query.getOwnProfile);
-router.use('/update-profile', resolvers.Mutation.updateProfile);
+router.use('/get-own-profile', profileResolvers.Query.getOwnProfile);
+router.use('/update-profile', profileResolvers.Mutation.updateProfile);
 
 export { router as profileRouter };

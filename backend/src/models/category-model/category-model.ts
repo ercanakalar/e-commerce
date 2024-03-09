@@ -1,13 +1,14 @@
 import mongoose from 'mongoose';
-import { CategoryAttrs, CategoryDoc, CategoryModal } from '../../types/category';
+import {
+  CategoryAttrs,
+  CategoryDoc,
+  CategoryModal,
+} from '../../types/category';
 
 const categorySchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
-      trim: true,
-      lowercase: true,
     },
     createdAt: {
       type: Date,
@@ -24,14 +25,12 @@ const categorySchema = new mongoose.Schema(
   }
 );
 
-
-
 categorySchema.statics.build = (attrs: CategoryAttrs) => {
   return new Category(attrs);
 };
 
 const Category = mongoose.model<CategoryDoc, CategoryModal>(
-  'category',
+  'Category',
   categorySchema
 );
 

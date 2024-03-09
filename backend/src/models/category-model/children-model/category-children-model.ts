@@ -33,7 +33,7 @@ categoryChildrenSchema.statics.build = (attrs: CategoryChildrenAttrs) => {
 };
 
 const CategoryChildren = mongoose.model<CategoryChildrenDoc, CategoryChildrenModal>(
-  'categoryChildren',
+  'CategoryChildren',
   categoryChildrenSchema
 );
 

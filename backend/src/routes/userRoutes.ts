@@ -6,20 +6,20 @@ import {
   validateRequest,
 } from '../middlewares';
 
-import resolvers from '../models/auth-model/user-resolvers';
+import authResolvers from '../models/auth-model/user-resolvers';
 
 const router = express.Router();
 
-router.use('/signup', signUpValidator, validateRequest, resolvers.Mutation.signUp);
-router.use('/signin', signInValidator, validateRequest, resolvers.Mutation.signIn);
-router.use('/signout', resolvers.Mutation.signOut);
-router.use('/currentuser', resolvers.Query.currentUser);
+router.use('/signup', signUpValidator, validateRequest, authResolvers.Mutation.signUp);
+router.use('/signin', signInValidator, validateRequest, authResolvers.Mutation.signIn);
+router.use('/signout', authResolvers.Mutation.signOut);
+router.use('/currentuser', authResolvers.Query.currentUser);
 
-router.use('/forgot-password', forgotPasswordValidation, resolvers.Mutation.forgotPassword);
-router.use('/reset-password/:token', resolvers.Mutation.resetPassword);
+router.use('/forgot-password', forgotPasswordValidation, authResolvers.Mutation.forgotPassword);
+router.use('/reset-password/:token', authResolvers.Mutation.resetPassword);
 
-router.use('/', resolvers.Query.getAllUsers)
+router.use('/', authResolvers.Query.getAllUsers)
 
-router.use('/update-password', resolvers.Mutation.updatePassword);
+router.use('/update-password', authResolvers.Mutation.updatePassword);
 
 export { router as userRouter };

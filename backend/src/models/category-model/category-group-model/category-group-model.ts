@@ -33,7 +33,7 @@ categoryGroupSchema.statics.build = (attrs: CategoryGroupAttrs) => {
 };
 
 const CategoryGroup = mongoose.model<CategoryGroupDoc, CategoryGroupModal>(
-  'categoryGroup',
+  'CategoryGroup',
   categoryGroupSchema
 );
 

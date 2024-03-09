@@ -26,6 +26,7 @@ import subCategoryTypeDefs from './models/category-model/subCategory-model/sub-c
 import subCategoryResolvers from './models/category-model/subCategory-model/sub-category-resolvers';
 import productTypeDefs from './models/product-model/product-schema';
 import productResolvers from './models/product-model/product-resolvers';
+import { categoryRouter, childrenCategoryRouter, groupCategoryRouter, subCategoryRouter } from './routes/category';
 
 class App {
   public app: express.Application;
@@ -43,6 +44,10 @@ class App {
     this.app.use(cors());
     this.app.use('/api/users', userRouter);
     this.app.use('/api/profiles', profileRouter)
+    this.app.use('/api/category', categoryRouter)
+    this.app.use('/api/category/sub', subCategoryRouter)
+    this.app.use('/api/category/children', childrenCategoryRouter)
+    this.app.use('/api/category/group', groupCategoryRouter)
 
     this.app.all('*', async () => {
       throw new NotFoundError('Route not found!');
