@@ -24,6 +24,8 @@ import categoryChildrenTypeDefs from './models/category-model/children-model/cat
 import categoryChildrenResolvers from './models/category-model/children-model/category-children-resolvers';
 import subCategoryTypeDefs from './models/category-model/subCategory-model/sub-category-schema';
 import subCategoryResolvers from './models/category-model/subCategory-model/sub-category-resolvers';
+import productTypeDefs from './models/product-model/product-schema';
+import productResolvers from './models/product-model/product-resolvers';
 
 class App {
   public app: express.Application;
@@ -51,8 +53,8 @@ class App {
   public async run(): Promise<void> {
     this.middleware();
     this.server = new ApolloServer({
-      typeDefs: [authTypeDefs, profileTypeDefs, categoryTypeDefs, categoryGroupTypeDefs, categoryChildrenTypeDefs, subCategoryTypeDefs],
-      resolvers: [authResolvers, profileResolvers, categoryResolvers, categoryGroupResolvers, categoryChildrenResolvers, subCategoryResolvers],
+      typeDefs: [authTypeDefs, profileTypeDefs, categoryTypeDefs, categoryGroupTypeDefs, categoryChildrenTypeDefs, subCategoryTypeDefs, productTypeDefs],
+      resolvers: [authResolvers, profileResolvers, categoryResolvers, categoryGroupResolvers, categoryChildrenResolvers, subCategoryResolvers, productResolvers],
       plugins: [
         ApolloServerPluginDrainHttpServer({ httpServer: this.httpServer }),
 
