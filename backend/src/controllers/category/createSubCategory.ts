@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { SubCategory } from '../../models/category-model/subCategory-model/sub-category-model';
+import { SubCategory } from '../../models/category-model/sub-category-model/sub-category-model';
 
 const createSubCategory = async (
   args: { name: string },
