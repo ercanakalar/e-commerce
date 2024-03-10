@@ -9,11 +9,19 @@ const categoryGroupTypeDefs = buildSchema(`
     type CategoryGroupResponse {
         message: String
         data: CategoryGroup
-        token: String
+    }
+
+    type GetGroupCategoryResponse {
+        message: String
+        data: [CategoryGroup]
+    }
+
+    type Mutation {
+        createGroupCategory(name: String): CategoryGroupResponse
     }
 
     type Query {
-        getGroupCategories: CategoryGroup
+        getGroupCategories: GetGroupCategoryResponse
     }
 `);
 

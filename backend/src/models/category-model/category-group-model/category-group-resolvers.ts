@@ -1,9 +1,14 @@
-import { getChildrenCategories } from '../../../controllers/category';
+import { createGroupCategory, getGroupCategories } from "../../../controllers/category";
 
 const categoryGroupResolvers = {
+  Mutation: {
+    createGroupCategory: async (_: any, args: any, context: any) => {
+      return await createGroupCategory(args, context.req, context.res);
+    },
+  },
   Query: {
-    getChildrenCategories: async (_: any, args: any, context: any) => {
-      return await getChildrenCategories(context.req, context.res);
+    getGroupCategories: async (_: any, args: any, context: any) => {
+      return await getGroupCategories(context.req, context.res);
     },
   },
 };

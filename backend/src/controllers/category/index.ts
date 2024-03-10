@@ -4,6 +4,7 @@ import { getGroupCategories } from './getGroupCategories';
 import { getChildrenCategories } from './getChildrenCategories';
 import { createCategory } from './createCategory';
 import { createSubCategory } from './createSubCategory';
+import { createGroupCategory } from './createGroupCategory';
 
 export {
   getCategories,
@@ -12,4 +13,5 @@ export {
   getChildrenCategories,
   createCategory,
   createSubCategory,
+  createGroupCategory
 };

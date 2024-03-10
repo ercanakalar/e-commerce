@@ -3,13 +3,13 @@ import { NotFoundError } from '../../errors';
 import { SubCategory } from '../../models/category-model/subCategory-model/sub-category-model';
 
 const getSubCategories = async (req: Request, res: Response) => {
-  const categories = await SubCategory.find();
+  const subCategories = await SubCategory.find();
 
-  if (categories.length === 0) {
-    throw new NotFoundError('Categories not found');
+  if (subCategories.length === 0) {
+    throw new NotFoundError('SubCategories not found');
   }
 
-  const data = categories.map((category) => {
+  const data = subCategories.map((category) => {
     return {
       id: category.id,
       name: category.name,
@@ -17,7 +17,7 @@ const getSubCategories = async (req: Request, res: Response) => {
   });
 
   return {
-    message: 'Categories found!',
+    message: 'SubCategories found!',
     data,
   };
 };

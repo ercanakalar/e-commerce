@@ -9,17 +9,17 @@ const createSubCategory = async (
 ) => {
   const { name } = args;
 
-  const newCategory = SubCategory.build({
+  const newSubCategory = SubCategory.build({
     name,
     createdAt: new Date(),
   });
-  await newCategory.save();
+  await newSubCategory.save();
 
   return {
     message: 'SubCategory created!',
     data: {
-      id: newCategory.id,
-      name: newCategory.name,
+      id: newSubCategory.id,
+      name: newSubCategory.name,
     },
   };
 };
