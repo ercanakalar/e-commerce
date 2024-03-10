@@ -2,13 +2,38 @@ import { buildSchema } from 'graphql';
 
 const productTypeDefs = buildSchema(`
     type Product {
-        id: ID
+        userId: ID
+        category: String
+        subCategory: String
+        group: String
+        children: String
+        name: String
+        price: Float
+        description: String
+        rating: Float
+        stock: Int
+        sold: Int
+        images: [String]
+        shipping: String
+        brand: String
     }
 
     type ProductResponse {
         message: String
         data: Product
-        token: String
+    }
+
+    type ProductsResponse {
+        message: String
+        data: [Product]
+    }
+
+    type Mutation {
+        createProduct(category: String, subCategory: String, group: String, children: String, name: String, price: Float, description: String, rating: Float, stock: Int, sold: Int, images: [String], shipping: String, brand: String): ProductResponse
+    }
+
+    type Query {
+        getProducts: ProductsResponse
     }
 `);
 

@@ -3,21 +3,30 @@ import { ProductAttrs, ProductDoc, ProductModal } from '../../types/product';
 
 const productSchema = new mongoose.Schema(
   {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'users',
+      required: true,
+    },
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'category',
+      required: true,
     },
     subCategory: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'subCategory',
+      required: true,
     },
     group: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'group',
+      required: true,
     },
     children: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'children',
+      required: true,
     },
     name: {
       type: String,
