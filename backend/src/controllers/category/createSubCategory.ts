@@ -1,21 +1,22 @@
 import { Request, Response } from 'express';
-import { Category } from '../../models/category-model/category-model';
 
-const createCategory = async (
+import { SubCategory } from '../../models/category-model/subCategory-model/sub-category-model';
+
+const createSubCategory = async (
   args: { name: string },
   req: Request,
   res: Response
 ) => {
   const { name } = args;
 
-  const newCategory = Category.build({
+  const newCategory = SubCategory.build({
     name,
     createdAt: new Date(),
   });
   await newCategory.save();
 
   return {
-    message: 'Category created!',
+    message: 'SubCategory created!',
     data: {
       id: newCategory.id,
       name: newCategory.name,
@@ -23,4 +24,4 @@ const createCategory = async (
   };
 };
 
-export { createCategory };
+export { createSubCategory };

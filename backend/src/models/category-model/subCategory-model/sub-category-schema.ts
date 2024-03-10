@@ -9,11 +9,19 @@ const subCategoryTypeDefs = buildSchema(`
     type SubCategoryResponse {
         message: String
         data: SubCategory
-        token: String
+    }
+
+    type GetSubCategoryResponse {
+        message: String
+        data: [SubCategory]
+    }
+
+    type Mutation {
+        createSubCategory(name: String): SubCategoryResponse
     }
 
     type Query {
-        getSubCategories: SubCategory
+        getSubCategories: GetSubCategoryResponse
     }
 `);
 
