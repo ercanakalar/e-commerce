@@ -1,4 +1,4 @@
-import { ICurrentUserCookie } from '../../../auth-graphql/src/types/profile';
+import { ICurrentUserCookie } from "../types/profile";
 
 export class ControlManager {
     static async verifyToken(token: string) {
