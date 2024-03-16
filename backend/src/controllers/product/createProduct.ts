@@ -56,6 +56,7 @@ const createProduct = async (args: IProduct, userId: string, req: Request, res: 
       images,
       shipping,
       brand,
+      status: 'processing'
     });
 
     const savedProduct = await newProduct.save();

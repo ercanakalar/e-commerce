@@ -15,6 +15,7 @@ export interface ProductAttrs {
   images: string[];
   shipping: string;
   brand: string;
+  status: string;
   createdAt: Date;
   updateAt: Date;
 }
@@ -38,6 +39,7 @@ export interface ProductDoc extends mongoose.Document {
   images: string[];
   shipping: string;
   brand: string;
+  status: string;
   createdAt: Date;
   updateAt: Date;
 }

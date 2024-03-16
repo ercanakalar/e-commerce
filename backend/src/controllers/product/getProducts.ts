@@ -3,7 +3,7 @@ import { Product } from '../../models/product-model/product-model';
 import { NotFoundError } from '../../errors';
 
 const getProducts = async (req: Request, res: Response) => {
-  const products = await Product.find({});
+  const products = await Product.find({ status: { $ne: 'processing' } });
 
   if (products.length === 0) {
     throw new NotFoundError('Products not found');

@@ -63,12 +63,18 @@ const productSchema = new mongoose.Schema(
     shipping: {
       type: String,
       enum: ['Yes', 'No'],
+      default: 'Yes',
     },
     brand: {
       type: String,
       required: true,
       trim: true,
       lowercase: true,
+    },
+    status: {
+      type: String,
+      enum: ['processing', 'done', 'rejected', 'canceled'],
+      default: 'processing',
     },
     createdAt: {
       type: Date,
