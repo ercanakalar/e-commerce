@@ -1,5 +1,6 @@
 import {
   createProduct,
+  deleteProductById,
   getProductById,
   getProducts,
   updateProductById,
@@ -41,6 +42,13 @@ const productResolvers = {
       }
       return await updateProductById(args, context.req, context.res);
     },
+    deleteProductById: async (parent: any, args: any, context: any) => {
+      const authentication: boolean = await checkAuthorization(context.req, context.res, () => {});
+      if(!authentication) {
+        throw new BadRequestError('Not authenticated');
+      }
+      return await deleteProductById(args, context.req, context.res);
+    }
   },
 };
 
