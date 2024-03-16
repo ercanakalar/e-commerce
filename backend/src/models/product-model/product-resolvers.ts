@@ -1,4 +1,4 @@
-import { createProduct, getProducts } from '../../controllers/product';
+import { createProduct, getProductById, getProducts } from '../../controllers/product';
 import { BadRequestError } from '../../errors';
 import { currentUserMiddleware } from '../../middlewares';
 import { Product } from './product-model';
@@ -16,7 +16,19 @@ const productResolvers = {
       if (!currentUser) {
         throw new BadRequestError('Not authorized');
       }
-      return await createProduct(args, currentUser.id, context.req, context.res);
+      return await createProduct(
+        args,
+        currentUser.id,
+        context.req,
+        context.res
+      );
+    },
+    getProductById: async (parent: any, args: any, context: any) => {
+      return await getProductById(
+        args,
+        context.req,
+        context.res
+      );
     },
   },
 };

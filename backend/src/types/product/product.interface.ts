@@ -14,3 +14,7 @@ export interface IProduct {
   shipping: string;
   brand: string;
 }
+
+export interface IProductGetId {
+  id: string;
+}

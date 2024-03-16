@@ -30,6 +30,7 @@ const productTypeDefs = buildSchema(`
 
     type Mutation {
         createProduct(category: String, subCategory: String, group: String, children: String, name: String, price: Float, description: String, rating: Float, stock: Int, sold: Int, images: [String], shipping: String, brand: String): ProductResponse
+        getProductById(id: ID): ProductResponse
     }
 
     type Query {
