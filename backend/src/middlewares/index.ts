@@ -4,7 +4,7 @@ import { currentUserMiddleware } from './current-user-middleware';
 import { requireAuth } from './require-auth';
 import { protect } from './protect';
 import { requireProfile } from './require-profile';
-import { checkAuthentication } from './check-authentication';
+import { checkAuthorization } from './check-authorization';
 
 export {
   errorHandler,
@@ -13,5 +13,5 @@ export {
   requireAuth,
   protect,
   requireProfile,
-  checkAuthentication
+  checkAuthorization
 };

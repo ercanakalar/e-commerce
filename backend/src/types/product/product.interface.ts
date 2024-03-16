@@ -18,3 +18,12 @@ export interface IProduct {
 export interface IProductGetId {
   id: string;
 }
+
+export interface IProductUpdate {
+  id: string;
+  price: number;
+  description: string;
+  stock: number;
+  images: [string];
+  shipping: string;
+}
