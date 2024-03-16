@@ -53,3 +53,9 @@ export interface ICurrentUserBasicInfo {
   photo?: string;
   active: boolean;
 }
+
+export enum UserRole {
+  ADMIN = 'admin',
+  USER = 'user',
+  SELLER = 'seller',
+}

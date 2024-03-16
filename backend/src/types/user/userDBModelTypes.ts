@@ -6,6 +6,7 @@ export interface UserAttrs {
   email: string;
   password: string;
   confirmPassword: string;
+  role?: string;
   passwordResetToken?: string | undefined;
   passwordResetExpires?: Date | undefined;
   passwordChangedAt?: Date | undefined;
@@ -22,6 +23,7 @@ export interface UserDoc extends mongoose.Document {
   email: string;
   password: string;
   confirmPassword: string;
+  role?: string;
   createdAt: Date;
   updatedAt: Date;
   passwordChangedAt: Date | number;

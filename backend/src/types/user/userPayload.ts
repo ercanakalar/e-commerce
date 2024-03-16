@@ -3,4 +3,5 @@ export interface UserPayload {
   email: string;
   expireToken: string;
   iat: number;
+  role?: string;
 }
