@@ -6,14 +6,9 @@ import {
   updateProductById,
 } from '../../controllers/product';
 import { BadRequestError } from '../../errors';
-import { checkAuthorization, currentUserMiddleware } from '../../middlewares';
+import { adminAuthorization, currentUserMiddleware, sellerAuthorization } from '../../middlewares';
 
 const productResolvers = {
-  Query: {
-    getProducts: async (parent: any, args: any, context: any) => {
-      return await getProducts(context.req, context.res);
-    },
-  },
   Mutation: {
     createProduct: async (parent: any, args: any, context: any) => {
       await currentUserMiddleware(context.req, context.res, () => {});
@@ -21,9 +16,9 @@ const productResolvers = {
       if (!currentUser) {
         throw new BadRequestError('Not authorized');
       }
-      const authentication: boolean = await checkAuthorization(context.req, context.res, () => {});
-      if(!authentication) {
-        throw new BadRequestError('Not authenticated');
+      const sellerAuthentication: boolean = await sellerAuthorization(context.req, context.res, () => {});
+      if(!sellerAuthentication) {
+        throw new BadRequestError('Not authorized');
       }
       return await createProduct(
         args,
@@ -36,20 +31,29 @@ const productResolvers = {
       return await getProductById(args, context.req, context.res);
     },
     updateProductById: async (parent: any, args: any, context: any) => {
-      const authentication: boolean = await checkAuthorization(context.req, context.res, () => {});
-      if(!authentication) {
-        throw new BadRequestError('Not authenticated');
+      const adminAuthentication: boolean = await adminAuthorization(context.req, context.res, () => {});
+      if(!adminAuthentication) {
+        throw new BadRequestError('Not authorized');
+      }
+      const sellerAuthentication: boolean = await sellerAuthorization(context.req, context.res, () => {});
+      if(!sellerAuthentication) {
+        throw new BadRequestError('Not authorized');
       }
       return await updateProductById(args, context.req, context.res);
     },
     deleteProductById: async (parent: any, args: any, context: any) => {
-      const authentication: boolean = await checkAuthorization(context.req, context.res, () => {});
-      if(!authentication) {
-        throw new BadRequestError('Not authenticated');
+      const adminAuthentication: boolean = await adminAuthorization(context.req, context.res, () => {});
+      if(!adminAuthentication) {
+        throw new BadRequestError('Not authorized');
       }
       return await deleteProductById(args, context.req, context.res);
     }
   },
+  Query: {
+    getProducts: async (parent: any, args: any, context: any) => {
+      return await getProducts(context.req, context.res);
+    },
+  }
 };
 
 export default productResolvers;

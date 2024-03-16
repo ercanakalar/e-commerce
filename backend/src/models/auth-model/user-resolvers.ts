@@ -8,16 +8,27 @@ import {
   updatePassword,
 } from '../../controllers/auth';
 import { User } from './user-model';
-import { currentUserMiddleware, protect } from '../../middlewares';
+import { adminAuthorization, currentUserMiddleware, protect } from '../../middlewares';
 import { createProfile } from '../../controllers/profile';
+import { BadRequestError } from '../../errors';
 
 const authResolvers = {
   Query: {
-    getAllUsers: async () => {
+    getAllUsers: async (_: any, args: any, context: any) => {
+      await currentUserMiddleware(context.req, context.res, () => {});
+      const authentication: boolean = await adminAuthorization(context.req, context.res, () => {});
+      if(!authentication) {
+        throw new BadRequestError('Not authorized to access this resource. You are not admin!');
+      }
       const users = await User.find();
       return users;
     },
-    getUserById: async (parent: any, args: any) => {
+    getUserById: async (parent: any, args: any, context: any) => {
+      await currentUserMiddleware(context.req, context.res, () => {});
+      const authentication: boolean = await adminAuthorization(context.req, context.res, () => {});
+      if(!authentication) {
+        throw new BadRequestError('Not authorized to access this resource. You are not admin!');
+      }
       const user = await User.findById(args.id);
       return user;
     },

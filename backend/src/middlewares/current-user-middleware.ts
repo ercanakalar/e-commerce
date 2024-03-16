@@ -51,5 +51,6 @@ export const currentUserMiddleware = async (
     email: user.email,
     expireToken: user.expireToken!,
     iat: payload.iat,
+    role: user.role
   };
 };
