@@ -27,3 +27,7 @@ export interface IProductUpdate {
   images: [string];
   shipping: string;
 }
+
+export interface IProductDeleteId {
+  id: string;
+}
