@@ -1,6 +1,11 @@
-import { createProduct, getProductById, getProducts } from '../../controllers/product';
+import {
+  createProduct,
+  getProductById,
+  getProducts,
+  updateProductById,
+} from '../../controllers/product';
 import { BadRequestError } from '../../errors';
-import { currentUserMiddleware } from '../../middlewares';
+import { checkAuthentication, currentUserMiddleware } from '../../middlewares';
 import { Product } from './product-model';
 
 const productResolvers = {
@@ -16,6 +21,10 @@ const productResolvers = {
       if (!currentUser) {
         throw new BadRequestError('Not authorized');
       }
+      const authentication: boolean = await checkAuthentication(context.req, context.res, () => {});
+      if(!authentication) {
+        throw new BadRequestError('Not authenticated');
+      }
       return await createProduct(
         args,
         currentUser.id,
@@ -24,11 +33,14 @@ const productResolvers = {
       );
     },
     getProductById: async (parent: any, args: any, context: any) => {
-      return await getProductById(
-        args,
-        context.req,
-        context.res
-      );
+      return await getProductById(args, context.req, context.res);
+    },
+    updateProductById: async (parent: any, args: any, context: any) => {
+      const authentication: boolean = await checkAuthentication(context.req, context.res, () => {});
+      if(!authentication) {
+        throw new BadRequestError('Not authenticated');
+      }
+      return await updateProductById(args, context.req, context.res);
     },
   },
 };
