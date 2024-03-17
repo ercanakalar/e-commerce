@@ -13,6 +13,7 @@ const updateProductById = async (
     {
       description: args.description,
       price: args.price,
+      discount: args.discount,
       stock: args.stock,
       images: args.images,
       shipping: args.shipping,
@@ -28,6 +29,7 @@ const updateProductById = async (
     data: {
       id: updatedProduct.id,
       price: updatedProduct.price,
+      discount: updatedProduct.discount,
       description: updatedProduct.description,
       stock: updatedProduct.stock,
       image: updatedProduct.images,

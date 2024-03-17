@@ -8,6 +8,7 @@ export interface ProductAttrs {
   children: string;
   name: string;
   price: number;
+  discount: number;
   description: string;
   rating: number;
   stock: number;
@@ -32,6 +33,7 @@ export interface ProductDoc extends mongoose.Document {
   children: string;
   name: string;
   price: number;
+  discount: number;
   description: string;
   rating: number;
   stock: number;

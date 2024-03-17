@@ -38,6 +38,10 @@ const productSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    discount: {
+      type: Number,
+      default: 0,
+    },
     description: {
       type: String,
       required: true,
@@ -46,7 +50,7 @@ const productSchema = new mongoose.Schema(
     },
     rating: {
       type: Number,
-      required: true,
+      default: 0,
     },
     stock: {
       type: Number,
@@ -81,7 +85,7 @@ const productSchema = new mongoose.Schema(
     },
     updateAt: {
       type: Date,
-    }
+    },
   },
   {
     toJSON: {
@@ -93,8 +97,6 @@ const productSchema = new mongoose.Schema(
     },
   }
 );
-
-
 
 productSchema.statics.build = (attrs: ProductAttrs) => {
   return new Product(attrs);

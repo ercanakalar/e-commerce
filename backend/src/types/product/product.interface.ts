@@ -7,9 +7,7 @@ export interface IProduct {
   name: string;
   price: number;
   description: string;
-  rating: number;
   stock: number;
-  sold: number;
   images: [string];
   shipping: string;
   brand: string;
@@ -22,6 +20,7 @@ export interface IProductGetId {
 export interface IProductUpdate {
   id: string;
   price: number;
+  discount: number;
   description: string;
   stock: number;
   images: [string];
