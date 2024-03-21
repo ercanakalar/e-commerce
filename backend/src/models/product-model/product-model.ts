@@ -3,9 +3,9 @@ import { ProductAttrs, ProductDoc, ProductModal } from '../../types/product';
 
 const productSchema = new mongoose.Schema(
   {
-    userId: {
+    authId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'users',
+      ref: 'auth',
       required: true,
     },
     category: {

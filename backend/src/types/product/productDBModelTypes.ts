@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 export interface ProductAttrs {
-  userId: string;
+  authId: string;
   category: string;
   subCategory: string;
   group: string;
@@ -26,7 +26,7 @@ export interface ProductModal extends mongoose.Model<ProductDoc> {
 }
 
 export interface ProductDoc extends mongoose.Document {
-  userId: string;
+  authId: string;
   category: string;
   subCategory: string;
   group: string;

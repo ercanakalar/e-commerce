@@ -3,11 +3,11 @@ import crypto from 'crypto';
 import * as dotenv from 'dotenv';
 
 import { PasswordManager } from '../../utils';
-import { UserAttrs, UserDoc, UserModal } from '../../types/user/userDBModelTypes';
+import { AuthAttrs, AuthDoc, AuthModal } from '../../types/auth/authDBModelTypes';
 
 dotenv.config();
 
-const userSchema = new mongoose.Schema(
+const authSchema = new mongoose.Schema(
   {
     firstName: {
       type: String,
@@ -39,11 +39,11 @@ const userSchema = new mongoose.Schema(
       default: 'user',
     },
     createdAt: {
-      // When user was created
+      // When auth was created
       type: Date,
     },
     updatedAt: {
-      // When user was updated
+      // When auth was updated
       type: Date,
     },
     passwordChangedAt: {
@@ -63,7 +63,7 @@ const userSchema = new mongoose.Schema(
       type: String,
     },
     active: {
-      // If user is active
+      // If auth is active
       type: Boolean,
       default: true,
       select: false,
@@ -81,7 +81,7 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-userSchema.pre('save', async function (done) {
+authSchema.pre('save', async function (done) {
   if (this.isModified('password')) {
     const hashed = await PasswordManager.toHash(this.get('password'));
     this.set('password', hashed);
@@ -96,7 +96,7 @@ userSchema.pre('save', async function (done) {
   done();
 });
 
-userSchema.methods.changedPasswordAfter = function (JWTTimestamp: number) {
+authSchema.methods.changedPasswordAfter = function (JWTTimestamp: number) {
   const loggedAt = new Date(JWTTimestamp + 3 * 60 * 60 * 1000).getTime();
   const oldPasswordChangedAt = new Date(
     this.get('passwordChangedAt')
@@ -108,7 +108,7 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp: number) {
   return false;
 };
 
-userSchema.methods.createPasswordResetToken = function () {
+authSchema.methods.createPasswordResetToken = function () {
   const passwordResetToken = crypto.randomBytes(32).toString('hex');
 
   this.passwordResetToken = crypto
@@ -124,10 +124,10 @@ userSchema.methods.createPasswordResetToken = function () {
   return passwordResetToken;
 };
 
-userSchema.statics.build = (attrs: UserAttrs) => {
-  return new User(attrs);
+authSchema.statics.build = (attrs: AuthAttrs) => {
+  return new Auth(attrs);
 };
 
-const User = mongoose.model<UserDoc, UserModal>('User', userSchema);
+const Auth = mongoose.model<AuthDoc, AuthModal>('Auth', authSchema);
 
-export { User };
+export { Auth };

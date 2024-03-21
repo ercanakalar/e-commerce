@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 export interface ProfileAttrs {
-  userId: string;
+  authId: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -16,7 +16,7 @@ export interface ProfileModal extends mongoose.Model<ProfileDoc> {
 }
 
 export interface ProfileDoc extends mongoose.Document {
-  userId: string;
+  authId: string;
   firstName: string;
   lastName: string;
   email: string;

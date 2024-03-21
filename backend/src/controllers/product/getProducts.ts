@@ -11,7 +11,7 @@ const getProducts = async (req: Request, res: Response) => {
 
   const data = products.map((product) => {
     return {
-      userId: product.userId,
+      authId: product.authId,
       category: product.category,
       subCategory: product.subCategory,
       group: product.group,

@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-export interface UserAttrs {
+export interface AuthAttrs {
   firstName: string;
   lastName: string;
   email: string;
@@ -13,11 +13,11 @@ export interface UserAttrs {
   expireToken: string;
 }
 
-export interface UserModal extends mongoose.Model<UserDoc> {
-  build(attrs: UserAttrs): UserDoc;
+export interface AuthModal extends mongoose.Model<AuthDoc> {
+  build(attrs: AuthAttrs): AuthDoc;
 }
 
-export interface UserDoc extends mongoose.Document {
+export interface AuthDoc extends mongoose.Document {
   firstName: string;
   lastName: string;
   email: string;

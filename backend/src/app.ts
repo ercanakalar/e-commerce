@@ -7,15 +7,15 @@ import http from 'http';
 import cors from 'cors';
 import { json } from 'body-parser';
 
-import { userRouter } from './routes/userRoutes';
+import { authRouter } from './routes/authRoutes';
 import { NotFoundError } from './errors';
 import { errorHandler } from './middlewares';
 import { profileRouter } from './routes/profileRouter';
 
-import authResolvers from './models/auth-model/user-resolvers';
+import authResolvers from './models/auth-model/auth-resolvers';
 import profileResolvers from './models/profile-model/profile-resolvers';
 import categoryResolvers from './models/category-model/category-resolvers';
-import authTypeDefs from './models/auth-model/user-schema';
+import authTypeDefs from './models/auth-model/auth-schema';
 import profileTypeDefs from './models/profile-model/profile-schema';
 import categoryTypeDefs from './models/category-model/category-schema';
 import categoryGroupResolvers from './models/category-model/category-group-model/category-group-resolvers';
@@ -43,16 +43,16 @@ class App {
     this.app.set('trust proxy', true);
     this.app.use(json());
     this.app.use(cors());
-    this.app.use('/api/users', userRouter);
+    this.app.use('/v1/api/auth', authRouter);
 
-    this.app.use('/api/profiles', profileRouter)
+    this.app.use('/v1/api/profiles', profileRouter)
 
-    this.app.use('/api/category', categoryRouter)
-    this.app.use('/api/category/sub', subCategoryRouter)
-    this.app.use('/api/category/children', childrenCategoryRouter)
-    this.app.use('/api/category/group', groupCategoryRouter)
+    this.app.use('/v1/api/category', categoryRouter)
+    this.app.use('/v1/api/category/sub', subCategoryRouter)
+    this.app.use('/v1/api/category/children', childrenCategoryRouter)
+    this.app.use('/v1/api/category/group', groupCategoryRouter)
 
-    this.app.use('/api/product', productRouter)
+    this.app.use('/v1/api/product', productRouter)
 
     this.app.all('*', async () => {
       throw new NotFoundError('Route not found!');

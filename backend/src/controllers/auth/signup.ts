@@ -1,15 +1,15 @@
 import jwt from 'jsonwebtoken';
 
-import { User } from '../../models/auth-model/user-model';
+import { Auth } from '../../models/auth-model/auth-model';
 import { PasswordManager } from '../../utils';
 import { BadRequestError } from '../../errors';
-import { IArgs, IContext } from '../../types/user/userModalType';
+import { IArgs, IContext } from '../../types/auth/authModalType';
 
 const signUp = async (args: IArgs, context: IContext) => {
   const { firstName, lastName, email, password, confirmPassword } = args;
-  const existingUser = await User.findOne({ email });
+  const existingAuth = await Auth.findOne({ email });
 
-  if (existingUser) {
+  if (existingAuth) {
     throw new BadRequestError('Email in use');
   }
 
@@ -22,7 +22,7 @@ const signUp = async (args: IArgs, context: IContext) => {
     throw new BadRequestError('Passwords do not match');
   }
 
-  const newUser = User.build({
+  const newAuth = Auth.build({
     firstName,
     lastName,
     email,
@@ -30,14 +30,14 @@ const signUp = async (args: IArgs, context: IContext) => {
     confirmPassword,
     expireToken: await PasswordManager.hashExpireToken(),
   });
-  await newUser.save();
+  await newAuth.save();
 
-  const userJwt = jwt.sign(
+  const authJwt = jwt.sign(
     {
-      id: newUser.id,
-      firstName: newUser.firstName,
-      lastName: newUser.lastName,
-      email: newUser.email,
+      id: newAuth.id,
+      firstName: newAuth.firstName,
+      lastName: newAuth.lastName,
+      email: newAuth.email,
     },
     process.env.JWT_KEY!,
     {
@@ -45,23 +45,23 @@ const signUp = async (args: IArgs, context: IContext) => {
     }
   );
 
-  context.res.cookie('user', userJwt, { httpOnly: true });
-  context.req.currentUser = {
-    id: newUser.id,
-    email: newUser.email,
-    expireToken: newUser.expireToken!,
+  context.res.cookie('auth', authJwt, { httpOnly: true });
+  context.req.currentAuth = {
+    id: newAuth.id,
+    email: newAuth.email,
+    expireToken: newAuth.expireToken!,
     iat: Date.now(),
   };
 
   return {
     message: 'You have successfully registered.',
     data: {
-      id: newUser.id,
-      firstName: newUser.firstName,
-      lastName: newUser.lastName,
-      email: newUser.email,
+      id: newAuth.id,
+      firstName: newAuth.firstName,
+      lastName: newAuth.lastName,
+      email: newAuth.email,
     },
-    token: userJwt,
+    token: authJwt,
   };
 };
 

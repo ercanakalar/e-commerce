@@ -1,24 +1,27 @@
-import nodemailer from 'nodemailer';
+import nodemailer, { Transporter } from 'nodemailer';
 
 export class Email {
   to: string;
   firstName: string;
   url: string;
   from: string;
+  transporter: Transporter;
 
-  constructor(user: { email: string; firstName: string }, url: string) {
-    this.to = user.email;
-    this.firstName = user.firstName;
+  constructor(auth: { email: string; firstName: string }, url: string) {
+    this.to = auth.email;
+    this.firstName = auth.firstName;
     this.url = url;
     this.from = `Ercan Akalar <${process.env.EMAIL_FROM!}>`;
+    this.transporter = this.newTransport();
   }
 
-  newTransport() {
+  private newTransport() {
     return nodemailer.createTransport({
-      host: process.env.EMAIL_HOST as string,
-      port: process.env.EMAIL_PORT as unknown as number,
+      host: process.env.EMAIL_HOST,
+      port: parseInt(process.env.EMAIL_PORT || '587'),
+      secure: false, // false for TLS, true for SSL
       auth: {
-        user: process.env.EMAIL_HOST_USER,
+        user: process.env.EMAIL_HOST_AUTH,
         pass: process.env.EMAIL_HOST_PASSWORD,
       },
     });
@@ -26,7 +29,7 @@ export class Email {
 
   // Send the actual email
   async send(template: string, subject: string) {
-    // 1) Render HTML based on a pug template
+    // 1) Render HTML based on a pug template (You can uncomment this if using Pug templates)
     // const html = pug.renderFile(`${__dirname}/../views/email/${template}.pug`, {
     //   firstName: this.firstName,
     //   url: this.url,
@@ -37,15 +40,17 @@ export class Email {
     const mailOptions = {
       from: this.from,
       to: this.to,
-      text: this.url,
+      subject,
+      text: this.url, // You can replace this with HTML content if needed
+      // html, // Uncomment this if using HTML content
     };
 
-    // 3) Create a transport and send email
-    await this.newTransport().sendMail(mailOptions);
+    // 3) Send email using the transporter
+    await this.transporter.sendMail(mailOptions);
   }
 
   async sendWelcome() {
-    await this.send('welcome', 'Welcome to the Natours Family!');
+    await this.send('welcome', 'Welcome to the Ercan WorkPlace!');
   }
 
   async sendPasswordReset() {

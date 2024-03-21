@@ -3,50 +3,50 @@ import jwt, { Jwt } from 'jsonwebtoken';
 
 import { PasswordManager } from '../../utils';
 import { BadRequestError } from '../../errors';
-import { UserSignIn } from '../../types/user/userModalType';
-import { User } from '../../models/auth-model/user-model';
+import { AuthSignIn } from '../../types/auth/authModalType';
+import { Auth } from '../../models/auth-model/auth-model';
 
-const signIn = async (args: UserSignIn, context: any) => {
+const signIn = async (args: AuthSignIn, context: any) => {
   const { email, password } = args;
 
-  const existingUser = await User.findOne({ email });
-  if (!existingUser) {
+  const existingAuth = await Auth.findOne({ email });
+  if (!existingAuth) {
     throw new BadRequestError('Invalid credentials');
   }
 
   const passwordMatch = await PasswordManager.compare(
-    existingUser.password,
+    existingAuth.password,
     password
   );
   if (!passwordMatch) {
     throw new BadRequestError('Wrong password, try again.');
   }
 
-  existingUser.expireToken = await PasswordManager.hashExpireToken();
-  await existingUser.save();
+  existingAuth.expireToken = await PasswordManager.hashExpireToken();
+  await existingAuth.save();
 
-  const userJwt: Jwt | string = jwt.sign(
+  const authJwt: Jwt | string = jwt.sign(
     {
-      id: existingUser.id,
-      firstName: existingUser.firstName,
-      lastName: existingUser.lastName,
-      email: existingUser.email,
+      id: existingAuth.id,
+      firstName: existingAuth.firstName,
+      lastName: existingAuth.lastName,
+      email: existingAuth.email,
     },
     process.env.JWT_KEY!,
   );
 
-  // context.res.currentUser('user', userJwt, { httpOnly: true });
-  context.res.cookie('user', userJwt, { httpOnly: true });
+  // context.res.currentAuth('auth', authJwt, { httpOnly: true });
+  context.res.cookie('auth', authJwt, { httpOnly: true });
 
   return {
-    message: 'User signed in successfully!',
+    message: 'Auth signed in successfully!',
     data: {
-      id: existingUser.id,
-      firstName: existingUser.firstName,
-      lastName: existingUser.lastName,
-      email: existingUser.email,
+      id: existingAuth.id,
+      firstName: existingAuth.firstName,
+      lastName: existingAuth.lastName,
+      email: existingAuth.email,
     },
-    token: userJwt,
+    token: authJwt,
   };
 };
 

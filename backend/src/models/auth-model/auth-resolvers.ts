@@ -1,5 +1,5 @@
 import {
-  currentUser,
+  currentAuth,
   forgotPassword,
   resetPassword,
   signIn,
@@ -7,34 +7,34 @@ import {
   signUp,
   updatePassword,
 } from '../../controllers/auth';
-import { User } from './user-model';
-import { adminAuthorization, currentUserMiddleware, protect } from '../../middlewares';
+import { Auth } from './auth-model';
+import { adminAuthorization, currentAuthMiddleware, protect } from '../../middlewares';
 import { createProfile } from '../../controllers/profile';
 import { BadRequestError } from '../../errors';
 
 const authResolvers = {
   Query: {
-    getAllUsers: async (_: any, args: any, context: any) => {
-      await currentUserMiddleware(context.req, context.res, () => {});
+    getAll: async (_: any, args: any, context: any) => {
+      await currentAuthMiddleware(context.req, context.res, () => {});
       const authentication: boolean = await adminAuthorization(context.req, context.res, () => {});
       if(!authentication) {
         throw new BadRequestError('Not authorized to access this resource. You are not admin!');
       }
-      const users = await User.find();
-      return users;
+      const auths = await Auth.find();
+      return auths;
     },
-    getUserById: async (parent: any, args: any, context: any) => {
-      await currentUserMiddleware(context.req, context.res, () => {});
+    getAuthById: async (parent: any, args: any, context: any) => {
+      await currentAuthMiddleware(context.req, context.res, () => {});
       const authentication: boolean = await adminAuthorization(context.req, context.res, () => {});
       if(!authentication) {
         throw new BadRequestError('Not authorized to access this resource. You are not admin!');
       }
-      const user = await User.findById(args.id);
-      return user;
+      const auth = await Auth.findById(args.id);
+      return auth;
     },
-    currentUser: async (_: any, args: any, context: any) => {
-      await currentUserMiddleware(context.req, context.res, () => {});
-      return await currentUser(context);
+    currentAuth: async (_: any, args: any, context: any) => {
+      await currentAuthMiddleware(context.req, context.res, () => {});
+      return await currentAuth(context);
     },
   },
   Mutation: {

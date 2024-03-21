@@ -3,7 +3,7 @@ import { buildSchema } from 'graphql';
 const profileTypeDefs = buildSchema(`
     type Profile {
         id: ID
-        userId: String
+        authId: String
         firstName: String
         lastName: String
         email: String
@@ -26,7 +26,7 @@ const profileTypeDefs = buildSchema(`
     }
 
     type Query {
-        getProfileById(userId: ID): Profile
+        getProfileById(authId: ID): Profile
         getOwnProfile: ProfileResponse
     }
 `);

@@ -1,29 +1,29 @@
 import { Request, Response } from 'express';
-import { User } from '../../models/auth-model/user-model';
+import { Auth } from '../../models/auth-model/auth-model';
 import { BadRequestError } from '../../errors';
 import { Email } from '../../utils/email';
-import { IContext } from '../../types/user/userModalType';
+import { IContext } from '../../types/auth/authModalType';
 
 const forgotPassword = async (arg: { email: string }, context: IContext) => {
   const { req, res } = context;
   const { email } = arg;
 
-  const findUser = await User.findOne({ email });
+  const findAuth = await Auth.findOne({ email });
 
-  if (!findUser) {
-    throw new BadRequestError('User not found');
+  if (!findAuth) {
+    throw new BadRequestError('Auth not found');
   }
 
-  const resetToken = findUser.createPasswordResetToken();
+  const resetToken = findAuth.createPasswordResetToken();
 
-  await findUser.save({ validateBeforeSave: false });
+  await findAuth.save({ validateBeforeSave: false });
 
   try {
     const resetURL = `${req.protocol}://${req.get(
       'host'
-    )}/api/users/reset-password/${resetToken}`;
+    )}/api/auths/reset-password/${resetToken}`;
 
-    await new Email(findUser, resetURL).sendPasswordReset();
+    await new Email(findAuth, resetURL).sendPasswordReset();
 
     res.status(200).json({
       message: 'Token sent to email!',
@@ -32,9 +32,9 @@ const forgotPassword = async (arg: { email: string }, context: IContext) => {
       },
     });
   } catch (error) {
-    findUser.passwordResetToken = undefined;
-    findUser.passwordResetExpires = undefined;
-    await findUser.save({ validateBeforeSave: false });
+    findAuth.passwordResetToken = undefined;
+    findAuth.passwordResetExpires = undefined;
+    await findAuth.save({ validateBeforeSave: false });
 
     throw new BadRequestError(
       'There was an error sending the email. Try again later!'

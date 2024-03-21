@@ -9,7 +9,7 @@ export const requireAuth = async (req: Request) => {
   }
   const token = req.headers.cookie.split('=')[1];
 
-  const currentUser = await ControlManager.verifyToken(token);
+  const currentAuth = await ControlManager.verifyToken(token);
 
-  return currentUser;
+  return currentAuth;
 };

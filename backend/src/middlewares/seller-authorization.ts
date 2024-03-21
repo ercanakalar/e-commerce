@@ -1,17 +1,17 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { UserRole } from '../types/user/userModalType';
+import { AuthRole } from '../types/auth/authModalType';
 
 const sellerAuthorization = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const role = req.currentUser?.role;
+  const role = req.currentAuth?.role;
   switch (role) {
-    case UserRole.SELLER:
+    case AuthRole.SELLER:
       return true;
-    case UserRole.ADMIN:
+    case AuthRole.ADMIN:
       return true;
     default:
       return false;

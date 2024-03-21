@@ -1,7 +1,7 @@
 import { scrypt, randomBytes } from 'crypto';
 import { promisify } from 'util';
 import jwt from 'jsonwebtoken';
-import { ICurrentUserCookie } from '../types/user/cookieTypes';
+import { ICurrentAuthCookie } from '../types/auth/cookieTypes';
 
 const scryptAsync = promisify(scrypt);
 
@@ -24,12 +24,12 @@ export class PasswordManager {
     return password === confirmPassword;
   }
 
-  static isUserChangedPasswordAfterTokenIssued(
+  static isAuthChangedPasswordAfterTokenIssued(
     JWTTimeStamp: number,
-    userChangePasswordTime: number
+    authChangePasswordTime: number
   ) {
     const loggedAt = new Date(JWTTimeStamp + 3 * 60 * 60 * 1000).getTime(); // 3 hours added to JWTTimeStamp to match the time zone
-    if (loggedAt < new Date(userChangePasswordTime).getTime()) {
+    if (loggedAt < new Date(authChangePasswordTime).getTime()) {
       return true;
     }
     return false;
@@ -49,8 +49,8 @@ export class PasswordManager {
     return expireToken;
   }
 
-  static async isExpired(userExpiredToken: string) {
-    const hashedToken: any = jwt.decode(userExpiredToken);
+  static async isExpired(authExpiredToken: string) {
+    const hashedToken: any = jwt.decode(authExpiredToken);
     const time = hashedToken.time;
 
     const date = new Date(time);
@@ -72,8 +72,8 @@ export class PasswordManager {
   static async separateCookie(cookie: string) {
     const keyValuePairs = cookie.split('; ').flatMap((pair) => pair.split('='));
 
-    const resultObject: ICurrentUserCookie = {
-      user: undefined,
+    const resultObject: ICurrentAuthCookie = {
+      auth: undefined,
       profile: undefined,
     };
     for (let i = 0; i < keyValuePairs.length; i += 2) {

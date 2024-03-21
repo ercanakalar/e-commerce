@@ -4,7 +4,7 @@ import { ProfileAttrs, ProfileDoc, ProfileModal } from '../../types/profile';
 
 const profileSchema = new mongoose.Schema(
   {
-    userId: {
+    authId: {
       type: String,
       required: true,
     },

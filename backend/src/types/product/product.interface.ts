@@ -1,5 +1,5 @@
 export interface IProduct {
-  userId: string;
+  authId: string;
   category: string;
   subCategory: string;
   group: string;

@@ -2,6 +2,6 @@ import { ProfilePayload} from './profilePayload';
 
 import {ProfileAttrs, ProfileModal, ProfileDoc} from './profileDBModelTypes';
 
-import { ICurrentUserCookie} from './cookieTypes';
+import { ICurrentAuthCookie} from './cookieTypes';
 
-export {ProfilePayload, ProfileAttrs, ProfileModal, ProfileDoc, ICurrentUserCookie};
+export {ProfilePayload, ProfileAttrs, ProfileModal, ProfileDoc, ICurrentAuthCookie};

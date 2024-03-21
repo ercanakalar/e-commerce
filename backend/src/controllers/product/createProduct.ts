@@ -7,7 +7,7 @@ import { CategoryGroup } from '../../models/category-model/category-group-model/
 import { CategoryChildren } from '../../models/category-model/category-children-model/category-children-model';
 import { Product } from '../../models/product-model/product-model';
 
-const createProduct = async (args: IProduct, userId: string, req: Request, res: Response) => {
+const createProduct = async (args: IProduct, authId: string, req: Request, res: Response) => {
   const {
     category,
     subCategory,
@@ -40,7 +40,7 @@ const createProduct = async (args: IProduct, userId: string, req: Request, res: 
       throw new BadRequestError('Children not found');
     }
     const newProduct = new Product({
-      userId,
+      authId,
       category,
       subCategory,
       group,
@@ -60,7 +60,7 @@ const createProduct = async (args: IProduct, userId: string, req: Request, res: 
     return {
       message: 'Product created successfully!',
       data: {
-        userId: savedProduct.userId,
+        authId: savedProduct.authId,
         category: savedProduct.category,
         subCategory: savedProduct.subCategory,
         group: savedProduct.group,

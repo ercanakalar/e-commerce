@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt_decode from 'jwt-decode';
 
-import { User } from '../models/auth-model/user-model';
+import { Auth } from '../models/auth-model/auth-model';
 import { BadRequestError } from '../errors';
 
 const protect = async (req: Request, res: Response, next: NextFunction) => {
@@ -12,10 +12,10 @@ const protect = async (req: Request, res: Response, next: NextFunction) => {
     );
   }
   const tokenArray = req.headers.cookie.split(' ')
-  let userToken = '';
+  let authToken = '';
   tokenArray.forEach((token: string) => { 
-    if (token.startsWith('user=')) {
-      userToken = token.split('user=')[1];
+    if (token.startsWith('auth=')) {
+      authToken = token.split('auth=')[1];
     }
   });
   
@@ -26,27 +26,27 @@ const protect = async (req: Request, res: Response, next: NextFunction) => {
     firstName: string;
     lastName: string;
     iat: number;
-  } = jwt_decode(userToken);
+  } = jwt_decode(authToken);
 
-  // 3) Check if user still exists
-  const currentUser = await User.findById(decoded.id);
-  if (!currentUser) {
+  // 3) Check if auth still exists
+  const currentAuth = await Auth.findById(decoded.id);
+  if (!currentAuth) {
     throw new BadRequestError(
-      'The user belonging to this token does no longer exist.'
+      'The auth belonging to this token does no longer exist.'
     );
   }
 
-  // 4) Check if user changed password after the token was issued
-  const isPasswordChanged = currentUser.changedPasswordAfter(decoded.iat * 1000);
+  // 4) Check if auth changed password after the token was issued
+  const isPasswordChanged = currentAuth.changedPasswordAfter(decoded.iat * 1000);
   if (isPasswordChanged) {
     throw new BadRequestError(
-      'User recently changed password! Please log in again.'
+      'Auth recently changed password! Please log in again.'
     );
   }
 
   // GRANT ACCESS TO PROTECTED ROUTE
-  // req.currentUser = currentUser;
-  res.locals.user = currentUser;
+  // req.currentAuth = currentAuth;
+  res.locals.auth = currentAuth;
   next();
 };
 

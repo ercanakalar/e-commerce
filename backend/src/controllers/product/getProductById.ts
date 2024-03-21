@@ -17,7 +17,7 @@ const getProductById = async (
   return {
     message: 'Product found!',
     data: {
-      userId: product.userId,
+      authId: product.authId,
       category: product.category,
       subCategory: product.subCategory,
       group: product.group,

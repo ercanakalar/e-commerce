@@ -1,7 +1,7 @@
 import { buildSchema } from 'graphql';
 
 const authTypeDefs = buildSchema(`
-    type User {
+    type Auth {
         id: ID
         firstName: String
         lastName: String
@@ -9,17 +9,17 @@ const authTypeDefs = buildSchema(`
     }
     type SignUpResponse {
         message: String
-        data: User
+        data: Auth
         token: String
     }
     
-    type CurrentUser {
+    type CurrentAuth {
         id: ID
         email: String
     }
-    type CurrentUserResponse {
+    type CurrentAuthResponse {
         message: String
-        data: CurrentUser
+        data: CurrentAuth
         token: String
     }
     
@@ -33,9 +33,9 @@ const authTypeDefs = buildSchema(`
     }
 
     type Query {
-        getUserById(userId: ID): User
-        getAllUsers: [User]
-        currentUser: CurrentUserResponse
+        getAuthById(authId: ID): Auth
+        getAll: [Auth]
+        currentAuth: CurrentAuthResponse
     }
 `);
 

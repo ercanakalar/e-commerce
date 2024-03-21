@@ -1,6 +1,6 @@
 import { errorHandler } from './error-handler';
 import { validateRequest } from './validate-request';
-import { currentUserMiddleware } from './current-user-middleware';
+import { currentAuthMiddleware } from './current-auth-middleware';
 import { requireAuth } from './require-auth';
 import { protect } from './protect';
 import { requireProfile } from './require-profile';
@@ -10,7 +10,7 @@ import { sellerAuthorization } from './seller-authorization';
 export {
   errorHandler,
   validateRequest,
-  currentUserMiddleware,
+  currentAuthMiddleware,
   requireAuth,
   protect,
   requireProfile,

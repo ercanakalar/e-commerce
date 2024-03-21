@@ -2,7 +2,7 @@ import { buildSchema } from 'graphql';
 
 const productTypeDefs = buildSchema(`
     type Product {
-        userId: ID
+        authId: ID
         category: String
         subCategory: String
         group: String
@@ -18,7 +18,7 @@ const productTypeDefs = buildSchema(`
         brand: String
     }
     type ProductCreate {
-        userId: ID
+        authId: ID
         category: String
         subCategory: String
         group: String

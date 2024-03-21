@@ -2,17 +2,17 @@ import { Request, Response } from 'express';
 
 import { Profile } from '../../models/profile-model/profile-model';
 import jwt, { Jwt } from 'jsonwebtoken';
-import { ICurrentUserBasicInfo } from '../../types/user/userModalType';
+import { ICurrentAuthBasicInfo } from '../../types/auth/authModalType';
 
 const createProfile = async (
-  args: ICurrentUserBasicInfo,
+  args: ICurrentAuthBasicInfo,
   req: Request,
   res: Response
 ) => {
   const { id, firstName, lastName, email, photo } = args;
 
   const newProfile = Profile.build({
-    userId: req.currentUser?.id || id,
+    authId: req.currentAuth?.id || id,
     firstName,
     lastName,
     email,
@@ -25,7 +25,7 @@ const createProfile = async (
   const profileJwt: Jwt | string = jwt.sign(
     {
       id: newProfile.id,
-      userId: newProfile.userId,
+      authId: newProfile.authId,
       firstName: newProfile.firstName,
       lastName: newProfile.lastName,
       email: newProfile.email,
@@ -40,7 +40,7 @@ const createProfile = async (
     message: 'Profile created successfully!',
     data: {
       id: newProfile.id,
-      userId: newProfile.userId,
+      authId: newProfile.authId,
       firstName: newProfile.firstName,
       lastName: newProfile.lastName,
       email: newProfile.email,

@@ -1,4 +1,4 @@
-import { ICurrentUserCookie } from "../types/profile";
+import { ICurrentAuthCookie } from "../types/profile";
 
 export class ControlManager {
     static async verifyToken(token: string) {
@@ -12,8 +12,8 @@ export class ControlManager {
     static async separateCookie(cookie: string) {
         const keyValuePairs = cookie.split('; ').flatMap(pair => pair.split('='));
 
-        const resultObject: ICurrentUserCookie = {
-            user: undefined,
+        const resultObject: ICurrentAuthCookie = {
+            auth: undefined,
             profile: undefined,
         };
         for (let i = 0; i < keyValuePairs.length; i += 2) {

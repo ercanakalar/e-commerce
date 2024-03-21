@@ -1,18 +1,18 @@
 import { Request, Response } from 'express';
 
-export type User = {
+export type Auth = {
   id: string;
   firstName: string;
   lastName: string;
   email: string;
 };
 
-export type UserSignIn = {
+export type AuthSignIn = {
   email: string;
   password: string;
 };
 
-export type UserSignUp = {
+export type AuthSignUp = {
   firstName: string;
   lastName: string;
   email: string;
@@ -20,9 +20,9 @@ export type UserSignUp = {
   confirmPassword: string;
 };
 
-export type UserResponse = {
+export type AuthResponse = {
   message: string;
-  user: User;
+  auth: Auth;
   token: string;
 };
 
@@ -37,7 +37,7 @@ export interface IArgs {
   newPassword: string;
   confirmNewPassword: string;
   message: string;
-  user: User;
+  auth: Auth;
   token: string;
 }
 export interface IContext {
@@ -45,7 +45,7 @@ export interface IContext {
   res: Response;
 }
 
-export interface ICurrentUserBasicInfo {
+export interface ICurrentAuthBasicInfo {
   id: string;
   firstName: string;
   lastName: string;
@@ -54,7 +54,7 @@ export interface ICurrentUserBasicInfo {
   active: boolean;
 }
 
-export enum UserRole {
+export enum AuthRole {
   ADMIN = 'admin',
   USER = 'user',
   SELLER = 'seller',
