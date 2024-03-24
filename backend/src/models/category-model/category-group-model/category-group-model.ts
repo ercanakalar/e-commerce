@@ -1,40 +1,19 @@
-import mongoose from 'mongoose';
-import {
-  CategoryGroupAttrs,
-  CategoryGroupDoc,
-  CategoryGroupModal,
-} from '../../../types/category';
+import { Database } from "../../../config/db";
 
-const categoryGroupSchema = new mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-      lowercase: true,
-    },
-    createdAt: {
-      type: Date,
-    },
-  },
-  {
-    toJSON: {
-      transform(doc, ret: any) {
-        ret.id = ret._id;
-        delete ret._id;
-        delete ret.__v;
-      },
-    },
+const queryText = `
+  CREATE TABLE IF NOT EXISTS category_group (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(128) UNIQUE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  )
+`;
+
+const createGroupCategoryTable = async () => {
+  try {
+    await new Database().createTable(queryText);
+  } catch (error) {
+    console.error('Error creating category table:', error);
   }
-);
-
-categoryGroupSchema.statics.build = (attrs: CategoryGroupAttrs) => {
-  return new CategoryGroup(attrs);
 };
 
-const CategoryGroup = mongoose.model<CategoryGroupDoc, CategoryGroupModal>(
-  'CategoryGroup',
-  categoryGroupSchema
-);
-
-export { CategoryGroup };
+export { createGroupCategoryTable };
