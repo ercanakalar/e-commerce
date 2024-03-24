@@ -1,12 +1,15 @@
-import { PasswordManager } from '../../utils';
+import { ControlManager, PasswordManager } from '../../utils';
 import { BadRequestError } from '../../errors';
+import { Request, Response } from 'express';
 
-const currentAuth = async (context: any) => {
-  if(!context.req.currentAuth) {
+const currentAuth = async (req: Request, res: Response) => {
+  if(!req.currentAuth) {
     throw new BadRequestError('Please sign in again!');
   }
+  console.log(req.currentAuth);
+  
   const isExpired = await PasswordManager.isExpired(
-    context.req.currentAuth.expireToken
+    req.currentAuth.expireToken
   );
 
   if (isExpired) {
@@ -16,10 +19,10 @@ const currentAuth = async (context: any) => {
   return {
     message: 'You have access!',
     data: {
-      id: context.req.currentAuth.id,
-      email: context.req.currentAuth.email,
+      id: req.currentAuth.id,
+      email: req.currentAuth.email,
     },
-    token: context.req.headers.cookie.split('=')[1],
+    token: (await ControlManager.separateCookie(req.headers.cookie!)).auth
   };
 };
 

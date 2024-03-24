@@ -13,8 +13,8 @@ const queryText = `
     password_reset_expires TIMESTAMP,
     expire_token VARCHAR(255),
     active BOOLEAN DEFAULT true,
-    created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW(),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     password_changed_at TIMESTAMP
   )
 `;

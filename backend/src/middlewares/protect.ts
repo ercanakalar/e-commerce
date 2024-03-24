@@ -23,24 +23,25 @@ const protect = async (req: Request, res: Response, next: NextFunction) => {
   
   // 2) Verification token
   const decoded: {
-    id: string;
+    id: number;
     email: string;
     firstName: string;
     lastName: string;
+    role: string;
     iat: number;
   } = jwt_decode(authToken);
 
   // 3) Check if auth still exists
   let queryText = 'SELECT * FROM auth WHERE id = $1';
   const currentAuth = await new Database().query(queryText, [decoded.id]);
-
+  
   if (!currentAuth) {
     throw new BadRequestError(
       'The auth belonging to this token does no longer exist.'
     );
   }
 
-  const currentAuthRow = currentAuth.rows[0];
+  const currentAuthRow = currentAuth.rows[0];  
 
   // 4) Check if auth changed password after the token was issued
   const isPasswordChanged = new PasswordManager().changedPasswordAfter(decoded.iat * 1000, currentAuthRow.password_changed_at);
@@ -52,7 +53,13 @@ const protect = async (req: Request, res: Response, next: NextFunction) => {
 
   // GRANT ACCESS TO PROTECTED ROUTE
   // req.currentAuth = currentAuth;
-  res.locals.auth = currentAuth;
+  req.currentAuth = {
+    id: currentAuthRow.id,
+    email: currentAuthRow.email,
+    expireToken: currentAuthRow.expire_token,
+    role: currentAuthRow.role,
+    iat: Date.now(),
+  };
   next();
 };
 

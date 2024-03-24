@@ -31,7 +31,7 @@ const authResolvers = {
     },
     currentAuth: async (_: any, args: any, context: any) => {
       await currentAuthMiddleware(context.req, context.res, () => {});
-      return await currentAuth(context);
+      return await currentAuth(context.req, context.res);
     },
   },
   Mutation: {
