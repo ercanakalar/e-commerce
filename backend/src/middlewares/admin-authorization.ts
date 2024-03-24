@@ -9,7 +9,6 @@ const adminAuthorization = async (
   res: Response,
   next: NextFunction
 ) => {
-  const role = req.currentAuth?.role;
   const authToken: ICurrentAuthCookie = await ControlManager.separateCookie(
     req.headers.cookie!
   );
