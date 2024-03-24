@@ -46,12 +46,10 @@ export interface IContext {
 }
 
 export interface ICurrentAuthBasicInfo {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  photo?: string;
-  active: boolean;
+  id: number;
+  address: number;
+  phone: string;
+  photo: string;
 }
 
 export enum AuthRole {

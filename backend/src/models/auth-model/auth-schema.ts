@@ -37,13 +37,17 @@ const authTypeDefs = buildSchema(`
         data: CurrentAuth
         token: String
     }
+    type ForgotPasswordResponse {
+        message: String
+        data: String
+    }
     
     type Mutation {
         signUp(firstName: String, lastName: String, email: String, password: String, confirmPassword: String): SignUpResponse
         signIn(email: String, password: String): SignUpResponse
         signOut: String
         updatePassword(currentPassword: String, newPassword: String, confirmNewPassword: String): String
-        forgotPassword(email: String): String
+        forgotPassword(email: String): ForgotPasswordResponse
         resetPassword(token: String, newPassword: String, confirmNewPassword: String): SignUpResponse
     }
 

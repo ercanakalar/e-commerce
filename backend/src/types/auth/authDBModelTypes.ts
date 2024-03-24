@@ -20,8 +20,8 @@ export interface AuthCurrent {
   email: string;
   password: string;
   role: string;
-  expireToken: string;
-  passwordChangedAt: Date;
+  expire_token: string;
+  password_change_at: Date;
 }
 export interface AuthSignUp {
   firstName: string;
