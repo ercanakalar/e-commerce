@@ -1,6 +1,7 @@
 import App from './app';
 import { Database } from './config/db';
 import { createAuthTable } from './models/auth-model/auth-model';
+import { createCategoryTable } from './models/category-model/category-model';
 import { createProfileTable } from './models/profile-model/profile-model';
 
 const start = async () => {
@@ -8,6 +9,7 @@ const start = async () => {
     new Database().connect()
     createAuthTable()
     createProfileTable()
+    createCategoryTable()
     const app = new App();
     app.run();
   } catch (error) {
