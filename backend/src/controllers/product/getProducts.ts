@@ -1,21 +1,22 @@
 import { Request, Response } from 'express';
-import { Product } from '../../models/product-model/product-model';
 import { NotFoundError } from '../../errors';
+import { Database } from '../../config/db';
 
 const getProducts = async (req: Request, res: Response) => {
-  const products = await Product.find({ status: { $ne: 'processing' } });
+  let queryText = 'SELECT * FROM product WHERE status != $1';
+  const products = await new Database().query(queryText, ['processing']);
 
-  if (products.length === 0) {
+  if (products?.rows.length === 0) {
     throw new NotFoundError('Products not found');
   }
 
-  const data = products.map((product) => {
+  const data = products?.rows.map((product) => {
     return {
-      authId: product.authId,
-      category: product.category,
-      subCategory: product.subCategory,
-      group: product.group,
-      children: product.children,
+      authId: product.auth_id,
+      category: product.category_id,
+      subCategory: product.category_sub_id,
+      group: product.category_group_id,
+      children: product.category_children_id,
       name: product.name,
       price: product.price,
       description: product.description,
