@@ -57,6 +57,7 @@ const signUp = async (args: IArgs, context: IContext) => {
       firstName: newAuthRow.first_name,
       lastName: newAuthRow.last_name,
       email: newAuthRow.email,
+      role: newAuthRow.role,
     },
     process.env.JWT_KEY!,
     {
@@ -69,6 +70,7 @@ const signUp = async (args: IArgs, context: IContext) => {
     id: newAuthRow.id,
     email: newAuthRow.email,
     expireToken: newAuthRow.expireToken!,
+    role: newAuthRow.role,
     iat: Date.now(),
   };
 
