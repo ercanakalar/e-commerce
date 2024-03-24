@@ -1,13 +1,14 @@
 import { Request, Response } from 'express';
 import { IProduct } from '../../types/product/product.interface';
 import { BadRequestError } from '../../errors';
-import { Category } from '../../models/category-model/category-model';
-import { SubCategory } from '../../models/category-model/sub-category-model/sub-category-model';
-import { CategoryGroup } from '../../models/category-model/category-group-model/category-group-model';
-import { CategoryChildren } from '../../models/category-model/category-children-model/category-children-model';
-import { Product } from '../../models/product-model/product-model';
+import { Database } from '../../config/db';
 
-const createProduct = async (args: IProduct, authId: string, req: Request, res: Response) => {
+const createProduct = async (
+  args: IProduct,
+  authId: number,
+  req: Request,
+  res: Response
+) => {
   const {
     category,
     subCategory,
@@ -23,23 +24,33 @@ const createProduct = async (args: IProduct, authId: string, req: Request, res: 
   } = args;
 
   try {
-    const theCategory = await Category.findById({ _id: category });
+    let queryText = 'SELECT * FROM category WHERE id = $1';
+    const theCategory = await new Database().query(queryText, [category]);
     if (!theCategory) {
       throw new BadRequestError('Category not found');
     }
-    const theSubcategory = await SubCategory.findById({ _id: subCategory });
+    queryText = 'SELECT * FROM category_sub WHERE id = $1';
+    const theSubcategory = await new Database().query(queryText, [subCategory]);
     if (!theSubcategory) {
       throw new BadRequestError('Sub Category not found');
     }
-    const theGroup = await CategoryGroup.findById({ _id: group });
+    queryText = 'SELECT * FROM category_group WHERE id = $1';
+    const theGroup = await new Database().query(queryText, [group]);
     if (!theGroup) {
       throw new BadRequestError('Group not found');
     }
-    const theChildren = await CategoryChildren.findById({ _id: children });
+    queryText = 'SELECT * FROM category_children WHERE id = $1';
+    const theChildren = await new Database().query(queryText, [children]);
     if (!theChildren) {
       throw new BadRequestError('Children not found');
     }
-    const newProduct = new Product({
+
+    queryText = `
+      INSERT INTO product (auth_id, category_id, category_sub_id, category_group_id, category_children_id, name, price, description, stock, images, shipping, brand, status)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+      RETURNING *
+    `;
+    const values = [
       authId,
       category,
       subCategory,
@@ -52,26 +63,31 @@ const createProduct = async (args: IProduct, authId: string, req: Request, res: 
       images,
       shipping,
       brand,
-      status: 'processing'
-    });
+      'processing',
+    ];
+    const savedProduct = await new Database().query(queryText, values);
 
-    const savedProduct = await newProduct.save();
+    if (!savedProduct) {
+      throw new BadRequestError('Failed to create product');
+    }
+
+    const savedProductRow = savedProduct.rows[0];
 
     return {
       message: 'Product created successfully!',
       data: {
-        authId: savedProduct.authId,
-        category: savedProduct.category,
-        subCategory: savedProduct.subCategory,
-        group: savedProduct.group,
-        children: savedProduct.children,
-        name: savedProduct.name,
-        price: savedProduct.price,
-        description: savedProduct.description,
-        stock: savedProduct.stock,
-        image: savedProduct.images,
-        shipping: savedProduct.shipping,
-        brand: savedProduct.brand,
+        authId: savedProductRow.auth_id,
+        category: savedProductRow.category_id,
+        subCategory: savedProductRow.category_sub_id,
+        group: savedProductRow.category_group_id,
+        children: savedProductRow.category_children_id,
+        name: savedProductRow.name,
+        price: savedProductRow.price,
+        description: savedProductRow.description,
+        stock: savedProductRow.stock,
+        image: savedProductRow.images,
+        shipping: savedProductRow.shipping,
+        brand: savedProductRow.brand,
       },
     };
   } catch (error: any) {
