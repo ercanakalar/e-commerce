@@ -1,18 +1,19 @@
 import { Request, Response } from 'express';
 import { NotFoundError } from '../../errors';
-import { SubCategory } from '../../models/category-model/sub-category-model/sub-category-model';
+import { Database } from '../../config/db';
 
 const getSubCategories = async (req: Request, res: Response) => {
-  const subCategories = await SubCategory.find();
+  let queryText = `SELECT * FROM category_sub;`;
+  const subCategories = await new Database().query(queryText);
 
-  if (subCategories.length === 0) {
-    throw new NotFoundError('SubCategories not found');
+  if (subCategories?.rows.length === 0) {
+    throw new NotFoundError('Categories not found');
   }
 
-  const data = subCategories.map((category) => {
+  const data = subCategories?.rows.map((subCategory) => {
     return {
-      id: category.id,
-      name: category.name,
+      id: subCategory.id,
+      name: subCategory.name,
     };
   });
 
