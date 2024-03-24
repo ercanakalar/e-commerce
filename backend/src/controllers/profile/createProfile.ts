@@ -1,53 +1,42 @@
 import { Request, Response } from 'express';
 
-import { Profile } from '../../models/profile-model/profile-model';
-import jwt, { Jwt } from 'jsonwebtoken';
 import { ICurrentAuthBasicInfo } from '../../types/auth/authModalType';
+import { Database } from '../../config/db';
+import { QueryResult } from 'pg';
 
 const createProfile = async (
   args: ICurrentAuthBasicInfo,
   req: Request,
   res: Response
 ) => {
-  const { id, firstName, lastName, email, photo } = args;
+  const authId = req.currentAuth?.id;
 
-  const newProfile = Profile.build({
-    authId: req.currentAuth?.id || id,
-    firstName,
-    lastName,
-    email,
-    photo: photo || '',
-    active: true,
-    createdAt: new Date(),
-  });
-  await newProfile.save();
+  const queryText = `
+            INSERT INTO profile (auth_id, created_at)
+            VALUES ($1, $2)
+            RETURNING *;`;
 
-  const profileJwt: Jwt | string = jwt.sign(
-    {
-      id: newProfile.id,
-      authId: newProfile.authId,
-      firstName: newProfile.firstName,
-      lastName: newProfile.lastName,
-      email: newProfile.email,
-      photo: newProfile.photo,
-    },
-    process.env.JWT_KEY!
-  );
+  const newProfile: QueryResult<any> |undefined = await new Database().query(queryText, [
+    authId,
+    new Date(),
+  ]);
 
-  res.cookie('profile', profileJwt, { httpOnly: true });
+  if (!newProfile) {
+    return {
+      message: 'Profile not created!',
+      data: null,
+    };
+  }
+
+  const newProfileRow = newProfile.rows[0];
 
   return {
     message: 'Profile created successfully!',
     data: {
-      id: newProfile.id,
-      authId: newProfile.authId,
-      firstName: newProfile.firstName,
-      lastName: newProfile.lastName,
-      email: newProfile.email,
-      photo: newProfile.photo,
+      id: newProfileRow.id,
+      authId: newProfileRow.authId,
     },
-    token: profileJwt,
   };
 };
 
-export {createProfile};
+export { createProfile };
