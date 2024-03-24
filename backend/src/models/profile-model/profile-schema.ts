@@ -15,7 +15,7 @@ const profileTypeDefs = buildSchema(`
     }
 
     type Mutation {
-        updateProfile(firstName: String, lastName: String, photo: String, active: Boolean): ProfileResponse
+        updateProfile(address: Int, phone: String, photo: String): ProfileResponse
     }
 
     type Query {

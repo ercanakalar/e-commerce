@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-
-import { SubCategory } from '../../models/category-model/sub-category-model/sub-category-model';
+import { Database } from '../../config/db';
+import { BadRequestError } from '../../errors';
 
 const createSubCategory = async (
   args: { name: string },
@@ -9,17 +9,23 @@ const createSubCategory = async (
 ) => {
   const { name } = args;
 
-  const newSubCategory = SubCategory.build({
-    name,
-    createdAt: new Date(),
-  });
-  await newSubCategory.save();
+  let queryText = `
+            INSERT INTO category_sub (name, created_at)
+            VALUES ($1, $2)
+            RETURNING *;`;
+  const newSubCategory = await new Database().query(queryText, [name, new Date()]);
+
+  if(!newSubCategory) {
+    throw new BadRequestError('There is the same category name!');
+  }
+
+  const newSubCategoryRow = newSubCategory.rows[0];
 
   return {
     message: 'SubCategory created!',
     data: {
-      id: newSubCategory.id,
-      name: newSubCategory.name,
+      id: newSubCategoryRow.id,
+      name: newSubCategoryRow.name,
     },
   };
 };

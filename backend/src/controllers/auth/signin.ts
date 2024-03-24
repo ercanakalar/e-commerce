@@ -6,7 +6,6 @@ import { BadRequestError } from '../../errors';
 import { AuthSignIn } from '../../types/auth/authModalType';
 import { Database } from '../../config/db';
 import { QueryResult } from 'pg';
-import { Auth } from '../../types/auth/authDBModelTypes';
 
 const signIn = async (args: AuthSignIn, context: any) => {
   const { email, password } = args;
@@ -41,13 +40,21 @@ const signIn = async (args: AuthSignIn, context: any) => {
       firstName: existingAuthRow.first_name,
       lastName: existingAuthRow.last_name,
       email: existingAuthRow.email,
+      role: existingAuthRow.role,
     },
     process.env.JWT_KEY!
   );
 
   // context.res.currentAuth('auth', authJwt, { httpOnly: true });
   context.res.cookie('auth', authJwt, { httpOnly: true });
-
+  context.req.currentAuth = {
+    id: existingAuthRow.id,
+    email: existingAuthRow.email,
+    expireToken: existingAuthRow.expireToken!,
+    role: existingAuthRow.role,
+    iat: Date.now(),
+  };
+  
   return {
     message: 'Auth signed in successfully!',
     data: {

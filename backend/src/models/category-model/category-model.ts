@@ -1,40 +1,19 @@
-import mongoose from 'mongoose';
-import {
-  CategoryAttrs,
-  CategoryDoc,
-  CategoryModal,
-} from '../../types/category';
+import { Database } from '../../config/db';
 
-const categorySchema = new mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-      lowercase: true,
-    },
-    createdAt: {
-      type: Date,
-    },
-  },
-  {
-    toJSON: {
-      transform(doc, ret: any) {
-        ret.id = ret._id;
-        delete ret._id;
-        delete ret.__v;
-      },
-    },
+const queryText = `
+  CREATE TABLE IF NOT EXISTS category (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(128) UNIQUE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  )
+`;
+
+const createCategoryTable = async () => {
+  try {
+    await new Database().createTable(queryText);
+  } catch (error) {
+    console.error('Error creating category table:', error);
   }
-);
-
-categorySchema.statics.build = (attrs: CategoryAttrs) => {
-  return new Category(attrs);
 };
 
-const Category = mongoose.model<CategoryDoc, CategoryModal>(
-  'Category',
-  categorySchema
-);
-
-export { Category };
+export { createCategoryTable };

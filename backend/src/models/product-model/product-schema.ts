@@ -3,10 +3,10 @@ import { buildSchema } from 'graphql';
 const productTypeDefs = buildSchema(`
     type Product {
         authId: ID
-        category: String
-        subCategory: String
-        group: String
-        children: String
+        category: Int
+        subCategory: Int
+        group: Int
+        children: Int
         name: String
         price: Float
         description: String
@@ -14,21 +14,37 @@ const productTypeDefs = buildSchema(`
         stock: Int
         sold: Int
         images: [String]
-        shipping: String
+        shipping: Boolean
         brand: String
     }
     type ProductCreate {
         authId: ID
-        category: String
-        subCategory: String
-        group: String
-        children: String
+        category: Int
+        subCategory: Int
+        group: Int
+        children: Int
         name: String
         price: Float
         description: String
         stock: Int
         images: [String]
-        shipping: String
+        shipping: Boolean
+        brand: String
+    }
+    type ProductGetById {
+        authId: ID
+        category: Int
+        subCategory: Int
+        group: Int
+        children: Int
+        name: String
+        price: Float
+        description: String
+        rating: Float
+        stock: Int
+        sold: Int
+        images: [String]
+        shipping: Boolean
         brand: String
     }
     type ProductUpdate {
@@ -38,7 +54,7 @@ const productTypeDefs = buildSchema(`
         description: String
         stock: Int
         images: [String]
-        shipping: String
+        shipping: Boolean
     }
 
     type ProductResponse {
@@ -49,6 +65,10 @@ const productTypeDefs = buildSchema(`
         message: String
         data: [Product]
     }
+    type ProductGetIdResponse {
+        message: String
+        data: ProductGetById
+    }
     type ProductUpdateResponse {
         message: String
         data: ProductUpdate
@@ -58,9 +78,9 @@ const productTypeDefs = buildSchema(`
     }
 
     type Mutation {
-        createProduct(category: String, subCategory: String, group: String, children: String, name: String, price: Float, description: String, stock: Int, images: [String], shipping: String, brand: String): ProductResponse
-        getProductById(id: ID): ProductResponse
-        updateProductById(id: ID, price: Float, discount: Float, description: String, stock: Int, images: [String], shipping: String): ProductUpdateResponse
+        createProduct(category: Int, subCategory: Int, group: Int, children: Int, name: String, price: Float, description: String, stock: Int, images: [String], shipping: Boolean, brand: String): ProductResponse
+        getProductById(id: ID): ProductGetIdResponse
+        updateProductById(id: ID, price: Float, discount: Float, description: String, stock: Int, images: [String], shipping: Boolean): ProductUpdateResponse
         deleteProductById(id: ID): ProductDeleteResponse
     }
 

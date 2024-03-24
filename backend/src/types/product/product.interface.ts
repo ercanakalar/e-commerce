@@ -1,32 +1,32 @@
 export interface IProduct {
-  authId: string;
-  category: string;
-  subCategory: string;
-  group: string;
-  children: string;
+  authId: number;
+  category: number;
+  subCategory: number;
+  group: number;
+  children: number;
   name: string;
   price: number;
   description: string;
   stock: number;
   images: [string];
-  shipping: string;
+  shipping: boolean;
   brand: string;
 }
 
 export interface IProductGetId {
-  id: string;
+  id: number;
 }
 
 export interface IProductUpdate {
-  id: string;
+  id: number;
   price: number;
   discount: number;
   description: string;
   stock: number;
   images: [string];
-  shipping: string;
+  shipping: boolean;
 }
 
 export interface IProductDeleteId {
-  id: string;
+  id: number;
 }

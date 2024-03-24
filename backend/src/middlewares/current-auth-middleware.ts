@@ -39,7 +39,7 @@ export const currentAuthMiddleware = async (
     throw new BadRequestError('Auth not found!');
   }
   const authRow = auth.rows[0];
-  const authChangePasswordTime = new Date(authRow.passwordChangedAt).getTime();
+  const authChangePasswordTime = new Date(authRow.password_change_at).getTime();
   const isAuthChangedPasswordAfterLogged =
     PasswordManager.isAuthChangedPasswordAfterTokenIssued(
       payload.iat * 1000,
@@ -55,7 +55,7 @@ export const currentAuthMiddleware = async (
   req.currentAuth = {
     id: authRow.id,
     email: authRow.email,
-    expireToken: authRow.expireToken!,
+    expireToken: authRow.expire_token,
     iat: payload.iat,
     role: authRow.role
   };

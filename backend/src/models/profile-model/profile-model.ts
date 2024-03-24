@@ -4,11 +4,11 @@ const queryText = `
   CREATE TABLE IF NOT EXISTS profile (
     id SERIAL PRIMARY KEY,
     auth_id INTEGER NOT NULL,
-    address INTEGER[],
+    address INTEGER,
     phone VARCHAR(255),
     photo VARCHAR(255),
-    created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   )
 `;
 

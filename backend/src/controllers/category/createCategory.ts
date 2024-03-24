@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
-import { Category } from '../../models/category-model/category-model';
+import { Database } from '../../config/db';
+import { BadRequestError } from '../../errors';
 
 const createCategory = async (
   args: { name: string },
@@ -8,17 +9,23 @@ const createCategory = async (
 ) => {
   const { name } = args;
 
-  const newCategory = Category.build({
-    name,
-    createdAt: new Date(),
-  });
-  await newCategory.save();
+  let queryText = `
+            INSERT INTO category (name, created_at)
+            VALUES ($1, $2)
+            RETURNING *;`;
+  const newCategory = await new Database().query(queryText, [name, new Date()]);
+
+  if(!newCategory) {
+    throw new BadRequestError('There is the same category name!');
+  }
+
+  const newCategoryRow = newCategory.rows[0];
 
   return {
     message: 'Category created!',
     data: {
-      id: newCategory.id,
-      name: newCategory.name,
+      id: newCategoryRow.id,
+      name: newCategoryRow.name,
     },
   };
 };

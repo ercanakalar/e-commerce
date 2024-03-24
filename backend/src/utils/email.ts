@@ -1,5 +1,7 @@
 import nodemailer, { Transporter } from 'nodemailer';
+import * as dotenv from 'dotenv';
 
+dotenv.config();
 export class Email {
   to: string;
   firstName: string;
@@ -7,24 +9,25 @@ export class Email {
   from: string;
   transporter: Transporter;
 
-  constructor(auth: { email: string; firstName: string }, url: string) {
+  constructor(auth: { email: string; first_name: string }, url: string) {
     this.to = auth.email;
-    this.firstName = auth.firstName;
+    this.firstName = auth.first_name;
     this.url = url;
     this.from = `Ercan Akalar <${process.env.EMAIL_FROM!}>`;
     this.transporter = this.newTransport();
   }
 
   private newTransport() {
-    return nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,
-      port: parseInt(process.env.EMAIL_PORT || '587'),
+    const transport  = nodemailer.createTransport({
+      host: process.env.EMAIL_HOST!,
+      port: Number(process.env.EMAIL_PORT!),
       secure: false, // false for TLS, true for SSL
       auth: {
-        user: process.env.EMAIL_HOST_AUTH,
-        pass: process.env.EMAIL_HOST_PASSWORD,
+        user: process.env.EMAIL_HOST_AUTH!,
+        pass: process.env.EMAIL_HOST_PASSWORD!,
       },
     });
+    return transport;
   }
 
   // Send the actual email
@@ -56,7 +59,7 @@ export class Email {
   async sendPasswordReset() {
     await this.send(
       'passwordReset',
-      'Your password reset token (valid for only 10 minutes)'
+      'Your password reset token (valid for only 5 minutes)'
     );
   }
 }

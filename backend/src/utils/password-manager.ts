@@ -93,12 +93,7 @@ export class PasswordManager {
       .update(passwordResetToken)
       .digest('hex');
 
-    let newDate = new Date();
-    newDate.setHours(newDate.getHours() + 3, newDate.getMinutes() + 5);
-    const time = new Date(newDate).getTime();
-    const newPasswordResetExpires = time;
-
-    return { newResetToken, newPasswordResetExpires };
+    return { newResetToken};
   }
 
   changedPasswordAfter(JWTTimestamp: number, passwordChangedAt: number) {

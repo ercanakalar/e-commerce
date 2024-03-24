@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
-import { CategoryGroup } from '../../models/category-model/category-group-model/category-group-model';
+import { Database } from '../../config/db';
+import { BadRequestError } from '../../errors';
 
 const createGroupCategory = async (
   args: { name: string },
@@ -8,17 +9,23 @@ const createGroupCategory = async (
 ) => {
   const { name } = args;
 
-  const newGroupCategory = CategoryGroup.build({
-    name,
-    createdAt: new Date(),
-  });
-  await newGroupCategory.save();
+  let queryText = `
+            INSERT INTO category_group (name, created_at)
+            VALUES ($1, $2)
+            RETURNING *;`;
+  const newGroupCategory = await new Database().query(queryText, [name, new Date()]);
+
+  if(!newGroupCategory) {
+    throw new BadRequestError('There is the same category name!');
+  }
+
+  const newGroupCategoryRow = newGroupCategory.rows[0];
 
   return {
     message: 'GroupCategory created!',
     data: {
-      id: newGroupCategory.id,
-      name: newGroupCategory.name,
+      id: newGroupCategoryRow.id,
+      name: newGroupCategoryRow.name,
     },
   };
 };

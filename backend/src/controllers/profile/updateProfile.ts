@@ -12,7 +12,7 @@ const updateProfile = async (
   res: Response
 ) => {
   const { id } = currentAuth;
-  const { address, phone, photo } = args;
+  const { address, phone, photo } = args;  
 
   let queryText = 'SELECT * FROM profile WHERE auth_id = $1';
   const findProfile = await new Database().query(queryText, [id]);
@@ -23,12 +23,11 @@ const updateProfile = async (
 
   const findProfileRow = findProfile.rows[0];
 
-  queryText = `UPDATE profile SET address = $1, phone = $2, photo = $3, updated_at = $4 WHERE auth_id = $6`;
+  queryText = `UPDATE profile SET address = $1, phone = $2, photo = $3, updated_at = CURRENT_TIMESTAMP WHERE auth_id = $4`;
   await new Database().query(queryText, [
     address || findProfileRow.address,
     phone || findProfileRow.phone,
     photo || findProfileRow.photo,
-    new Date(),
     id,
   ]);
 

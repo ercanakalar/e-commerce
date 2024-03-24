@@ -1,40 +1,19 @@
-import mongoose from 'mongoose';
-import {
-  SubCategoryAttrs,
-  SubCategoryDoc,
-  SubCategoryModal,
-} from '../../../types/category';
+import { Database } from "../../../config/db";
 
-const subCategorySchema = new mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-      lowercase: true,
-    },
-    createdAt: {
-      type: Date,
-    },
-  },
-  {
-    toJSON: {
-      transform(doc, ret: any) {
-        ret.id = ret._id;
-        delete ret._id;
-        delete ret.__v;
-      },
-    },
+const queryText = `
+  CREATE TABLE IF NOT EXISTS category_sub (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(128) UNIQUE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  )
+`;
+
+const createSubCategoryTable = async () => {
+  try {
+    await new Database().createTable(queryText);
+  } catch (error) {
+    console.error('Error creating category table:', error);
   }
-);
-
-subCategorySchema.statics.build = (attrs: SubCategoryAttrs) => {
-  return new SubCategory(attrs);
 };
 
-const SubCategory = mongoose.model<SubCategoryDoc, SubCategoryModal>(
-  'SubCategory',
-  subCategorySchema
-);
-
-export { SubCategory };
+export { createSubCategoryTable };

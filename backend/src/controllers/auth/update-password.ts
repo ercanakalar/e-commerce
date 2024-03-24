@@ -5,8 +5,8 @@ import { Database } from '../../config/db';
 
 const updatePassword = async (req: Request, res: Response, args: { currentPassword: string, newPassword: string, confirmNewPassword: string }) => {
     const { currentPassword, newPassword, confirmNewPassword } = args;
-
-    const authId = res.locals.auth.id
+    
+    const authId = req.currentAuth!.id;
 
     let queryText = `SELECT * FROM auth WHERE id = $1`;
     const existingAuth = await new Database().query(queryText, [authId]);
@@ -26,8 +26,11 @@ const updatePassword = async (req: Request, res: Response, args: { currentPasswo
         throw new BadRequestError('Passwords do not match');
     }
 
-    queryText = `UPDATE auth SET password = $1, confirm_password = $2, password_changed_at = $3 WHERE id = $4`;
-    await new Database().query(queryText, [await PasswordManager.toHash(newPassword), await PasswordManager.toHash(newPassword), await PasswordManager.newChangePasswordAt(), authId]);
+    const hashedPassword = await PasswordManager.toHash(newPassword);
+    const hashedPasswordConfirm = await PasswordManager.toHash(confirmNewPassword);
+
+    queryText = `UPDATE auth SET password = $1, confirm_password = $2, password_changed_at = CURRENT_TIMESTAMP WHERE id = $3`;
+    await new Database().query(queryText, [hashedPassword, hashedPasswordConfirm, authId]);
     
     return 'Password updated successfully!';
 };

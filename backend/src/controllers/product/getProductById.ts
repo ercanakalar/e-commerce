@@ -1,36 +1,38 @@
 import { Request, Response } from 'express';
-import { Product } from '../../models/product-model/product-model';
 import { NotFoundError } from '../../errors';
 import { IProductGetId } from '../../types/product/product.interface';
+import { Database } from '../../config/db';
 
 const getProductById = async (
   args: IProductGetId,
   req: Request,
   res: Response
 ) => {
-  const product = await Product.findById(args.id);
+  let queryText = 'SELECT * FROM product WHERE id = $1';
+  const product = await new Database().query(queryText, [args.id]);
 
   if (!product) {
     throw new NotFoundError('Product not found!');
   }
+  const productRow = product.rows[0];
 
   return {
     message: 'Product found!',
     data: {
-      authId: product.authId,
-      category: product.category,
-      subCategory: product.subCategory,
-      group: product.group,
-      children: product.children,
-      name: product.name,
-      price: product.price,
-      description: product.description,
-      rating: product.rating,
-      stock: product.stock,
-      sold: product.sold,
-      image: product.images,
-      shipping: product.shipping,
-      brand: product.brand,
+      authId: productRow.auth_id,
+      category: productRow.category_id,
+      subCategory: productRow.category_sub_id,
+      group: productRow.category_group_id,
+      children: productRow.category_children_id,
+      name: productRow.name,
+      price: productRow.price,
+      description: productRow.description,
+      rating: productRow.rating,
+      stock: productRow.stock,
+      sold: productRow.sold,
+      image: productRow.images,
+      shipping: productRow.shipping,
+      brand: productRow.brand,
     },
   };
 };
