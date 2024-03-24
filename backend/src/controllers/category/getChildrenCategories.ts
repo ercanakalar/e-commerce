@@ -1,16 +1,17 @@
 import { Request, Response } from 'express';
 
 import { NotFoundError } from '../../errors';
-import { CategoryChildren } from '../../models/category-model/category-children-model/category-children-model';
+import { Database } from '../../config/db';
 
 const getChildrenCategories = async (req: Request, res: Response) => {
-  const childrenCategories = await CategoryChildren.find();
+  let queryText = `SELECT * FROM category_children;`;
+  const childrenCategories = await new Database().query(queryText);
 
-  if (childrenCategories.length === 0) {
-    throw new NotFoundError('ChildrenCategories not found');
+  if (childrenCategories?.rows.length === 0) {
+    throw new NotFoundError('Group categories not found');
   }
 
-  const data = childrenCategories.map((category) => {
+  const data = childrenCategories?.rows.map((category) => {
     return {
       id: category.id,
       name: category.name,
@@ -18,7 +19,7 @@ const getChildrenCategories = async (req: Request, res: Response) => {
   });
 
   return {
-    message: 'ChildrenCategories found!',
+    message: 'Children categories found!',
     data,
   };
 };
