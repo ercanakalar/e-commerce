@@ -2,12 +2,10 @@ import { createProfile, updateProfile } from '../../controllers/profile';
 import { getOwnProfile } from '../../controllers/profile/getOwnProfile';
 import { protect, requireProfile } from '../../middlewares';
 import { ICurrentAuthBasicInfo } from '../../types/auth/authModalType';
-import { Profile } from './profile-model';
 
 const profileResolvers = {
   Query: {
     getProfileById: async (parent: any, args: any) => {
-      const profile = await Profile.findById(args.id);
     },
     getOwnProfile: async (parent: any, args: any, context: any) => {
       const { isThereProfile, currentAuth } : {isThereProfile: boolean, currentAuth: ICurrentAuthBasicInfo} = await requireProfile(
