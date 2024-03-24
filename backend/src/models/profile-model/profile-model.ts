@@ -1,62 +1,23 @@
-import mongoose from 'mongoose';
-import { ProfileAttrs, ProfileDoc, ProfileModal } from '../../types/profile';
+import { Database } from '../../config/db';
 
+const queryText = `
+  CREATE TABLE IF NOT EXISTS profile (
+    id SERIAL PRIMARY KEY,
+    auth_id INTEGER NOT NULL,
+    address INTEGER[],
+    phone VARCHAR(255),
+    photo VARCHAR(255),
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP
+  )
+`;
 
-const profileSchema = new mongoose.Schema(
-  {
-    authId: {
-      type: String,
-      required: true,
-    },
-    firstName: {
-      type: String,
-      required: true,
-      trim: true,
-      lowercase: true,
-    },
-    lastName: {
-      type: String,
-      required: true,
-      trim: true,
-      lowercase: true,
-    },
-    email: {
-      type: String,
-      required: true,
-    },
-    photo: {
-      type: String,
-    },
-    active: {
-      type: Boolean,
-      default: true,
-    },
-    createdAt: {
-      type: Date,
-    },
-    updatedAt: {
-      type: Date,
-    },
-  },
-  {
-    toJSON: {
-      transform(doc, ret: any) {
-        ret.id = ret._id;
-        delete ret._id;
-        delete ret.password;
-        delete ret.__v;
-      },
-    },
+const createProfileTable = async () => {
+  try {
+    await new Database().createTable(queryText);
+  } catch (error) {
+    console.error('Error creating profile table:', error);
   }
-);
-
-profileSchema.statics.build = (attrs: ProfileAttrs) => {
-  return new Profile(attrs);
 };
 
-const Profile = mongoose.model<ProfileDoc, ProfileModal>(
-  'Profile',
-  profileSchema
-);
-
-export { Profile };
+export { createProfileTable };

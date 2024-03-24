@@ -2,8 +2,8 @@ import { Request } from 'express';
 
 import { NotAuthorizedError } from '../errors';
 import { ControlManager } from '../utils';
-import { Profile } from '../models/profile-model/profile-model';
 import { ICurrentAuthBasicInfo } from '../types/auth/authModalType';
+import { Database } from '../config/db';
 
 export const requireProfile = async (req: Request) => {
   if (!req.headers.cookie) {
@@ -17,7 +17,9 @@ export const requireProfile = async (req: Request) => {
 
   if (!currentAuth) throw new NotAuthorizedError();
 
-  const existingProfile = await Profile.findOne({ authId: currentAuth.id });
+  let queryText = `SELECT * FROM profile WHERE auth_id = $1`;
+  const existingProfile = await new Database().query(queryText, [currentAuth.id]);
+
   if (!existingProfile) {
     return { isThereProfile: false, currentAuth };
   }

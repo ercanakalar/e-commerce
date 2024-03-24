@@ -1,15 +1,18 @@
 import jwt from 'jsonwebtoken';
 
-import { Auth } from '../../models/auth-model/auth-model';
 import { PasswordManager } from '../../utils';
 import { BadRequestError } from '../../errors';
 import { IArgs, IContext } from '../../types/auth/authModalType';
+import { Database } from '../../config/db';
+import { QueryResult } from 'pg';
+import { Auth } from '../../types/auth/authDBModelTypes';
 
 const signUp = async (args: IArgs, context: IContext) => {
   const { firstName, lastName, email, password, confirmPassword } = args;
-  const existingAuth = await Auth.findOne({ email });
+  const existingAuth: QueryResult<Auth> | undefined =
+    await new Database().query('SELECT * FROM auth WHERE email = $1', [email]);
 
-  if (existingAuth) {
+  if (existingAuth?.rows[0]) {
     throw new BadRequestError('Email in use');
   }
 
@@ -22,22 +25,38 @@ const signUp = async (args: IArgs, context: IContext) => {
     throw new BadRequestError('Passwords do not match');
   }
 
-  const newAuth = Auth.build({
-    firstName,
-    lastName,
-    email,
-    password,
-    confirmPassword,
-    expireToken: await PasswordManager.hashExpireToken(),
-  });
-  await newAuth.save();
+  const hashedPassword = await PasswordManager.toHash(password);
+  const hashedConfirmPassword = await PasswordManager.toHash(confirmPassword);
+
+  const queryText = `
+            INSERT INTO auth (first_name, last_name, email, password, confirm_password, expire_token)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING *;`;
+
+  const newAuth: QueryResult<any> | undefined = await new Database().query(
+    queryText,
+    [
+      firstName,
+      lastName,
+      email,
+      hashedPassword,
+      hashedConfirmPassword,
+      await PasswordManager.hashExpireToken(), // Assuming this returns a hashed token
+    ]
+  );
+
+  if (!newAuth) {
+    throw new BadRequestError('Failed to create user');
+  }
+
+  const newAuthRow = newAuth.rows[0];
 
   const authJwt = jwt.sign(
     {
-      id: newAuth.id,
-      firstName: newAuth.firstName,
-      lastName: newAuth.lastName,
-      email: newAuth.email,
+      id: newAuthRow.id,
+      firstName: newAuthRow.first_name,
+      lastName: newAuthRow.last_name,
+      email: newAuthRow.email,
     },
     process.env.JWT_KEY!,
     {
@@ -47,19 +66,19 @@ const signUp = async (args: IArgs, context: IContext) => {
 
   context.res.cookie('auth', authJwt, { httpOnly: true });
   context.req.currentAuth = {
-    id: newAuth.id,
-    email: newAuth.email,
-    expireToken: newAuth.expireToken!,
+    id: newAuthRow.id,
+    email: newAuthRow.email,
+    expireToken: newAuthRow.expireToken!,
     iat: Date.now(),
   };
 
   return {
     message: 'You have successfully registered.',
     data: {
-      id: newAuth.id,
-      firstName: newAuth.firstName,
-      lastName: newAuth.lastName,
-      email: newAuth.email,
+      id: newAuthRow.id,
+      firstName: newAuthRow.first_name,
+      lastName: newAuthRow.last_name,
+      email: newAuthRow.email,
     },
     token: authJwt,
   };
