@@ -1,39 +1,44 @@
 import { Request, Response } from 'express';
-import { Product } from '../../models/product-model/product-model';
 import { NotFoundError } from '../../errors';
 import { IProductUpdate } from '../../types/product/product.interface';
+import { Database } from '../../config/db';
 
 const updateProductById = async (
   args: IProductUpdate,
   req: Request,
   res: Response
 ) => {
-  const updatedProduct = await Product.findByIdAndUpdate(
-    { _id: args.id },
-    {
-      description: args.description,
-      price: args.price,
-      discount: args.discount,
-      stock: args.stock,
-      images: args.images,
-      shipping: args.shipping,
-    }
-  );
+  const { id, price, discount, description, stock, images, shipping } = args;
 
-  if (!updatedProduct) {
-    throw new NotFoundError('Product could not be updated!');
+  let queryText =
+    'UPDATE product SET description = $1, price = $2, discount = $3, stock = $4, images = $5, shipping = $6, updated_at = CURRENT_TIMESTAMP  WHERE id = $7';
+  await new Database().query(queryText, [
+    description,
+    price,
+    discount,
+    stock,
+    images,
+    shipping,
+    id,
+  ]);
+
+  queryText = 'SELECT * FROM product WHERE id = $1';
+  const updatedProduct = await new Database().query(queryText, [id]);
+  if(!updatedProduct) {
+    throw new NotFoundError('Product not found!');
   }
+  const updatedProductRow = updatedProduct.rows[0];
 
   return {
     message: 'Product updated successfully!',
     data: {
-      id: updatedProduct.id,
-      price: updatedProduct.price,
-      discount: updatedProduct.discount,
-      description: updatedProduct.description,
-      stock: updatedProduct.stock,
-      image: updatedProduct.images,
-      shipping: updatedProduct.shipping,
+      id: updatedProductRow.id,
+      price: updatedProductRow.price,
+      discount: updatedProductRow.discount,
+      description: updatedProductRow.description,
+      stock: updatedProductRow.stock,
+      images: updatedProductRow.images,
+      shipping: updatedProductRow.shipping,
     },
   };
 };
