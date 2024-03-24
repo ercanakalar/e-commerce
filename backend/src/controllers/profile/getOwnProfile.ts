@@ -1,28 +1,44 @@
 import { Request, Response } from 'express';
+import jwt, { Jwt } from 'jsonwebtoken';
 
 import { NotFoundError } from '../../errors';
+import { Profile } from '../../models/profile-model/profile-model';
 import { ICurrentAuthBasicInfo } from '../../types/auth/authModalType';
-import { Database } from '../../config/db';
 
 const getOwnProfile = async (currentAuth: ICurrentAuthBasicInfo, req: Request, res: Response) => {
-  let queryText = `SELECT * FROM profile WHERE auth_id = $1`;
-  const profile = await new Database().query(queryText, [currentAuth.id]);
+  const profile = await Profile.findOne({ authId: currentAuth?.id });
 
   if (!profile) {
     throw new NotFoundError('Profile not found');
   }
 
-  const findProfileRow = profile.rows[0];
+  const profileJwt: Jwt | string = jwt.sign(
+    {
+      id: profile.id,
+      authId: profile.authId,
+      firstName: profile.firstName,
+      lastName: profile.lastName,
+      email: profile.email,
+      photo: profile.photo,
+      active: profile.active,
+    },
+    process.env.JWT_KEY!
+  );
+
+  res.cookie('profile', profileJwt, { httpOnly: true });
 
   return {
     message: 'Profile found!',
     data: {
-      id: findProfileRow.id,
-      authId: findProfileRow.auth_id,
-      address: findProfileRow.address,
-      phone: findProfileRow.phone,
-      photo: findProfileRow.photo,
+      id: profile.id,
+      authId: profile.authId,
+      firstName: profile.firstName,
+      lastName: profile.lastName,
+      email: profile.email,
+      photo: profile.photo,
+      active: profile.active,
     },
+    token: profileJwt,
   };
 };
 

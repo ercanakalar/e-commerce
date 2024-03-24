@@ -4,14 +4,21 @@ const profileTypeDefs = buildSchema(`
     type Profile {
         id: ID
         authId: String
-        address: Int
-        phone: String
+        firstName: String
+        lastName: String
+        email: String
         photo: String
+        active: Boolean
     }
 
     type ProfileResponse {
         message: String
         data: Profile
+        token: String
+    }
+
+    type ProfileWithToken {
+        token: String
     }
 
     type Mutation {

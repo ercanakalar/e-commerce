@@ -6,8 +6,8 @@ import {
   signOut,
   signUp,
   updatePassword,
-  getAllAuths,
 } from '../../controllers/auth';
+import { Auth } from './auth-model';
 import { adminAuthorization, currentAuthMiddleware, protect } from '../../middlewares';
 import { createProfile } from '../../controllers/profile';
 import { BadRequestError } from '../../errors';
@@ -20,7 +20,8 @@ const authResolvers = {
       if(!authentication) {
         throw new BadRequestError('Not authorized to access this resource. You are not admin!');
       }
-      return await getAllAuths(context.req, context.res);
+      const auths = await Auth.find();
+      return auths;
     },
     getAuthById: async (parent: any, args: any, context: any) => {
       await currentAuthMiddleware(context.req, context.res, () => {});
@@ -28,6 +29,8 @@ const authResolvers = {
       if(!authentication) {
         throw new BadRequestError('Not authorized to access this resource. You are not admin!');
       }
+      const auth = await Auth.findById(args.id);
+      return auth;
     },
     currentAuth: async (_: any, args: any, context: any) => {
       await currentAuthMiddleware(context.req, context.res, () => {});
@@ -53,10 +56,10 @@ const authResolvers = {
       return await updatePassword(context.req, context.res, args);
     },
     forgotPassword: async (_: any, args: any, context: any) => {
-      return await forgotPassword(args, context.req, context.res);
+      return await forgotPassword(args, context);
     },
     resetPassword: async (_: any, args: any, context: any) => {
-      return await resetPassword(args, context.req, context.res);
+      return await resetPassword(args, context);
     }
   },
 };

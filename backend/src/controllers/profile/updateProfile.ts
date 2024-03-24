@@ -1,9 +1,11 @@
 import { Request, Response } from 'express';
 
+import { Profile } from '../../models/profile-model/profile-model';
+
 import { IProfile } from '../../types/profile/profileModalTypes';
+import jwt, { Jwt } from 'jsonwebtoken';
 import { BadRequestError } from '../../errors';
 import { ICurrentAuthBasicInfo } from '../../types/auth/authModalType';
-import { Database } from '../../config/db';
 
 const updateProfile = async (
   currentAuth: ICurrentAuthBasicInfo,
@@ -12,35 +14,44 @@ const updateProfile = async (
   res: Response
 ) => {
   const { id } = currentAuth;
-  const { address, phone, photo } = args;
+  const { firstName, lastName, photo, active } = args;
 
-  let queryText = 'SELECT * FROM profile WHERE auth_id = $1';
-  const findProfile = await new Database().query(queryText, [id]);
+  const findProfile = await Profile.findOne({ authId: id });
 
   if (!findProfile) {
     throw new BadRequestError('Profile not found');
   }
 
-  const findProfileRow = findProfile.rows[0];
+  await Profile.findOneAndUpdate(
+    { authId: id },
+    { firstName, lastName, photo, active, updatedAt: new Date() }
+  );
 
-  queryText = `UPDATE profile SET address = $1, phone = $2, photo = $3, updated_at = $4 WHERE auth_id = $6`;
-  await new Database().query(queryText, [
-    address || findProfileRow.address,
-    phone || findProfileRow.phone,
-    photo || findProfileRow.photo,
-    new Date(),
-    id,
-  ]);
+  const profileJwt: Jwt | string = jwt.sign(
+    {
+      id: findProfile.id,
+      authId: findProfile.authId,
+      firstName,
+      lastName,
+      photo,
+      active,
+    },
+    process.env.JWT_KEY!
+  );
+
+  res.cookie('profile', profileJwt, { httpOnly: true });
 
   return {
     message: 'Profile updated successfully!',
     data: {
-      id: findProfileRow.id,
-      authId: findProfileRow.auth_id,
-      address: address || findProfileRow.address,
-      phone: phone || findProfileRow.phone,
-      photo: photo || findProfileRow.photo,
+      id: findProfile.id,
+      authId: findProfile.authId,
+      firstName,
+      lastName,
+      photo,
+      active,
     },
+    token: profileJwt,
   };
 };
 

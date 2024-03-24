@@ -1,5 +1,5 @@
 export interface AuthPayload {
-  id: number;
+  id: string;
   email: string;
   expireToken: string;
   iat: number;

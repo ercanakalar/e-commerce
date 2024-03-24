@@ -12,22 +12,7 @@ const authTypeDefs = buildSchema(`
         data: Auth
         token: String
     }
-
-    type GetAll {
-        id: ID
-        firstName: String
-        lastName: String
-        email: String
-        role: String
-        createdAt: String
-        updatedAt: String
-    }
-
-    type GetAllResponse {
-        message: String
-        data: [GetAll]
-    }
-
+    
     type CurrentAuth {
         id: ID
         email: String
@@ -49,7 +34,7 @@ const authTypeDefs = buildSchema(`
 
     type Query {
         getAuthById(authId: ID): Auth
-        getAll: GetAllResponse
+        getAll: [Auth]
         currentAuth: CurrentAuthResponse
     }
 `);

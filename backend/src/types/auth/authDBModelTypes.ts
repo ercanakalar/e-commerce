@@ -1,42 +1,36 @@
-export interface Auth {
-  id: number;
+import mongoose from 'mongoose';
+
+export interface AuthAttrs {
   firstName: string;
   lastName: string;
   email: string;
   password: string;
   confirmPassword: string;
-  passwordHash: string;
-  role: string;
-  createdAt: string;
-  updatedAt: string;
-  passwordChangedAt: string;
-  passwordResetToken: string;
-  passwordResetExpires: string;
+  role?: string;
+  passwordResetToken?: string | undefined;
+  passwordResetExpires?: Date | undefined;
+  passwordChangedAt?: Date | undefined;
   expireToken: string;
-  active: boolean;
-}
-export interface AuthCurrent {
-  id: number;
-  email: string;
-  password: string;
-  role: string;
-  expireToken: string;
-  passwordChangedAt: Date;
-}
-export interface AuthSignUp {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
 }
 
-export interface AuthSignUpResponse {
-  id: number;
+export interface AuthModal extends mongoose.Model<AuthDoc> {
+  build(attrs: AuthAttrs): AuthDoc;
+}
+
+export interface AuthDoc extends mongoose.Document {
   firstName: string;
   lastName: string;
   email: string;
   password: string;
   confirmPassword: string;
+  role?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  passwordChangedAt: Date | number;
+  passwordResetToken: string | undefined;
+  passwordResetExpires: Date | undefined;
   expireToken: string;
+  changedPasswordAfter(JWTTimestamp: number): boolean;
+  createPasswordResetToken(): string;
+  createExpireToken(): string;
 }

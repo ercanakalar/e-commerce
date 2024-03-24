@@ -1,4 +1,4 @@
-import crypto, { scrypt, randomBytes } from 'crypto';
+import { scrypt, randomBytes } from 'crypto';
 import { promisify } from 'util';
 import jwt from 'jsonwebtoken';
 import { ICurrentAuthCookie } from '../types/auth/cookieTypes';
@@ -83,31 +83,5 @@ export class PasswordManager {
     }
 
     return resultObject;
-  }
-
-  createPasswordResetToken() {
-    const passwordResetToken = crypto.randomBytes(32).toString('hex');
-
-    const newResetToken = crypto
-      .createHash('sha256')
-      .update(passwordResetToken)
-      .digest('hex');
-
-    let newDate = new Date();
-    newDate.setHours(newDate.getHours() + 3, newDate.getMinutes() + 5);
-    const time = new Date(newDate).getTime();
-    const newPasswordResetExpires = time;
-
-    return { newResetToken, newPasswordResetExpires };
-  }
-
-  changedPasswordAfter(JWTTimestamp: number, passwordChangedAt: number) {
-    const loggedAt = new Date(JWTTimestamp + 3 * 60 * 60 * 1000).getTime();
-    const oldPasswordChangedAt = new Date(passwordChangedAt).getTime();
-
-    if (oldPasswordChangedAt > loggedAt) {
-      return true;
-    }
-    return false;
   }
 }

@@ -2,11 +2,9 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
 import { BadRequestError } from '../errors';
+import { Auth } from '../models/auth-model/auth-model';
 import { PasswordManager } from '../utils';
 import { AuthPayload } from '../types/auth/authPayload';
-import { Database } from '../config/db';
-import { AuthCurrent } from '../types/auth/authDBModelTypes';
-import { QueryResult } from 'pg';
 
 declare global {
   namespace Express {
@@ -29,17 +27,13 @@ export const currentAuthMiddleware = async (
   
   const payload = jwt.verify(cookie.auth, process.env.JWT_KEY!) as AuthPayload;
 
-  const auth: QueryResult<AuthCurrent> | undefined = await new Database().query(`
-    SELECT id, email, password, role, expire_token, password_changed_at
-    FROM auth
-    WHERE id = ${payload.id}
-  `)
+  const auth = await Auth.findById(payload.id);
 
   if (!auth) {
     throw new BadRequestError('Auth not found!');
   }
-  const authRow = auth.rows[0];
-  const authChangePasswordTime = new Date(authRow.passwordChangedAt).getTime();
+
+  const authChangePasswordTime = new Date(auth.passwordChangedAt).getTime();
   const isAuthChangedPasswordAfterLogged =
     PasswordManager.isAuthChangedPasswordAfterTokenIssued(
       payload.iat * 1000,
@@ -53,10 +47,10 @@ export const currentAuthMiddleware = async (
   }
 
   req.currentAuth = {
-    id: authRow.id,
-    email: authRow.email,
-    expireToken: authRow.expireToken!,
+    id: auth.id,
+    email: auth.email,
+    expireToken: auth.expireToken!,
     iat: payload.iat,
-    role: authRow.role
+    role: auth.role
   };
 };
