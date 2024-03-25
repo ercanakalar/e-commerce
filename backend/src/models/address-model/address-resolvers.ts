@@ -1,19 +1,23 @@
-import { createAddress, getAddress } from "../../controllers/address";
+import { createAddress, getAddress, updateAddress } from "../../controllers/address";
 import { protect } from "../../middlewares";
 import { IAddress } from "../../types/address";
 
 const addressResolvers = {
   Query: {
-    getAddresses: async (parent: any, args: IAddress, context: any, info: any) => {
+    getAddresses: async (_: any, args: IAddress, context: any) => {
       await protect(context.req, context.res, () => {});
       return await getAddress(context.req, context.res);
     },
   },
   Mutation: {
-    createAddress: async (parent: any, args: IAddress, context: any, info: any) => {
+    createAddress: async (_: any, args: IAddress, context: any) => {
       await protect(context.req, context.res, () => {});
       return await createAddress(args, context.req, context.res);
     },
+    updateAddress: async (_: any, args: IAddress, context: any) => {
+      await protect(context.req, context.res, () => {});
+      return await updateAddress(args, context.req, context.res);
+    }
   },
 };
 
