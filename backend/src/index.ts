@@ -8,17 +8,19 @@ import { createCategoryTable } from './models/category-model/category-model';
 import { createSubCategoryTable } from './models/category-model/sub-category-model/sub-category-model';
 import { createProfileTable } from './models/profile-model/profile-model';
 import { createProductTable } from './models/product-model/product-model';
+import { createAddressTable } from './models/address-model/address-model';
 
 const start = async () => {
   try {
-    new Database().connect()
-    createAuthTable()
-    createProfileTable()
-    createCategoryTable()
-    createSubCategoryTable()
-    createGroupCategoryTable()
-    createChildrenCategoryTable()
-    createProductTable()
+    new Database().connect();
+    createAuthTable();
+    createProfileTable();
+    createCategoryTable();
+    createSubCategoryTable();
+    createGroupCategoryTable();
+    createChildrenCategoryTable();
+    createProductTable();
+    createAddressTable();
     const app = new App();
     app.run();
   } catch (error) {

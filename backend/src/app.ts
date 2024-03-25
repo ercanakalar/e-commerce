@@ -28,6 +28,9 @@ import productTypeDefs from './models/product-model/product-schema';
 import productResolvers from './models/product-model/product-resolvers';
 import { categoryRouter, childrenCategoryRouter, groupCategoryRouter, subCategoryRouter } from './routes/category';
 import { productRouter } from './routes/productRouter';
+import addressTypeDefs from './models/address-model/address-schema';
+import addressResolvers from './models/address-model/address-resolvers';
+import { addressRouter } from './routes/addressRoutes';
 
 class App {
   public app: express.Application;
@@ -46,14 +49,16 @@ class App {
     this.app.use('/v1/api/auth', authRouter);
 
     this.app.use('/v1/api/profiles', profileRouter)
-
+    
     this.app.use('/v1/api/category', categoryRouter)
     this.app.use('/v1/api/category/sub', subCategoryRouter)
     this.app.use('/v1/api/category/children', childrenCategoryRouter)
     this.app.use('/v1/api/category/group', groupCategoryRouter)
-
+    
     this.app.use('/v1/api/product', productRouter)
 
+    this.app.use('/v1/api/address', addressRouter)
+    
     this.app.all('*', async () => {
       throw new NotFoundError('Route not found!');
     });
@@ -63,8 +68,8 @@ class App {
   public async run(): Promise<void> {
     this.middleware();
     this.server = new ApolloServer({
-      typeDefs: [authTypeDefs, profileTypeDefs, categoryTypeDefs, categoryGroupTypeDefs, categoryChildrenTypeDefs, subCategoryTypeDefs, productTypeDefs],
-      resolvers: [authResolvers, profileResolvers, categoryResolvers, categoryGroupResolvers, categoryChildrenResolvers, subCategoryResolvers, productResolvers],
+      typeDefs: [authTypeDefs, profileTypeDefs, categoryTypeDefs, categoryGroupTypeDefs, categoryChildrenTypeDefs, subCategoryTypeDefs, productTypeDefs, addressTypeDefs],
+      resolvers: [authResolvers, profileResolvers, categoryResolvers, categoryGroupResolvers, categoryChildrenResolvers, subCategoryResolvers, productResolvers, addressResolvers],
       plugins: [
         ApolloServerPluginDrainHttpServer({ httpServer: this.httpServer }),
 

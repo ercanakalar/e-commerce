@@ -14,6 +14,7 @@ export class ControlManager {
 
     const resultObject: ICurrentAuthCookie = {
       auth: undefined,
+      profile: undefined,
     };
     for (let i = 0; i < keyValuePairs.length; i += 2) {
       const key = keyValuePairs[i];

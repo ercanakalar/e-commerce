@@ -6,7 +6,6 @@ const currentAuth = async (req: Request, res: Response) => {
   if(!req.currentAuth) {
     throw new BadRequestError('Please sign in again!');
   }
-  console.log(req.currentAuth);
   
   const isExpired = await PasswordManager.isExpired(
     req.currentAuth.expireToken
