@@ -31,6 +31,9 @@ import { productRouter } from './routes/productRouter';
 import addressTypeDefs from './models/address-model/address-schema';
 import addressResolvers from './models/address-model/address-resolvers';
 import { addressRouter } from './routes/addressRoutes';
+import basketTypeDefs from './models/basket-model/basket-schema';
+import basketResolvers from './models/basket-model/basket-resolvers';
+import { basketRouter } from './routes/basketRoutes';
 
 class App {
   public app: express.Application;
@@ -58,6 +61,8 @@ class App {
     this.app.use('/v1/api/product', productRouter)
 
     this.app.use('/v1/api/address', addressRouter)
+
+    this.app.use('/v1/api/basket', basketRouter)
     
     this.app.all('*', async () => {
       throw new NotFoundError('Route not found!');
@@ -68,11 +73,10 @@ class App {
   public async run(): Promise<void> {
     this.middleware();
     this.server = new ApolloServer({
-      typeDefs: [authTypeDefs, profileTypeDefs, categoryTypeDefs, categoryGroupTypeDefs, categoryChildrenTypeDefs, subCategoryTypeDefs, productTypeDefs, addressTypeDefs],
-      resolvers: [authResolvers, profileResolvers, categoryResolvers, categoryGroupResolvers, categoryChildrenResolvers, subCategoryResolvers, productResolvers, addressResolvers],
+      typeDefs: [authTypeDefs, profileTypeDefs, categoryTypeDefs, categoryGroupTypeDefs, categoryChildrenTypeDefs, subCategoryTypeDefs, productTypeDefs, addressTypeDefs, basketTypeDefs],
+      resolvers: [authResolvers, profileResolvers, categoryResolvers, categoryGroupResolvers, categoryChildrenResolvers, subCategoryResolvers, productResolvers, addressResolvers, basketResolvers],
       plugins: [
         ApolloServerPluginDrainHttpServer({ httpServer: this.httpServer }),
-
       ],
       status400ForVariableCoercionErrors: true,
     });

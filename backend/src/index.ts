@@ -1,4 +1,3 @@
-import { create } from 'domain';
 import App from './app';
 import { Database } from './config/db';
 import { createAuthTable } from './models/auth-model/auth-model';
@@ -9,6 +8,7 @@ import { createSubCategoryTable } from './models/category-model/sub-category-mod
 import { createProfileTable } from './models/profile-model/profile-model';
 import { createProductTable } from './models/product-model/product-model';
 import { createAddressTable } from './models/address-model/address-model';
+import { createBasketTable } from './models/basket-model/basket-model';
 
 const start = async () => {
   try {
@@ -21,6 +21,7 @@ const start = async () => {
     createChildrenCategoryTable();
     createProductTable();
     createAddressTable();
+    createBasketTable()
     const app = new App();
     app.run();
   } catch (error) {
