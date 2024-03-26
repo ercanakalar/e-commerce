@@ -2,13 +2,13 @@ import { buildSchema } from 'graphql';
 
 const basketTypeDefs = buildSchema(`
     type Basket {
-        id: ID
+        id: Int
         authId: Int
         productId: Int
         quantity: Int
     }
 
-    type BasketAddResponse {
+    type BasketResponse {
         message: String
         data: Basket
     }
@@ -16,14 +16,11 @@ const basketTypeDefs = buildSchema(`
         message: String
         data: [Basket]
     }
-    type BasketMessageResponse {
-        message: String
-    }
 
     type Mutation {
-        addBasket(authId: Int, productId: Int, quantity: Int): BasketAddResponse
-        updateBasket(id: ID, productId: Int, quantity: Int): BasketMessageResponse
-        deleteBasket(id: ID): BasketMessageResponse
+        addBasket(productId: Int, quantity: Int): BasketResponse
+        updateBasket(id: ID, productId: Int, quantity: Int): BasketResponse
+        deleteBasket(id: ID): BasketResponse
     }
 
     type Query {

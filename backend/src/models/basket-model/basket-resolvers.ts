@@ -1,4 +1,4 @@
-import { getBaskets } from '../../controllers/basket';
+import { addBasket, getBaskets } from '../../controllers/basket';
 import { protect } from '../../middlewares';
 
 const basketResolvers = {
@@ -11,9 +11,7 @@ const basketResolvers = {
   Mutation: {
     addBasket: async (_: any, args: any, context: any) => {
       await protect(context.req, context.res, () => {});
-      return {
-        message: 'Add basket',
-      };
+      return await addBasket(args, context.req, context.res);
     },
     updateBasket: async (_: any, args: any, context: any) => {
       return {
