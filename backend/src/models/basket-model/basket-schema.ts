@@ -7,6 +7,16 @@ const basketTypeDefs = buildSchema(`
         productId: Int
         quantity: Int
     }
+    type BasketGet {
+        id: Int
+        authId: Int
+        productId: Int
+        quantity: Int
+        productName: String,
+        price: Float,
+        images: [String],
+        totalValue: Float
+    }
 
     type BasketResponse {
         message: String
@@ -14,7 +24,8 @@ const basketTypeDefs = buildSchema(`
     }
     type BasketGetResponse {
         message: String
-        data: [Basket]
+        totalCharge: Float
+        data: [BasketGet]
     }
 
     type Mutation {
