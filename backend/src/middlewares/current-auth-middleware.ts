@@ -5,7 +5,7 @@ import { BadRequestError } from '../errors';
 import { PasswordManager } from '../utils';
 import { AuthPayload } from '../types/auth/authPayload';
 import { Database } from '../config/db';
-import { AuthCurrent } from '../types/auth/authDBModelTypes';
+import { AuthCurrent } from '../types/auth/auth.interface';
 import { QueryResult } from 'pg';
 
 declare global {

@@ -5,7 +5,7 @@ import { BadRequestError } from '../../errors';
 import { IArgs, IContext } from '../../types/auth/authModalType';
 import { Database } from '../../config/db';
 import { QueryResult } from 'pg';
-import { Auth } from '../../types/auth/authDBModelTypes';
+import { Auth } from '../../types/auth/auth.interface';
 
 const signUp = async (args: IArgs, context: IContext) => {
   const { firstName, lastName, email, password, confirmPassword } = args;
