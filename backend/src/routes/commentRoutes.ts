@@ -1,4 +1,5 @@
 import express from 'express';
+
 import commentResolvers from '../models/comment-model/comment-resolvers';
 
 const router = express.Router();

@@ -1,6 +1,6 @@
 import { buildSchema } from 'graphql';
 
-const profileTypeDefs = buildSchema(`
+const commentTypeDefs = buildSchema(`
     type Comment {
         authId: Int
         productId: Int
@@ -11,10 +11,18 @@ const profileTypeDefs = buildSchema(`
         message: String
         data: Comment
     }
+    type CommentGetResponse {
+        message: String
+        data: [Comment]
+    }
 
     type Mutation {
         createComment(productId: Int, comment: String): CommentResponse
+        updateComment(commentId: Int, comment: String): CommentResponse
+    }
+    type Query {
+        getCommentsByProductId(productId: Int): CommentGetResponse
     }
 `);
 
-export default profileTypeDefs;
+export default commentTypeDefs;

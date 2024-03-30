@@ -4,7 +4,7 @@ const queryText = `
   CREATE TABLE IF NOT EXISTS comments (
     id SERIAL PRIMARY KEY,
     auth_id INTEGER NOT NULL,
-    post_id INTEGER NOT NULL,
+    product_id INTEGER NOT NULL,
     comment TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
