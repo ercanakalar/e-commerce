@@ -34,6 +34,7 @@ import { addressRouter } from './routes/addressRoutes';
 import basketTypeDefs from './models/basket-model/basket-schema';
 import basketResolvers from './models/basket-model/basket-resolvers';
 import { basketRouter } from './routes/basketRoutes';
+import { commentRouter } from './routes/commentRoutes';
 
 class App {
   public app: express.Application;
@@ -63,6 +64,8 @@ class App {
     this.app.use('/v1/api/address', addressRouter)
 
     this.app.use('/v1/api/basket', basketRouter)
+
+    this.app.use('/v1/api/comment', commentRouter)
     
     this.app.all('*', async () => {
       throw new NotFoundError('Route not found!');

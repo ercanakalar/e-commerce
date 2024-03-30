@@ -3,8 +3,8 @@ import { NotFoundError } from '../../errors';
 import { Database } from '../../config/db';
 
 const getProducts = async (req: Request, res: Response) => {
-  let queryText = 'SELECT * FROM product WHERE status != $1';
-  const products = await new Database().query(queryText, ['processing']);
+  let queryText = 'SELECT * FROM product WHERE status = $1';
+  const products = await new Database().query(queryText, ['done']);
 
   if (products?.rows.length === 0) {
     throw new NotFoundError('Products not found');
