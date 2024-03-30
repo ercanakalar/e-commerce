@@ -35,6 +35,8 @@ import basketTypeDefs from './models/basket-model/basket-schema';
 import basketResolvers from './models/basket-model/basket-resolvers';
 import { basketRouter } from './routes/basketRoutes';
 import { commentRouter } from './routes/commentRoutes';
+import commentResolvers from './models/comment-model/comment-resolvers';
+import commentTypeDefs from './models/comment-model/comment-schema';
 
 class App {
   public app: express.Application;
@@ -65,7 +67,7 @@ class App {
 
     this.app.use('/v1/api/basket', basketRouter)
 
-    this.app.use('/v1/api/comment', commentRouter)
+    this.app.use('/v1/api/comments', commentRouter)
     
     this.app.all('*', async () => {
       throw new NotFoundError('Route not found!');
@@ -76,8 +78,8 @@ class App {
   public async run(): Promise<void> {
     this.middleware();
     this.server = new ApolloServer({
-      typeDefs: [authTypeDefs, profileTypeDefs, categoryTypeDefs, categoryGroupTypeDefs, categoryChildrenTypeDefs, subCategoryTypeDefs, productTypeDefs, addressTypeDefs, basketTypeDefs],
-      resolvers: [authResolvers, profileResolvers, categoryResolvers, categoryGroupResolvers, categoryChildrenResolvers, subCategoryResolvers, productResolvers, addressResolvers, basketResolvers],
+      typeDefs: [authTypeDefs, profileTypeDefs, categoryTypeDefs, categoryGroupTypeDefs, categoryChildrenTypeDefs, subCategoryTypeDefs, productTypeDefs, addressTypeDefs, basketTypeDefs, commentTypeDefs],
+      resolvers: [authResolvers, profileResolvers, categoryResolvers, categoryGroupResolvers, categoryChildrenResolvers, subCategoryResolvers, productResolvers, addressResolvers, basketResolvers, commentResolvers],
       plugins: [
         ApolloServerPluginDrainHttpServer({ httpServer: this.httpServer }),
       ],
