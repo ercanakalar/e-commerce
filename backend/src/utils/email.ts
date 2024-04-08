@@ -32,7 +32,7 @@ export class Email {
 
   // Send the actual email
   async send(template: string, subject: string) {
-    // 1) Render HTML based on a pug template (You can uncomment this if using Pug templates)
+    // 1) Render HTML based on a pug template (You can unreview this if using Pug templates)
     // const html = pug.renderFile(`${__dirname}/../views/email/${template}.pug`, {
     //   firstName: this.firstName,
     //   url: this.url,
@@ -45,7 +45,7 @@ export class Email {
       to: this.to,
       subject,
       text: this.url, // You can replace this with HTML content if needed
-      // html, // Uncomment this if using HTML content
+      // html, // Unreview this if using HTML content
     };
 
     // 3) Send email using the transporter

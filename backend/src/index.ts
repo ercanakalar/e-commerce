@@ -9,7 +9,7 @@ import { createProfileTable } from './models/profile-model/profile-model';
 import { createProductTable } from './models/product-model/product-model';
 import { createAddressTable } from './models/address-model/address-model';
 import { createBasketTable } from './models/basket-model/basket-model';
-import { createCommentTable } from './models/comment-model/comment-model';
+import { createReviewTable } from './models/review-model/review-model';
 
 const start = async () => {
   try {
@@ -23,7 +23,7 @@ const start = async () => {
     createProductTable();
     createAddressTable();
     createBasketTable()
-    createCommentTable()
+    createReviewTable()
     const app = new App();
     app.run();
   } catch (error) {

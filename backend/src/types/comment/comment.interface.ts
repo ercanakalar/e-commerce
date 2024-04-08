@@ -1,9 +1,11 @@
-export interface IComment {
+export interface IReview {
     productId: number;
     comment: string;
+    rate: number
 }
 
-export interface ICommentUpdate {
-    commentId: number;
+export interface IReviewUpdate {
+    reviewId: number;
     comment: string;
+    rate: number
 }
