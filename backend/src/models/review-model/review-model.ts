@@ -7,6 +7,8 @@ const queryText = `
     product_id INTEGER NOT NULL,
     comment TEXT NOT NULL,
     rate INTEGER CHECK (rate >= 1 AND rate <= 5),
+    first_name TEXT NOT NULL,
+    last_name TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   )

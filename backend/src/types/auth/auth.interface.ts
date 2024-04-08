@@ -19,6 +19,8 @@ export interface AuthCurrent {
   id: number;
   email: string;
   password: string;
+  first_name: string;
+  last_name: string;
   role: string;
   expire_token: string;
   password_change_at: Date;

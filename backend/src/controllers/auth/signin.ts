@@ -50,6 +50,8 @@ const signIn = async (args: AuthSignIn, context: any) => {
   context.req.currentAuth = {
     id: existingAuthRow.id,
     email: existingAuthRow.email,
+    firstName: existingAuthRow.first_name,
+    lastName: existingAuthRow.last_name,
     expireToken: existingAuthRow.expireToken!,
     role: existingAuthRow.role,
     iat: Date.now(),

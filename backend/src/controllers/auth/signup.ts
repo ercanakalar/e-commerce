@@ -69,6 +69,8 @@ const signUp = async (args: IArgs, context: IContext) => {
   context.req.currentAuth = {
     id: newAuthRow.id,
     email: newAuthRow.email,
+    firstName: newAuthRow.first_name,
+    lastName: newAuthRow.last_name,
     expireToken: newAuthRow.expireToken!,
     role: newAuthRow.role,
     iat: Date.now(),

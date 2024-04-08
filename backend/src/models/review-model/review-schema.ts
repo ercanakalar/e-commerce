@@ -6,23 +6,24 @@ const reviewTypeDefs = buildSchema(`
         productId: Int
         comment: String
         rate: Int
+        firstName: String
+        lastName: String
     }
 
     type ReviewResponse {
         message: String
         data: Review
     }
-    type ReviewGetResponse {
+    type ReviewGetReviewByProductIdResponse {
         message: String
+        averageRate: Float
         data: [Review]
     }
 
     type Mutation {
         createReview(productId: Int, comment: String, rate: Int): ReviewResponse
         updateReview(reviewId: Int, comment: String, rate: Int): ReviewResponse
-    }
-    type Query {
-        getReviewsByProductId(productId: Int): ReviewGetResponse
+        getReviewsByProductId(productId: Int): ReviewGetReviewByProductIdResponse
     }
 `);
 

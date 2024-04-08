@@ -3,7 +3,6 @@ import jwt_decode from 'jwt-decode';
 
 import { BadRequestError } from '../errors';
 import { Database } from '../config/db';
-import c from 'config';
 import { PasswordManager } from '../utils';
 
 const protect = async (req: Request, res: Response, next: NextFunction) => {
@@ -56,6 +55,8 @@ const protect = async (req: Request, res: Response, next: NextFunction) => {
   req.currentAuth = {
     id: currentAuthRow.id,
     email: currentAuthRow.email,
+    firstName: currentAuthRow.first_name,
+    lastName: currentAuthRow.last_name,
     expireToken: currentAuthRow.expire_token,
     role: currentAuthRow.role,
     iat: Date.now(),

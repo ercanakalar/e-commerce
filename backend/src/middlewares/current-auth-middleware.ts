@@ -30,7 +30,7 @@ export const currentAuthMiddleware = async (
   const payload = jwt.verify(cookie.auth, process.env.JWT_KEY!) as AuthPayload;
 
   const auth: QueryResult<AuthCurrent> | undefined = await new Database().query(`
-    SELECT id, email, password, role, expire_token, password_changed_at
+    SELECT id, email, password, first_name, last_name, role, expire_token, password_changed_at
     FROM auth
     WHERE id = ${payload.id}
   `)
@@ -55,6 +55,8 @@ export const currentAuthMiddleware = async (
   req.currentAuth = {
     id: authRow.id,
     email: authRow.email,
+    firstName: authRow.first_name,
+    lastName: authRow.last_name,
     expireToken: authRow.expire_token,
     iat: payload.iat,
     role: authRow.role
