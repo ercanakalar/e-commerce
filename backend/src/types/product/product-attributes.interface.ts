@@ -4,6 +4,10 @@ export interface IProductAttributes {
   attributeValue: string;
 }
 
+export interface IDeleteProductAttributeById {
+  attributeId: number;
+}
+
 export interface IProductAttributesDatabase {
   id: number;
   product_id: number;

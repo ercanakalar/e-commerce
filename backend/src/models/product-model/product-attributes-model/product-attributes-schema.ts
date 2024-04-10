@@ -18,12 +18,13 @@ const productAttributesTypeDefs = buildSchema(`
         brand: String
     }
 
-    type CreateProductAttribute {
+    type ProductAttributeResponse {
         message: String
     }
 
     type Mutation {
-        createProductAttribute(productId: Int!, attributeKey: String!, attributeValue: String!): CreateProductAttribute
+        createProductAttribute(productId: Int!, attributeKey: String!, attributeValue: String!): ProductAttributeResponse
+        deleteProductAttribute(attributeId: Int!): ProductAttributeResponse
     }
 `);
 
