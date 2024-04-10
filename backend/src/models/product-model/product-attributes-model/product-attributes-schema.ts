@@ -1,6 +1,6 @@
 import { buildSchema } from 'graphql';
 
-const productTypeDefs = buildSchema(`
+const productAttributesTypeDefs = buildSchema(`
     type ProductAttributes {
         authId: ID
         category: Int
@@ -18,11 +18,13 @@ const productTypeDefs = buildSchema(`
         brand: String
     }
 
-    type Mutation {
+    type CreateProductAttribute {
+        message: String
     }
 
-    type Query {
+    type Mutation {
+        createProductAttribute(productId: Int!, attributeKey: String!, attributeValue: String!): CreateProductAttribute
     }
 `);
 
-export default productTypeDefs;
+export default productAttributesTypeDefs;

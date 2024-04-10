@@ -38,6 +38,8 @@ import { basketRouter } from './routes/basketRoutes';
 import { reviewRoutes } from './routes/reviewRoutes';
 import reviewResolvers from './models/review-model/review-resolvers';
 import reviewTypeDefs from './models/review-model/review-schema';
+import productAttributesTypeDefs from './models/product-model/product-attributes-model/product-attributes-schema';
+import productAttributesResolvers from './models/product-model/product-attributes-model/product-attributes-resolvers';
 
 class App {
   public app: express.Application;
@@ -80,8 +82,8 @@ class App {
   public async run(): Promise<void> {
     this.middleware();
     this.server = new ApolloServer({
-      typeDefs: [authTypeDefs, profileTypeDefs, categoryTypeDefs, categoryGroupTypeDefs, categoryChildrenTypeDefs, subCategoryTypeDefs, productTypeDefs, addressTypeDefs, basketTypeDefs, reviewTypeDefs],
-      resolvers: [authResolvers, profileResolvers, categoryResolvers, categoryGroupResolvers, categoryChildrenResolvers, subCategoryResolvers, productResolvers, addressResolvers, basketResolvers, reviewResolvers],
+      typeDefs: [authTypeDefs, profileTypeDefs, categoryTypeDefs, categoryGroupTypeDefs, categoryChildrenTypeDefs, subCategoryTypeDefs, productTypeDefs, productAttributesTypeDefs, addressTypeDefs, basketTypeDefs, reviewTypeDefs],
+      resolvers: [authResolvers, profileResolvers, categoryResolvers, categoryGroupResolvers, categoryChildrenResolvers, subCategoryResolvers, productResolvers, productAttributesResolvers, addressResolvers, basketResolvers, reviewResolvers],
       plugins: [
         ApolloServerPluginDrainHttpServer({ httpServer: this.httpServer }),
       ],

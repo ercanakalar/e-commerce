@@ -1,15 +1,16 @@
-import { createProductAttributes } from "../../../controllers/product/product-attributes";
-import { adminAuthorization, protect } from "../../../middlewares";
+import { createProductAttribute } from "../../../controllers/product/product-attributes";
+import { adminAuthorization, protect, sellerAuthorization } from "../../../middlewares";
 
-const productResolvers = {
+const productAttributesResolvers = {
   Mutation: {
-    createProductAttributes: async (parent: any, args: any, context: any) => {
+    createProductAttribute: async (parent: any, args: any, context: any) => {
       await protect(context.req, context.res, () => {})
       await adminAuthorization(context.req, context.res, () => {})
-      return await createProductAttributes(args, context.req, context.res)
+      await sellerAuthorization(context.req, context.res, () => {})
+      return await createProductAttribute(args, context.req, context.res)
     },
   },
   Query: {},
 };
 
-export default productResolvers;
+export default productAttributesResolvers;
