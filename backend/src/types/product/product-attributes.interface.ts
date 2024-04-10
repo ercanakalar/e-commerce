@@ -8,6 +8,12 @@ export interface IDeleteProductAttributeById {
   attributeId: number;
 }
 
+export interface IUpdateProductAttribute {
+  attributeId: number;
+  attributeKey: string;
+  attributeValue: string;
+}
+
 export interface IProductAttributesDatabase {
   id: number;
   product_id: number;

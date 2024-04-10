@@ -25,6 +25,7 @@ const productAttributesTypeDefs = buildSchema(`
     type Mutation {
         createProductAttribute(productId: Int!, attributeKey: String!, attributeValue: String!): ProductAttributeResponse
         deleteProductAttribute(attributeId: Int!): ProductAttributeResponse
+        updateProductAttribute(attributeId: Int!, attributeKey: String!, attributeValue: String!): ProductAttributeResponse
     }
 `);
 
