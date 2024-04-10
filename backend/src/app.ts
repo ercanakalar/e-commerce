@@ -27,7 +27,8 @@ import subCategoryResolvers from './models/category-model/sub-category-model/sub
 import productTypeDefs from './models/product-model/product-schema';
 import productResolvers from './models/product-model/product-resolvers';
 import { categoryRouter, childrenCategoryRouter, groupCategoryRouter, subCategoryRouter } from './routes/category';
-import { productRouter } from './routes/productRouter';
+import { productRouter } from './routes/product/productRouter';
+import { productAttributesRouter } from './routes/product/productAttributesRouter';
 import addressTypeDefs from './models/address-model/address-schema';
 import addressResolvers from './models/address-model/address-resolvers';
 import { addressRouter } from './routes/addressRoutes';
@@ -62,6 +63,7 @@ class App {
     this.app.use('/v1/api/category/group', groupCategoryRouter)
     
     this.app.use('/v1/api/product', productRouter)
+    this.app.use('/v1/api/product-attributes', productAttributesRouter)
 
     this.app.use('/v1/api/address', addressRouter)
 

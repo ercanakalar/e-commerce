@@ -10,6 +10,7 @@ import { createProductTable } from './models/product-model/product-model';
 import { createAddressTable } from './models/address-model/address-model';
 import { createBasketTable } from './models/basket-model/basket-model';
 import { createReviewTable } from './models/review-model/review-model';
+import { createProductAttributesTable } from './models/product-model/product-attributes-model/product-attributes-model';
 
 const start = async () => {
   try {
@@ -21,9 +22,10 @@ const start = async () => {
     createGroupCategoryTable();
     createChildrenCategoryTable();
     createProductTable();
+    createProductAttributesTable();
     createAddressTable();
-    createBasketTable()
-    createReviewTable()
+    createBasketTable();
+    createReviewTable();
     const app = new App();
     app.run();
   } catch (error) {
