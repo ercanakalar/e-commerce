@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { IReviewDatabase, IReviewOfProduct } from '../../types/review/review.interface';
 import { Database } from '../../config/db';
 import { BadRequestError } from '../../errors';
+import { ReviewManager } from '../../utils/review-manager';
 
 const getReviewsByProductId = async (args: IReviewOfProduct, req: Request, res: Response) => {
   const { productId } = args;
@@ -16,9 +17,8 @@ const getReviewsByProductId = async (args: IReviewOfProduct, req: Request, res: 
   }
 
   const reviewsRow: IReviewDatabase[] = reviews.rows;
-  
-  const averageRate = reviewsRow.reduce((sum: number, review: IReviewDatabase) => sum + review.rate, 0) / reviewsRow.length;
-  const roundedAverageRate = averageRate.toFixed(2)
+
+  const roundedAverageRate = new ReviewManager().getReviewRate(reviewsRow);
   
   const data = reviewsRow.map((review) => {
     return {

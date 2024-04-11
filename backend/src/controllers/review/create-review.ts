@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { Database } from '../../config/db';
 import { BadRequestError } from '../../errors';
 import { IReview } from '../../types/review/review.interface';
+import { ReviewManager } from '../../utils/review-manager';
 
 const createReview = async (args: IReview, req: Request, res: Response) => {
   const { productId, comment, rate } = args;
@@ -24,6 +25,8 @@ const createReview = async (args: IReview, req: Request, res: Response) => {
     throw new BadRequestError('Error creating review!');
   }
 
+  await new ReviewManager().updateProductRating(productId);
+  
   return {
     message: 'Review created successfully!',
     data: {

@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { Database } from '../../config/db';
 import { BadRequestError } from '../../errors';
 import { IReviewUpdate } from '../../types/review/review.interface';
+import { ReviewManager } from '../../utils/review-manager';
 
 const updateReview = async (args: IReviewUpdate, req: Request, res: Response) => {
   const { reviewId, comment, rate } = args;
@@ -23,6 +24,8 @@ const updateReview = async (args: IReviewUpdate, req: Request, res: Response) =>
   if (updateReviewRow.auth_id !== req.currentAuth!.id) {
     throw new BadRequestError('You cannot change this review!')
   }
+
+  await new ReviewManager().updateProductRating(updateReviewRow.product_id);
 
   return {
     message: 'Review created successfully!',
