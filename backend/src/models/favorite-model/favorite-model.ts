@@ -3,12 +3,8 @@ import { Database } from '../../config/db';
 const queryText = `
   CREATE TABLE IF NOT EXISTS favorite (
     id SERIAL PRIMARY KEY,
-    auth_id INTEGER NOT NULL,
-    product_id INTEGER NOT NULL,
-    comment TEXT NOT NULL,
-    rate INTEGER CHECK (rate >= 1 AND rate <= 5),
-    first_name TEXT NOT NULL,
-    last_name TEXT NOT NULL,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    product_id INTEGER REFERENCES products(id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   )
