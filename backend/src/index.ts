@@ -12,6 +12,7 @@ import { createBasketTable } from './models/basket-model/basket-model';
 import { createReviewTable } from './models/review-model/review-model';
 import { createProductAttributesTable } from './models/product-model/product-attributes-model/product-attributes-model';
 import { createFavoriteTable } from './models/favorite-model/favorite-model';
+import { createOrderTable } from './models/order-model/order-model';
 
 const start = async () => {
   try {
@@ -28,6 +29,7 @@ const start = async () => {
     createBasketTable();
     createReviewTable();
     createFavoriteTable()
+    createOrderTable()
     const app = new App();
     app.run();
   } catch (error) {
