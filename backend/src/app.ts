@@ -40,6 +40,9 @@ import reviewResolvers from './models/review-model/review-resolvers';
 import reviewTypeDefs from './models/review-model/review-schema';
 import productAttributesTypeDefs from './models/product-model/product-attributes-model/product-attributes-schema';
 import productAttributesResolvers from './models/product-model/product-attributes-model/product-attributes-resolvers';
+import { favoriteRouter } from './routes/favoriteRoutes';
+import favoriteTypeDefs from './models/favorite-model/favorite-schema';
+import favoriteResolvers from './models/favorite-model/favorite-resolvers';
 
 class App {
   public app: express.Application;
@@ -72,6 +75,8 @@ class App {
     this.app.use('/v1/api/basket', basketRouter)
 
     this.app.use('/v1/api/reviews', reviewRoutes)
+
+    this.app.use('/v1/api/favorite', favoriteRouter)
     
     this.app.all('*', async () => {
       throw new NotFoundError('Route not found!');
@@ -82,8 +87,8 @@ class App {
   public async run(): Promise<void> {
     this.middleware();
     this.server = new ApolloServer({
-      typeDefs: [authTypeDefs, profileTypeDefs, categoryTypeDefs, categoryGroupTypeDefs, categoryChildrenTypeDefs, subCategoryTypeDefs, productTypeDefs, productAttributesTypeDefs, addressTypeDefs, basketTypeDefs, reviewTypeDefs],
-      resolvers: [authResolvers, profileResolvers, categoryResolvers, categoryGroupResolvers, categoryChildrenResolvers, subCategoryResolvers, productResolvers, productAttributesResolvers, addressResolvers, basketResolvers, reviewResolvers],
+      typeDefs: [authTypeDefs, profileTypeDefs, categoryTypeDefs, categoryGroupTypeDefs, categoryChildrenTypeDefs, subCategoryTypeDefs, productTypeDefs, productAttributesTypeDefs, addressTypeDefs, basketTypeDefs, reviewTypeDefs, favoriteTypeDefs],
+      resolvers: [authResolvers, profileResolvers, categoryResolvers, categoryGroupResolvers, categoryChildrenResolvers, subCategoryResolvers, productResolvers, productAttributesResolvers, addressResolvers, basketResolvers, reviewResolvers, favoriteResolvers],
       plugins: [
         ApolloServerPluginDrainHttpServer({ httpServer: this.httpServer }),
       ],
