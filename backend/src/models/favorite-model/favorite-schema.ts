@@ -12,7 +12,7 @@ const favoriteTypeDefs = buildSchema(`
     }
     type FavoriteGetResponse {
         message: String
-        data: [Favorite]
+        data: Favorite
     }
 
     type Mutation {

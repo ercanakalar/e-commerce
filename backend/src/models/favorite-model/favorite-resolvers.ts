@@ -15,7 +15,7 @@ const favoriteResolvers = {
   Query: {
     getFavorites: async (parent: any, args: any, context: any) => {
       await protect(context.req, context.res, () => {});
-      return await getFavorites(args, context.req, context.res);
+      return await getFavorites(context.req, context.res);
     },
   }
 };
