@@ -3,7 +3,7 @@ import { buildSchema } from 'graphql';
 const orderTypeDefs = buildSchema(`
     type Order {
         authId: String
-        orderId: [String]
+        productId: [String]
         addressId: String
         quantity: [Int]
         orderStatus: String
@@ -11,9 +11,9 @@ const orderTypeDefs = buildSchema(`
     }
 
     type Mutation {
-        createOrder(orderId: [String], addressId: String, quantity: [Int], orderStatus: String, totalPrice: Float): String
-        cancelOrder(orderId: [String], addressId: String, quantity: [Int], orderStatus: String, totalPrice: Float): String
-        getOrderById(authId: String): String
+        createOrder(productId: [String], addressId: String, quantity: [Int], totalPrice: Float): String
+        cancelOrder(orderId: String): String
+        getOrderById(orderId: String): String
     }
     type Query {
         getOrders: String
