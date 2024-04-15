@@ -1,5 +1,5 @@
-import { cancelOrder, createOrder, getOrder, getOrders } from "../../controllers/order";
-import { adminAuthorization, protect } from "../../middlewares";
+import { updateOrder, createOrder, getOrder, getOrders } from "../../controllers/order";
+import { adminAuthorization, protect, sellerAuthorization } from "../../middlewares";
 
 const orderResolvers = {
   Mutation: {
@@ -7,9 +7,11 @@ const orderResolvers = {
       await protect(context.req, context.res, () => {});
       return await createOrder(args, context.req, context.res);
     },
-    cancelOrder: async (parent: any, args: any, context: any) => {
+    updateOrder: async (parent: any, args: any, context: any) => {
       await protect(context.req, context.res, () => {});
-      return await cancelOrder(args, context.req, context.res);
+      await adminAuthorization(context.req, context.res, () => {});
+      await sellerAuthorization(context.req, context.res, () => {});
+      return await updateOrder(args, context.req, context.res);
     },
     getOrderById: async (parent: any, args: any, context: any) => {
       await protect(context.req, context.res, () => {});
