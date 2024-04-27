@@ -1,17 +1,17 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
-import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
 
 const appRoutes: Routes = [];
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [],
   imports: [
     BrowserModule,
     RouterModule, 
-    HttpClientModule
+    HttpClientModule,
+    CommonModule
   ],
   providers: [],
   bootstrap: [],
