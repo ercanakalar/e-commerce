@@ -87,9 +87,7 @@ class App {
         favoriteResolvers,
         orderResolvers,
       ],
-      plugins: [
-        ApolloServerPluginDrainHttpServer({ httpServer: this.httpServer }),
-      ],
+      plugins: [ApolloServerPluginDrainHttpServer({ httpServer: this.httpServer })],
       status400ForVariableCoercionErrors: true,
     });
 
