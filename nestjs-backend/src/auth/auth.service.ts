@@ -91,9 +91,9 @@ export class AuthService {
     return { auth, token };
   }
 
-  async logout(req: Request) {
+  async signout(req: Request) {
     req.headers['Authorization'] = '';
-    return 'User logged out successfully';
+    return { message: 'User logged out successfully' };
   }
 
   findAll() {

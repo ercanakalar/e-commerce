@@ -7,6 +7,7 @@ import { SignUpAuthInput, SignUpResponse } from './dto/signUp-auth.input';
 import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
+import { SignOutResponse } from './dto/signout-auth.input';
 
 @Resolver(() => Auth)
 export class AuthResolver {
@@ -61,9 +62,9 @@ export class AuthResolver {
     };
   }
 
-  @Mutation(() => String)
-  logout(@Args('logout') logout: string, @Context('req') req: Request) {
-    return this.authService.logout(req);
+  @Mutation(() => SignOutResponse)
+  signout(@Context('req') req: Request) {
+    return this.authService.signout(req);
   }
 
   @Mutation(() => Auth)
