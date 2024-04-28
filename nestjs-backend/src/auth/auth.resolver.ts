@@ -5,16 +5,12 @@ import { UpdateAuthInput } from './dto/update-auth.input';
 import { SignInAuthInput, SignInResponse } from './dto/signIn-auth.input';
 import { SignUpAuthInput, SignUpResponse } from './dto/signUp-auth.input';
 import { UsePipes, ValidationPipe } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { SignOutResponse } from './dto/signout-auth.input';
 
 @Resolver(() => Auth)
 export class AuthResolver {
-  constructor(
-    private readonly authService: AuthService,
-    private jwtService: JwtService,
-  ) {}
+  constructor(private readonly authService: AuthService) {}
 
   @Mutation(() => SignUpResponse, {
     name: 'signUp',
