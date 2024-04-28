@@ -11,6 +11,7 @@ import { scrypt, randomBytes } from 'crypto';
 import { promisify } from 'util';
 import { Request } from 'express';
 import { jwtDecode } from 'jwt-decode';
+import { IAuthResponse } from './interface/auth.interface';
 
 const scryptAsync = promisify(scrypt);
 
@@ -24,7 +25,7 @@ export class AuthService {
   ) {}
 
   async signUp(signUpAuthInput: SignUpAuthInput, req: Request) {
-    const checkEmail = await this.usersRepository.findOne({
+    const checkEmail: IAuthResponse = await this.usersRepository.findOne({
       where: { email: signUpAuthInput.email },
     });
 
@@ -61,7 +62,7 @@ export class AuthService {
   }
 
   async signIn(signInAuthInput: SignInAuthInput, req: Request) {
-    const auth = await this.usersRepository.findOne({
+    const auth: IAuthResponse = await this.usersRepository.findOne({
       where: { email: signInAuthInput.email },
     });
 

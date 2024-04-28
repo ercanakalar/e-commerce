@@ -13,7 +13,7 @@ type Auth {
   password_reset_token: String!
   password_reset_expires: String!
   expire_token: String!
-  active: String!
+  active: Boolean!
   created_at: String!
   updated_at: String!
   password_changed_at: String!

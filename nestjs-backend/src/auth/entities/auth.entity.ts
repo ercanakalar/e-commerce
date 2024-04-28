@@ -46,7 +46,7 @@ export class Auth {
 
   @Column({ default: true })
   @Field()
-  active: string;
+  active: boolean;
 
   @Column({ default: () => 'CURRENT_TIMESTAMP' })
   @Field()
