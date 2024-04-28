@@ -1,0 +1,87 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Auth {
+  id: Int!
+  first_name: String!
+  last_name: String!
+  email: String!
+  password: String!
+  confirm_password: String!
+  role: String!
+  password_reset_token: String!
+  password_reset_expires: String!
+  expire_token: String!
+  active: String!
+  created_at: String!
+  updated_at: String!
+  password_changed_at: String!
+}
+
+type AuthResponse {
+  id: Float!
+  firstName: String!
+  lastName: String!
+  email: String!
+  role: String!
+}
+
+type SignUpResponse {
+  message: String!
+  data: AuthResponse
+  token: String!
+}
+
+type AuthSignInResponse {
+  id: Float!
+  firstName: String!
+  lastName: String!
+  email: String!
+  role: String!
+}
+
+type SignInResponse {
+  message: String!
+  data: AuthSignInResponse
+  token: String!
+}
+
+type Query {
+  """Get current user"""
+  currentauth: SignInResponse!
+  findAll: [Auth!]!
+}
+
+type Mutation {
+  """User can sign up"""
+  signUp(signUpAuthInput: SignUpAuthInput!): SignUpResponse!
+
+  """User can sign in"""
+  signIn(signInAuthInput: SignInAuthInput!): SignInResponse!
+  logout(logout: String!): String!
+  updateAuth(updateAuthInput: UpdateAuthInput!): Auth!
+  removeAuth(id: Int!): Auth!
+}
+
+input SignUpAuthInput {
+  firstName: String!
+  lastName: String!
+  email: String!
+  password: String!
+  confirmPassword: String!
+}
+
+input SignInAuthInput {
+  email: String!
+  password: String!
+}
+
+input UpdateAuthInput {
+  firstName: String
+  lastName: String
+  email: String
+  password: String
+  confirmPassword: String
+  id: Int!
+}

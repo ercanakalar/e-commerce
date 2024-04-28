@@ -3,6 +3,7 @@
         "Auths",
         "currentauth",
         "Ercan",
-        "transpor"
+        "transpor",
+        "typeorm"
     ]
 }
