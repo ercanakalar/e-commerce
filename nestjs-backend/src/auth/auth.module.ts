@@ -11,6 +11,7 @@ import { ConfigModule } from '@nestjs/config'; // Import ConfigModule
 import { DataSource } from 'typeorm';
 import { TokenPasswordMiddleware } from './middlewares/token-password/token-password.middleware';
 import { ProtectMiddleware } from './middlewares/protect/protect.middleware';
+import { MailService } from 'src/mail/mail.service';
 
 @Module({
   imports: [
@@ -27,7 +28,8 @@ import { ProtectMiddleware } from './middlewares/protect/protect.middleware';
       signOptions: { expiresIn: process.env.JWT_EXPIRES_IN },
     }),
   ],
-  providers: [AuthResolver, AuthService], // Removed JwtService from providers
+  providers: [AuthResolver, AuthService, MailService],
+  exports: [MailService],
 })
 export class AuthModule implements NestModule {
   constructor(private dataSource: DataSource) {}

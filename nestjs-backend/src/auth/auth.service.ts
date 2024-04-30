@@ -10,6 +10,7 @@ import { scrypt, randomBytes } from 'crypto';
 import { promisify } from 'util';
 import { Request } from 'express';
 import { IAuthResponse } from './interface/auth.interface';
+import { MailService } from 'src/mail/mail.service';
 
 const scryptAsync = promisify(scrypt);
 
@@ -20,6 +21,7 @@ export class AuthService {
     private usersRepository: Repository<Auth>,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly mailService: MailService,
   ) {}
 
   async signUp(signUpAuthInput: SignUpAuthInput, req: Request) {
@@ -152,21 +154,42 @@ export class AuthService {
       where: { email },
     });
 
-    if (!auth) {
-      throw new BadRequestException('Email does not exist.');
+    try {
+      if (!auth) {
+        throw new BadRequestException('Email does not exist.');
+      }
+
+      const resetToken = this.jwtService.sign(
+        {
+          email: auth.email,
+        },
+        {
+          secret: this.configService.get('JWT_KEY'),
+          expiresIn: '5m',
+        },
+      );
+
+      auth.password_reset_token = resetToken;
+      await this.usersRepository.save(auth);
+
+      const resetURL = `${req.protocol}://${req.get(
+        'host',
+      )}/auth/reset-password/${resetToken}`;
+
+      await this.mailService.sendUserConfirmation(
+        { email: auth.email, name: auth.first_name },
+        'Password reset token',
+        `${resetURL}`,
+      );
+
+      return {
+        message: 'Password reset token sent to email',
+      };
+    } catch (error) {
+      auth.password_reset_token = '';
+      await this.usersRepository.save(auth);
+      throw new BadRequestException('There was an error sending the email.');
     }
-
-    const token = await this.createToken({
-      authId: auth.id,
-      firstName: auth.first_name,
-      lastName: auth.last_name,
-      email: auth.email,
-      role: auth.role,
-    });
-
-    req.headers['Authorization'] = `Bearer ${token}`;
-
-    return 'Token sent to email';
   }
 
   async currentAuth(req: Request) {

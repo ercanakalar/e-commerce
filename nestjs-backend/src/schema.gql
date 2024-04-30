@@ -48,6 +48,10 @@ type UpdatePasswordResponse {
   token: String!
 }
 
+type ForgotPasswordResponse {
+  message: String!
+}
+
 type Query {
   """Get current user"""
   currentauth: SignInResponse!
@@ -61,7 +65,7 @@ type Mutation {
   signIn(signIn: SignInAuthInput!): SignInResponse!
   signout: SignOutResponse!
   updatePassword(updatePassword: UpdatePasswordAuthInput!): UpdatePasswordResponse!
-  forgotPassword(email: String!): String!
+  forgotPassword(forgotPassword: ForgotPasswordAuthInput!): ForgotPasswordResponse!
 }
 
 input SignUpAuthInput {
@@ -86,4 +90,8 @@ input UpdatePasswordAuthInput {
   currentPassword: String!
   newPassword: String!
   confirmNewPassword: String!
+}
+
+input ForgotPasswordAuthInput {
+  email: String!
 }

@@ -10,6 +10,10 @@ import {
   UpdatePasswordAuthInput,
   UpdatePasswordResponse,
 } from './dto/update-password-auth.input';
+import {
+  ForgotPasswordAuthInput,
+  ForgotPasswordResponse,
+} from './dto/forgot-password.input';
 
 @Resolver(() => Auth)
 export class AuthResolver {
@@ -75,9 +79,12 @@ export class AuthResolver {
     return this.authService.updatePassword(updatePasswordAuthInput, req);
   }
 
-  @Mutation(() => String)
-  forgotPassword(@Args('email') email: string, @Context('req') req: Request) {
-    return this.authService.forgotPassword(email, req);
+  @Mutation(() => ForgotPasswordResponse)
+  forgotPassword(
+    @Args('forgotPassword') forgotPassword: ForgotPasswordAuthInput,
+    @Context('req') req: Request,
+  ) {
+    return this.authService.forgotPassword(forgotPassword.email, req);
   }
 
   @Query(() => SignInResponse, {
