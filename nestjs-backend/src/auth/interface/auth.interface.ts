@@ -10,7 +10,25 @@ export interface IAuthResponse {
   password_reset_expires?: string;
   expire_token?: string;
   active: boolean;
-  created_at: string;
-  updated_at?: string;
-  password_changed_at?: string;
+  created_at: Date;
+  updated_at?: Date;
+  password_changed_at?: Date;
+}
+
+export interface IAuthPayload {
+  authId: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
+}
+
+export interface IDecodedToken {
+  authId: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
+  iat: number;
+  exp: number;
 }

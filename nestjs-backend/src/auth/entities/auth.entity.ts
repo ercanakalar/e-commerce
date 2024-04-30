@@ -1,5 +1,11 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+  CreateDateColumn,
+} from 'typeorm';
 
 @Entity({ name: 'auth' })
 @ObjectType()
@@ -48,15 +54,15 @@ export class Auth {
   @Field()
   active: boolean;
 
-  @Column({ default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn({ type: 'timestamp' })
   @Field()
-  created_at: string;
+  created_at: Date;
 
-  @Column({ nullable: true })
+  @UpdateDateColumn({ type: 'timestamp', nullable: true })
   @Field()
-  updated_at: string;
+  updated_at: Date;
 
-  @Column({ nullable: true })
+  @UpdateDateColumn({ type: 'timestamp', nullable: true })
   @Field()
-  password_changed_at: string;
+  password_changed_at: Date;
 }

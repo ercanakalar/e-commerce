@@ -1,12 +1,15 @@
 import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
 import { Auth } from './entities/auth.entity';
-import { UpdateAuthInput } from './dto/update-auth.input';
 import { SignInAuthInput, SignInResponse } from './dto/signIn-auth.input';
 import { SignUpAuthInput, SignUpResponse } from './dto/signUp-auth.input';
 import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { Request } from 'express';
 import { SignOutResponse } from './dto/signout-auth.input';
+import {
+  UpdatePasswordAuthInput,
+  UpdatePasswordResponse,
+} from './dto/update-password-auth.input';
 
 @Resolver(() => Auth)
 export class AuthResolver {
@@ -18,7 +21,7 @@ export class AuthResolver {
   })
   @UsePipes(ValidationPipe)
   async signUp(
-    @Args('signUpAuthInput') signUpAuthInput: SignUpAuthInput,
+    @Args('signUp') signUpAuthInput: SignUpAuthInput,
     @Context('req') req: Request,
   ) {
     const { auth, token } = await this.authService.signUp(signUpAuthInput, req);
@@ -41,7 +44,7 @@ export class AuthResolver {
     description: 'User can sign in',
   })
   async signIn(
-    @Args('signInAuthInput') signInAuthInput: SignInAuthInput,
+    @Args('signIn') signInAuthInput: SignInAuthInput,
     @Context('req') req: Request,
   ) {
     const { auth, token } = await this.authService.signIn(signInAuthInput, req);
@@ -63,14 +66,18 @@ export class AuthResolver {
     return this.authService.signout(req);
   }
 
-  @Mutation(() => Auth)
-  updateAuth(@Args('updateAuthInput') updateAuthInput: UpdateAuthInput) {
-    return this.authService.update(updateAuthInput.id, updateAuthInput);
+  @Mutation(() => UpdatePasswordResponse)
+  updatePassword(
+    @Args('updatePassword')
+    updatePasswordAuthInput: UpdatePasswordAuthInput,
+    @Context('req') req: Request,
+  ) {
+    return this.authService.updatePassword(updatePasswordAuthInput, req);
   }
 
-  @Mutation(() => Auth)
-  removeAuth(@Args('id', { type: () => Int }) id: number) {
-    return this.authService.remove(id);
+  @Mutation(() => String)
+  forgotPassword(@Args('email') email: string, @Context('req') req: Request) {
+    return this.authService.forgotPassword(email, req);
   }
 
   @Query(() => SignInResponse, {
@@ -91,10 +98,5 @@ export class AuthResolver {
       },
       token,
     };
-  }
-
-  @Query(() => [Auth])
-  findAll() {
-    return this.authService.findAll();
   }
 }

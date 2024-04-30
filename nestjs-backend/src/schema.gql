@@ -2,21 +2,18 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Auth {
-  id: Int!
-  first_name: String!
-  last_name: String!
+type AuthSignInResponse {
+  id: Float!
+  firstName: String!
+  lastName: String!
   email: String!
-  password: String!
-  confirm_password: String!
   role: String!
-  password_reset_token: String!
-  password_reset_expires: String!
-  expire_token: String!
-  active: Boolean!
-  created_at: String!
-  updated_at: String!
-  password_changed_at: String!
+}
+
+type SignInResponse {
+  message: String!
+  data: AuthSignInResponse
+  token: String!
 }
 
 type AuthResponse {
@@ -33,7 +30,11 @@ type SignUpResponse {
   token: String!
 }
 
-type AuthSignInResponse {
+type SignOutResponse {
+  message: String!
+}
+
+type AuthUpdatePasswordResponse {
   id: Float!
   firstName: String!
   lastName: String!
@@ -41,31 +42,26 @@ type AuthSignInResponse {
   role: String!
 }
 
-type SignInResponse {
+type UpdatePasswordResponse {
   message: String!
-  data: AuthSignInResponse
+  data: AuthUpdatePasswordResponse
   token: String!
-}
-
-type SignOutResponse {
-  message: String!
 }
 
 type Query {
   """Get current user"""
   currentauth: SignInResponse!
-  findAll: [Auth!]!
 }
 
 type Mutation {
   """User can sign up"""
-  signUp(signUpAuthInput: SignUpAuthInput!): SignUpResponse!
+  signUp(signUp: SignUpAuthInput!): SignUpResponse!
 
   """User can sign in"""
-  signIn(signInAuthInput: SignInAuthInput!): SignInResponse!
+  signIn(signIn: SignInAuthInput!): SignInResponse!
   signout: SignOutResponse!
-  updateAuth(updateAuthInput: UpdateAuthInput!): Auth!
-  removeAuth(id: Int!): Auth!
+  updatePassword(updatePassword: UpdatePasswordAuthInput!): UpdatePasswordResponse!
+  forgotPassword(email: String!): String!
 }
 
 input SignUpAuthInput {
@@ -81,11 +77,13 @@ input SignInAuthInput {
   password: String!
 }
 
-input UpdateAuthInput {
+input UpdatePasswordAuthInput {
   firstName: String
   lastName: String
   email: String
   password: String
   confirmPassword: String
-  id: Int!
+  currentPassword: String!
+  newPassword: String!
+  confirmNewPassword: String!
 }
