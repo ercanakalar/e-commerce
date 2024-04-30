@@ -6,17 +6,11 @@ import { IMailUser } from './interface/mail.interface';
 export class MailService {
   constructor(private mailerService: MailerService) {}
 
-  async sendUserConfirmation(user: IMailUser, subject: string, token: string) {
-    const url = `example.com/auth/confirm?token=${token}`;
-
+  async sendUserConfirmation(user: IMailUser, subject: string, url: string) {
     await this.mailerService.sendMail({
       to: user.email,
-      // from: '"Support Team" <support@example.com>', // override default from
-      subject: 'Welcome to Nice App! Confirm your Email',
-      context: {
-        name: user.name,
-        url,
-      },
+      subject: subject,
+      text: `Hello ${user.name}, please click on the link below to confirm your email address: ${url}`,
     });
   }
 }
