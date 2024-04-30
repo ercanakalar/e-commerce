@@ -1,5 +1,4 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { UpdateAuthInput } from './dto/update-auth.input';
 import { SignInAuthInput } from './dto/signIn-auth.input';
 import { SignUpAuthInput } from './dto/signUp-auth.input';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -10,7 +9,6 @@ import { ConfigService } from '@nestjs/config';
 import { scrypt, randomBytes } from 'crypto';
 import { promisify } from 'util';
 import { Request } from 'express';
-import { jwtDecode } from 'jwt-decode';
 import { IAuthResponse } from './interface/auth.interface';
 
 const scryptAsync = promisify(scrypt);
@@ -97,17 +95,78 @@ export class AuthService {
     return { message: 'User logged out successfully' };
   }
 
-  findAll() {
-    return `This action returns all auth`;
+  async updatePassword(updatePassword: any, req: Request) {
+    if (!req.currentAuth) {
+      throw new BadRequestException('User not authenticated.');
+    }
+
+    const authId = req.currentAuth.authId;
+    const hashedPassword: string = await this.toHashPassword(
+      updatePassword.newPassword,
+    );
+    const hashedConfirmPassword: string = await this.toHashPassword(
+      updatePassword.confirmNewPassword,
+    );
+
+    const auth = await this.usersRepository.findOne({
+      where: { id: authId },
+    });
+
+    const isPasswordValid = await this.comparePassword(
+      auth.password,
+      updatePassword.currentPassword,
+    );
+
+    if (!isPasswordValid) {
+      throw new BadRequestException('Password is incorrect');
+    }
+
+    auth.password = hashedPassword;
+    auth.confirm_password = hashedConfirmPassword;
+    auth.password_changed_at = new Date();
+    await this.usersRepository.save(auth);
+
+    req.headers['Authorization'] = await this.createToken({
+      authId: auth.id,
+      firstName: auth.first_name,
+      lastName: auth.last_name,
+      email: auth.email,
+      role: auth.role,
+    });
+
+    return {
+      message: 'Password updated successfully',
+      data: {
+        id: auth.id,
+        firstName: auth.first_name,
+        lastName: auth.last_name,
+        email: auth.email,
+        role: auth.role,
+      },
+      token: req.headers['authorization'].split(' ')[1],
+    };
   }
 
-  update(id: number, updateAuthInput: UpdateAuthInput) {
-    console.log(updateAuthInput);
-    return `This action updates a #${id} auth`;
-  }
+  async forgotPassword(email: string, req: Request) {
+    const auth = await this.usersRepository.findOne({
+      where: { email },
+    });
 
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+    if (!auth) {
+      throw new BadRequestException('Email does not exist.');
+    }
+
+    const token = await this.createToken({
+      authId: auth.id,
+      firstName: auth.first_name,
+      lastName: auth.last_name,
+      email: auth.email,
+      role: auth.role,
+    });
+
+    req.headers['Authorization'] = `Bearer ${token}`;
+
+    return 'Token sent to email';
   }
 
   async currentAuth(req: Request) {
@@ -140,7 +199,10 @@ export class AuthService {
     return `${buf.toString('hex')}.${salt}`;
   }
 
-  async comparePassword(storedPassword: string, suppliedPassword: string) {
+  async comparePassword(
+    storedPassword: string,
+    suppliedPassword: string,
+  ): Promise<boolean> {
     const [hashedPassword, salt] = storedPassword.split('.');
     const buf = (await scryptAsync(suppliedPassword, salt, 64)) as Buffer;
 
@@ -148,6 +210,13 @@ export class AuthService {
   }
 
   async decodeToken(token: string) {
-    return jwtDecode(token);
+    return this.jwtService.decode(token);
+  }
+
+  changedPasswordAfter(JWTTimestamp: number, passwordChangedAt: number) {
+    if (passwordChangedAt > JWTTimestamp) {
+      return true;
+    }
+    return false;
   }
 }
