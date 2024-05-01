@@ -44,7 +44,7 @@ export class Auth {
 
   @Column({ nullable: true })
   @Field()
-  password_reset_expires: string;
+  password_reset_expires: Date;
 
   @Column({ nullable: true })
   @Field()
