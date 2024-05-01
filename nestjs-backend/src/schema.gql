@@ -56,9 +56,18 @@ type ResetPasswordResponse {
   message: String!
 }
 
+type GetAuthByIdInputResponse {
+  message: String!
+}
+
 type Query {
   """Get current user"""
   currentauth: SignInResponse!
+  getAuthById(getAuthById: GetAuthByIdInput!): GetAuthByIdInputResponse!
+}
+
+input GetAuthByIdInput {
+  authId: Int!
 }
 
 type Mutation {

@@ -18,6 +18,10 @@ import {
   ResetPasswordAuthInput,
   ResetPasswordResponse,
 } from './dto/reset-password.input';
+import {
+  GetAuthByIdInput,
+  GetAuthByIdInputResponse,
+} from './dto/get-by-id.input';
 
 @Resolver(() => Auth)
 export class AuthResolver {
@@ -114,5 +118,10 @@ export class AuthResolver {
       },
       token,
     };
+  }
+
+  @Query(() => GetAuthByIdInputResponse)
+  async getAuthById(@Args('getAuthById') data: GetAuthByIdInput) {
+    return this.authService.getAuthById(data);
   }
 }
