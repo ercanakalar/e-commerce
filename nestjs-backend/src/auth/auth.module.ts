@@ -11,6 +11,8 @@ import { ConfigModule } from '@nestjs/config'; // Import ConfigModule
 import { DataSource } from 'typeorm';
 import { ProtectMiddleware } from './middlewares/protect/protect.middleware';
 import { MailService } from 'src/mail/mail.service';
+import { PasswordService } from './password.service';
+import { AuthorizationMiddleware } from './middlewares/authorization/authorization.middleware';
 
 @Module({
   imports: [
@@ -27,8 +29,8 @@ import { MailService } from 'src/mail/mail.service';
       signOptions: { expiresIn: process.env.JWT_EXPIRES_IN },
     }),
   ],
-  providers: [AuthResolver, AuthService, MailService],
-  exports: [MailService],
+  providers: [AuthResolver, AuthService, MailService, PasswordService],
+  exports: [MailService, PasswordService],
 })
 export class AuthModule implements NestModule {
   constructor(private dataSource: DataSource) {}
@@ -36,6 +38,12 @@ export class AuthModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(ProtectMiddleware)
-      .forRoutes('/auth/currentauth', '/auth/update-password');
+      .forRoutes(
+        '/auth/currentauth',
+        '/auth/update-password',
+        '/auth/get-by-id',
+        '/auth/get-all',
+      );
+    consumer.apply(AuthorizationMiddleware).forRoutes('/auth/get-all');
   }
 }

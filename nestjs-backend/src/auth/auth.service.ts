@@ -4,25 +4,20 @@ import { SignUpAuthInput } from './dto/signUp-auth.input';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Auth } from './entities/auth.entity';
 import { Repository } from 'typeorm';
-import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
-import { promisify } from 'util';
 import { Request } from 'express';
 import { IAuthResponse } from './interface/auth.interface';
 import { MailService } from 'src/mail/mail.service';
-import { scrypt, randomBytes, createHash } from 'crypto';
 import { UpdatePasswordAuthInput } from './dto/update-password-auth.input';
 import { ResetPasswordAuthInput } from './dto/reset-password.input';
-
-const scryptAsync = promisify(scrypt);
+import { PasswordService } from './password.service';
+import { GetAuthByIdInput } from './dto/get-by-id.input';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(Auth)
     private usersRepository: Repository<Auth>,
-    private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
+    private readonly passwordService: PasswordService,
     private readonly mailService: MailService,
   ) {}
 
@@ -35,10 +30,11 @@ export class AuthService {
       throw new BadRequestException('Email already exists.');
     }
 
-    const hashedPassword: string = await this.toHashPassword(data.password);
-    const hashedConfirmPassword: string = await this.toHashPassword(
-      data.confirmPassword,
+    const hashedPassword: string = await this.passwordService.toHashPassword(
+      data.password,
     );
+    const hashedConfirmPassword: string =
+      await this.passwordService.toHashPassword(data.confirmPassword);
 
     const auth = await this.usersRepository.save({
       first_name: data.firstName,
@@ -48,7 +44,7 @@ export class AuthService {
       confirm_password: hashedConfirmPassword,
     });
 
-    const token = await this.createToken({
+    const token = await this.passwordService.createToken({
       authId: auth.id,
       firstName: auth.first_name,
       lastName: auth.last_name,
@@ -76,7 +72,7 @@ export class AuthService {
       );
     }
 
-    const isMatchPasswords = await this.comparePassword(
+    const isMatchPasswords = await this.passwordService.comparePassword(
       auth.password,
       data.password,
     );
@@ -85,7 +81,7 @@ export class AuthService {
       throw new BadRequestException('Email or password is incorrect.');
     }
 
-    const token = await this.createToken({
+    const token = await this.passwordService.createToken({
       authId: auth.id,
       firstName: auth.first_name,
       lastName: auth.last_name,
@@ -109,16 +105,17 @@ export class AuthService {
     }
 
     const authId = req.currentAuth.authId;
-    const hashedPassword: string = await this.toHashPassword(data.newPassword);
-    const hashedConfirmPassword: string = await this.toHashPassword(
-      data.confirmNewPassword,
+    const hashedPassword: string = await this.passwordService.toHashPassword(
+      data.newPassword,
     );
+    const hashedConfirmPassword: string =
+      await this.passwordService.toHashPassword(data.confirmNewPassword);
 
     const auth = await this.usersRepository.findOne({
       where: { id: authId },
     });
 
-    const isPasswordValid = await this.comparePassword(
+    const isPasswordValid = await this.passwordService.comparePassword(
       auth.password,
       data.currentPassword,
     );
@@ -132,7 +129,7 @@ export class AuthService {
     auth.password_changed_at = new Date();
     await this.usersRepository.save(auth);
 
-    req.headers['Authorization'] = await this.createToken({
+    req.headers['Authorization'] = await this.passwordService.createToken({
       authId: auth.id,
       firstName: auth.first_name,
       lastName: auth.last_name,
@@ -163,7 +160,8 @@ export class AuthService {
         throw new BadRequestException('Email does not exist.');
       }
 
-      const { newResetToken } = await this.createPasswordResetToken();
+      const { newResetToken } =
+        await this.passwordService.createPasswordResetToken();
 
       auth.password_reset_token = newResetToken;
       await this.usersRepository.save(auth);
@@ -177,12 +175,11 @@ export class AuthService {
         'Password reset token',
         `${resetURL}`,
       );
-      console.log(this.newDate(5));
 
       auth.password = '';
       auth.confirm_password = '';
       auth.password_reset_token = newResetToken;
-      auth.password_reset_expires = this.newDate(5);
+      auth.password_reset_expires = this.passwordService.newDate(5);
       await this.usersRepository.save(auth);
 
       return {
@@ -203,12 +200,13 @@ export class AuthService {
       throw new BadRequestException('Token expired');
     }
 
-    const hashedPassword: string = await this.toHashPassword(
+    const hashedPassword: string = await this.passwordService.toHashPassword(
       resetPassword.newPassword,
     );
-    const hashedConfirmPassword: string = await this.toHashPassword(
-      resetPassword.newConfirmPassword,
-    );
+    const hashedConfirmPassword: string =
+      await this.passwordService.toHashPassword(
+        resetPassword.newConfirmPassword,
+      );
 
     auth.password = hashedPassword;
     auth.confirm_password = hashedConfirmPassword;
@@ -223,7 +221,7 @@ export class AuthService {
 
   async currentAuth(req: Request) {
     const token = req.headers['authorization'].split(' ')[1];
-    const decodedToken: any = this.decodeToken(token);
+    const decodedToken: any = this.passwordService.decodeToken(token);
     const auth = await this.usersRepository.findOne({
       where: { email: decodedToken.email },
     });
@@ -231,62 +229,18 @@ export class AuthService {
     return { auth, token };
   }
 
-  async createToken(user: {
-    authId: number;
-    firstName: string;
-    lastName: string;
-    email: string;
-    role: string;
-  }) {
-    return this.jwtService.sign(user, {
-      secret: this.configService.get('JWT_KEY'),
-      expiresIn: this.configService.get('JWT_EXPIRES_IN'),
-    });
-  }
+  async getAuthById(data: GetAuthByIdInput) {
+    try {
+      const auth = await this.usersRepository.findOne({
+        where: { id: data.authId },
+      });
+      if (!auth) {
+        throw new BadRequestException('User not found');
+      }
 
-  async toHashPassword(password: string) {
-    const salt = randomBytes(8).toString('hex');
-    const buf = (await scryptAsync(password, salt, 64)) as Buffer;
-
-    return `${buf.toString('hex')}.${salt}`;
-  }
-
-  async comparePassword(
-    storedPassword: string,
-    suppliedPassword: string,
-  ): Promise<boolean> {
-    const [hashedPassword, salt] = storedPassword.split('.');
-    const buf = (await scryptAsync(suppliedPassword, salt, 64)) as Buffer;
-
-    return buf.toString('hex') === hashedPassword;
-  }
-
-  async decodeToken(token: string) {
-    return this.jwtService.decode(token);
-  }
-
-  changedPasswordAfter(JWTTimestamp: number, passwordChangedAt: number) {
-    if (passwordChangedAt > JWTTimestamp) {
-      return true;
+      return { message: 'User found!' };
+    } catch (error) {
+      throw new BadRequestException('User not found');
     }
-    return false;
-  }
-
-  async createPasswordResetToken() {
-    const randomBuffer = randomBytes(32);
-    const passwordResetToken = randomBuffer.toString('hex');
-
-    const hash = createHash('sha256');
-    hash.update(passwordResetToken);
-    const newResetToken = hash.digest('hex');
-
-    return { newResetToken };
-  }
-
-  newDate(min: number): Date {
-    const currentDate = new Date();
-    const futureDate = new Date(currentDate.getTime());
-    futureDate.setMinutes(futureDate.getMinutes() + min);
-    return futureDate;
   }
 }

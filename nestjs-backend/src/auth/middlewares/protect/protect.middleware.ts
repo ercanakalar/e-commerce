@@ -4,12 +4,12 @@ import {
   NestMiddleware,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AuthService } from 'src/auth/auth.service';
 import { Auth } from 'src/auth/entities/auth.entity';
 import {
   IAuthResponse,
   IDecodedToken,
 } from 'src/auth/interface/auth.interface';
+import { PasswordService } from 'src/auth/password.service';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -17,7 +17,7 @@ export class ProtectMiddleware implements NestMiddleware {
   constructor(
     @InjectRepository(Auth)
     private usersRepository: Repository<Auth>,
-    private readonly authService: AuthService,
+    private readonly passwordService: PasswordService,
   ) {}
   async use(req: any, res: any, next: () => void) {
     try {
@@ -33,7 +33,7 @@ export class ProtectMiddleware implements NestMiddleware {
       }
 
       const decodedToken: IDecodedToken =
-        await this.authService.decodeToken(token);
+        await this.passwordService.decodeToken(token);
       if (!decodedToken) {
         throw new BadRequestException('Invalid token');
       }
@@ -51,7 +51,7 @@ export class ProtectMiddleware implements NestMiddleware {
 
       const passwordChangeTime = new Date(auth.password_changed_at).getTime();
 
-      const isPasswordChanged = this.authService.changedPasswordAfter(
+      const isPasswordChanged = this.passwordService.changedPasswordAfter(
         decodedToken.iat,
         passwordChangeTime / 1000,
       );
