@@ -60,10 +60,26 @@ type GetAuthByIdInputResponse {
   message: String!
 }
 
+type GetAllAuth {
+  id: Int!
+  email: String!
+  firstName: String!
+  lastName: String!
+  role: String!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type GetAllAuthResponse {
+  message: String!
+  data: [GetAllAuth!]!
+}
+
 type Query {
   """Get current user"""
   currentauth: SignInResponse!
   getAuthById(getAuthById: GetAuthByIdInput!): GetAuthByIdInputResponse!
+  getAllAuth: GetAllAuthResponse!
 }
 
 input GetAuthByIdInput {
