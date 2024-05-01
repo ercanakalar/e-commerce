@@ -243,4 +243,24 @@ export class AuthService {
       throw new BadRequestException('User not found');
     }
   }
+
+  async getAllAuth() {
+    const allAuths = await this.usersRepository.find();
+    console.log(allAuths);
+    const data = allAuths.map((auth: any) => {
+      return {
+        id: auth.id,
+        firstName: auth.first_name,
+        lastName: auth.last_name,
+        email: auth.email,
+        role: auth.role,
+        createdAt: new Date(auth.created_at).toISOString(),
+        updatedAt: new Date(auth.updated_at).toISOString(),
+      };
+    });
+    return {
+      message: 'All users found!',
+      data,
+    };
+  }
 }

@@ -22,6 +22,7 @@ import {
   GetAuthByIdInput,
   GetAuthByIdInputResponse,
 } from './dto/get-by-id.input';
+import { GetAllAuthResponse } from './dto/get-all-auth.input';
 
 @Resolver(() => Auth)
 export class AuthResolver {
@@ -123,5 +124,10 @@ export class AuthResolver {
   @Query(() => GetAuthByIdInputResponse)
   async getAuthById(@Args('getAuthById') data: GetAuthByIdInput) {
     return this.authService.getAuthById(data);
+  }
+
+  @Query(() => GetAllAuthResponse)
+  async getAllAuth() {
+    return this.authService.getAllAuth();
   }
 }
