@@ -6,11 +6,13 @@ import { Auth } from './entities/auth.entity';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { scrypt, randomBytes } from 'crypto';
 import { promisify } from 'util';
 import { Request } from 'express';
 import { IAuthResponse } from './interface/auth.interface';
 import { MailService } from 'src/mail/mail.service';
+import { scrypt, randomBytes, createHash } from 'crypto';
+import { UpdatePasswordAuthInput } from './dto/update-password-auth.input';
+import { ResetPasswordAuthInput } from './dto/reset-password.input';
 
 const scryptAsync = promisify(scrypt);
 
@@ -24,26 +26,24 @@ export class AuthService {
     private readonly mailService: MailService,
   ) {}
 
-  async signUp(signUpAuthInput: SignUpAuthInput, req: Request) {
+  async signUp(data: SignUpAuthInput, req: Request) {
     const checkEmail: IAuthResponse = await this.usersRepository.findOne({
-      where: { email: signUpAuthInput.email },
+      where: { email: data.email },
     });
 
     if (checkEmail) {
       throw new BadRequestException('Email already exists.');
     }
 
-    const hashedPassword: string = await this.toHashPassword(
-      signUpAuthInput.password,
-    );
+    const hashedPassword: string = await this.toHashPassword(data.password);
     const hashedConfirmPassword: string = await this.toHashPassword(
-      signUpAuthInput.confirmPassword,
+      data.confirmPassword,
     );
 
     const auth = await this.usersRepository.save({
-      first_name: signUpAuthInput.firstName,
-      last_name: signUpAuthInput.lastName,
-      email: signUpAuthInput.email,
+      first_name: data.firstName,
+      last_name: data.lastName,
+      email: data.email,
       password: hashedPassword,
       confirm_password: hashedConfirmPassword,
     });
@@ -61,18 +61,24 @@ export class AuthService {
     return { auth, token };
   }
 
-  async signIn(signInAuthInput: SignInAuthInput, req: Request) {
+  async signIn(data: SignInAuthInput, req: Request) {
     const auth: IAuthResponse = await this.usersRepository.findOne({
-      where: { email: signInAuthInput.email },
+      where: { email: data.email },
     });
 
     if (!auth) {
       throw new BadRequestException('Email or password is incorrect.');
     }
 
+    if (!auth.password) {
+      throw new BadRequestException(
+        'Create a password to sign in. Please use forgot password!',
+      );
+    }
+
     const isMatchPasswords = await this.comparePassword(
       auth.password,
-      signInAuthInput.password,
+      data.password,
     );
 
     if (!isMatchPasswords) {
@@ -97,17 +103,15 @@ export class AuthService {
     return { message: 'User logged out successfully' };
   }
 
-  async updatePassword(updatePassword: any, req: Request) {
+  async updatePassword(data: UpdatePasswordAuthInput, req: Request) {
     if (!req.currentAuth) {
       throw new BadRequestException('User not authenticated.');
     }
 
     const authId = req.currentAuth.authId;
-    const hashedPassword: string = await this.toHashPassword(
-      updatePassword.newPassword,
-    );
+    const hashedPassword: string = await this.toHashPassword(data.newPassword);
     const hashedConfirmPassword: string = await this.toHashPassword(
-      updatePassword.confirmNewPassword,
+      data.confirmNewPassword,
     );
 
     const auth = await this.usersRepository.findOne({
@@ -116,7 +120,7 @@ export class AuthService {
 
     const isPasswordValid = await this.comparePassword(
       auth.password,
-      updatePassword.currentPassword,
+      data.currentPassword,
     );
 
     if (!isPasswordValid) {
@@ -159,28 +163,27 @@ export class AuthService {
         throw new BadRequestException('Email does not exist.');
       }
 
-      const resetToken = this.jwtService.sign(
-        {
-          email: auth.email,
-        },
-        {
-          secret: this.configService.get('JWT_KEY'),
-          expiresIn: '5m',
-        },
-      );
+      const { newResetToken } = await this.createPasswordResetToken();
 
-      auth.password_reset_token = resetToken;
+      auth.password_reset_token = newResetToken;
       await this.usersRepository.save(auth);
 
       const resetURL = `${req.protocol}://${req.get(
         'host',
-      )}/auth/reset-password/${resetToken}`;
+      )}/auth/reset-password/${newResetToken}`;
 
       await this.mailService.sendUserConfirmation(
         { email: auth.email, name: auth.first_name },
         'Password reset token',
         `${resetURL}`,
       );
+      console.log(this.newDate(5));
+
+      auth.password = '';
+      auth.confirm_password = '';
+      auth.password_reset_token = newResetToken;
+      auth.password_reset_expires = this.newDate(5);
+      await this.usersRepository.save(auth);
 
       return {
         message: 'Password reset token sent to email',
@@ -190,6 +193,32 @@ export class AuthService {
       await this.usersRepository.save(auth);
       throw new BadRequestException('There was an error sending the email.');
     }
+  }
+
+  async resetPassword(resetPassword: ResetPasswordAuthInput) {
+    const auth = await this.usersRepository.findOne({
+      where: { password_reset_token: resetPassword.token },
+    });
+    if (Date.now() > new Date(auth.password_reset_expires).getTime()) {
+      throw new BadRequestException('Token expired');
+    }
+
+    const hashedPassword: string = await this.toHashPassword(
+      resetPassword.newPassword,
+    );
+    const hashedConfirmPassword: string = await this.toHashPassword(
+      resetPassword.newConfirmPassword,
+    );
+
+    auth.password = hashedPassword;
+    auth.confirm_password = hashedConfirmPassword;
+    auth.password_reset_token = '';
+    auth.password_reset_expires = null;
+    await this.usersRepository.save(auth);
+
+    return {
+      message: 'Password reset successfully',
+    };
   }
 
   async currentAuth(req: Request) {
@@ -241,5 +270,23 @@ export class AuthService {
       return true;
     }
     return false;
+  }
+
+  async createPasswordResetToken() {
+    const randomBuffer = randomBytes(32);
+    const passwordResetToken = randomBuffer.toString('hex');
+
+    const hash = createHash('sha256');
+    hash.update(passwordResetToken);
+    const newResetToken = hash.digest('hex');
+
+    return { newResetToken };
+  }
+
+  newDate(min: number): Date {
+    const currentDate = new Date();
+    const futureDate = new Date(currentDate.getTime());
+    futureDate.setMinutes(futureDate.getMinutes() + min);
+    return futureDate;
   }
 }

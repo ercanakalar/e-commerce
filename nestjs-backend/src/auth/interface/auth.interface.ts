@@ -7,7 +7,7 @@ export interface IAuthResponse {
   confirm_password: string;
   role: string;
   password_reset_token?: string;
-  password_reset_expires?: string;
+  password_reset_expires?: Date;
   expire_token?: string;
   active: boolean;
   created_at: Date;

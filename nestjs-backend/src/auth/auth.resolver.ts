@@ -14,6 +14,10 @@ import {
   ForgotPasswordAuthInput,
   ForgotPasswordResponse,
 } from './dto/forgot-password.input';
+import {
+  ResetPasswordAuthInput,
+  ResetPasswordResponse,
+} from './dto/reset-password.input';
 
 @Resolver(() => Auth)
 export class AuthResolver {
@@ -25,10 +29,10 @@ export class AuthResolver {
   })
   @UsePipes(ValidationPipe)
   async signUp(
-    @Args('signUp') signUpAuthInput: SignUpAuthInput,
+    @Args('signUp') data: SignUpAuthInput,
     @Context('req') req: Request,
   ) {
-    const { auth, token } = await this.authService.signUp(signUpAuthInput, req);
+    const { auth, token } = await this.authService.signUp(data, req);
 
     return {
       message: 'User created successfully',
@@ -48,10 +52,10 @@ export class AuthResolver {
     description: 'User can sign in',
   })
   async signIn(
-    @Args('signIn') signInAuthInput: SignInAuthInput,
+    @Args('signIn') data: SignInAuthInput,
     @Context('req') req: Request,
   ) {
-    const { auth, token } = await this.authService.signIn(signInAuthInput, req);
+    const { auth, token } = await this.authService.signIn(data, req);
     return {
       message: 'User signed in successfully',
       data: {
@@ -73,18 +77,23 @@ export class AuthResolver {
   @Mutation(() => UpdatePasswordResponse)
   updatePassword(
     @Args('updatePassword')
-    updatePasswordAuthInput: UpdatePasswordAuthInput,
+    data: UpdatePasswordAuthInput,
     @Context('req') req: Request,
   ) {
-    return this.authService.updatePassword(updatePasswordAuthInput, req);
+    return this.authService.updatePassword(data, req);
   }
 
   @Mutation(() => ForgotPasswordResponse)
   forgotPassword(
-    @Args('forgotPassword') forgotPassword: ForgotPasswordAuthInput,
+    @Args('forgotPassword') data: ForgotPasswordAuthInput,
     @Context('req') req: Request,
   ) {
-    return this.authService.forgotPassword(forgotPassword.email, req);
+    return this.authService.forgotPassword(data.email, req);
+  }
+
+  @Mutation(() => ResetPasswordResponse)
+  resetPassword(@Args('resetPassword') data: ResetPasswordAuthInput) {
+    return this.authService.resetPassword(data);
   }
 
   @Query(() => SignInResponse, {
