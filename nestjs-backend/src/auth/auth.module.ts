@@ -9,7 +9,6 @@ import { join } from 'path';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config'; // Import ConfigModule
 import { DataSource } from 'typeorm';
-import { TokenPasswordMiddleware } from './middlewares/token-password/token-password.middleware';
 import { ProtectMiddleware } from './middlewares/protect/protect.middleware';
 import { MailService } from 'src/mail/mail.service';
 
@@ -35,7 +34,6 @@ export class AuthModule implements NestModule {
   constructor(private dataSource: DataSource) {}
 
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(TokenPasswordMiddleware).forRoutes('/auth/currentauth');
     consumer
       .apply(ProtectMiddleware)
       .forRoutes('/auth/currentauth', '/auth/update-password');
