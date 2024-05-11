@@ -14,7 +14,7 @@ const queryText = `
 
 const createProfileTable = async () => {
   try {
-    await new Database().createTable(queryText);
+    await new Database().createTable(queryText, 'Profile');
   } catch (error) {
     console.error('Error creating profile table:', error);
   }

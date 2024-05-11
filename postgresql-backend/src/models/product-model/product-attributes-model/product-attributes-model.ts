@@ -13,7 +13,7 @@ const queryText = `
 
 const createProductAttributesTable = async () => {
   try {
-    await new Database().createTable(queryText);
+    await new Database().createTable(queryText, 'ProductAttributes');
   } catch (error) {
     console.error('Error creating product table:', error);
   }
