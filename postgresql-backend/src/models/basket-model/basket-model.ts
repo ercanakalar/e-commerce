@@ -12,7 +12,7 @@ const queryText = `
 
 const createBasketTable = async () => {
   try {
-    await new Database().createTable(queryText);
+    await new Database().createTable(queryText, 'Basket');
   } catch (error) {
     console.error('Error creating basket table:', error);
   }

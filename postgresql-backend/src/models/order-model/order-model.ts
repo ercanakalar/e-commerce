@@ -16,7 +16,7 @@ const createOrderTable = async () => {
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `;
-    await new Database().createTable(createTableQuery);
+    await new Database().createTable(createTableQuery, 'Order');
 
     // Check if the ENUM type exists before creating it
     const checkEnumQuery = `
@@ -33,7 +33,7 @@ const createOrderTable = async () => {
       const createEnumQuery = `
         CREATE TYPE ORDER_STATUS AS ENUM ('preparing', 'done', 'canceled')
       `;
-      await new Database().createTable(createEnumQuery);
+      await new Database().createTable(createEnumQuery, 'OrderStatus');
     }
   } catch (error) {
     console.error('Error creating order table:', error);

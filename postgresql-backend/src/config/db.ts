@@ -33,7 +33,7 @@ class Database {
     }
   }
 
-  public async createTable(queryText: string) {
+  public async createTable(queryText: string, tableName: string) {
     const client = await dbConfig.connect();
     if (!queryText) {
       console.error('Query text is required to create a table');
@@ -41,7 +41,7 @@ class Database {
     }
     try {
       await client.query(queryText);
-      console.log('Table created successfully');
+      console.log(`${tableName.padEnd(17, ' ')} table created successfully`);
     } catch (error) {
       console.error('Error creating table:', error);
     } finally {
