@@ -10,7 +10,7 @@ const queryText = `
 
 const createChildrenCategoryTable = async () => {
   try {
-    await new Database().createTable(queryText);
+    await new Database().createTable(queryText, 'CategoryChildren');
   } catch (error) {
     console.error('Error creating category table:', error);
   }

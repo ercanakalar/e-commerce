@@ -18,7 +18,7 @@ const queryText = `
 
 const createAddressTable = async () => {
   try {
-    await new Database().createTable(queryText);
+    await new Database().createTable(queryText, 'Address');
   } catch (error) {
     console.error('Error creating address table:', error);
   }

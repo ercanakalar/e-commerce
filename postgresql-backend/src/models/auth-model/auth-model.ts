@@ -21,7 +21,7 @@ const queryText = `
 
 const createAuthTable = async () => {
   try {
-    await new Database().createTable(queryText);
+    await new Database().createTable(queryText, 'Auth');
   } catch (error) {
     console.error('Error creating auth table:', error);
   }

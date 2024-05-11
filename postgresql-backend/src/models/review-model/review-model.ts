@@ -16,7 +16,7 @@ const queryText = `
 
 const createReviewTable = async () => {
   try {
-    await new Database().createTable(queryText);
+    await new Database().createTable(queryText, 'Reviews');
   } catch (error) {
     console.error('Error creating review table:', error);
   }

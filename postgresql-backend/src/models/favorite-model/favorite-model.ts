@@ -11,7 +11,7 @@ const queryText = `
 
 const createFavoriteTable = async () => {
   try {
-    await new Database().createTable(queryText);
+    await new Database().createTable(queryText, 'Favorite');
   } catch (error) {
     console.error('Error creating favorite table:', error);
   }

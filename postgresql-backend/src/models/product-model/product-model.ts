@@ -26,7 +26,7 @@ const queryText = `
 
 const createProductTable = async () => {
   try {
-    await new Database().createTable(queryText);
+    await new Database().createTable(queryText, 'Product');
   } catch (error) {
     console.error('Error creating product table:', error);
   }
