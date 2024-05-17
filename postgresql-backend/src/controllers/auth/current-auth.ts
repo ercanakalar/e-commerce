@@ -3,10 +3,13 @@ import { BadRequestError } from '../../errors';
 import { Request, Response } from 'express';
 
 const currentAuth = async (req: Request, res: Response) => {
-  if(!req.currentAuth) {
+  if (!req.currentAuth) {
     throw new BadRequestError('Please sign in again!');
   }
+
+  console.log(req.currentAuth);
   
+
   const isExpired = await PasswordManager.isExpired(
     req.currentAuth.expireToken
   );
@@ -15,13 +18,17 @@ const currentAuth = async (req: Request, res: Response) => {
     throw new BadRequestError('Please sign in again!');
   }
 
+  const bearer: string | string[] = req.headers['authorization']!;
+
+  const token = await ControlManager.getBearer(bearer);
+
   return {
     message: 'You have access!',
     data: {
       id: req.currentAuth.id,
       email: req.currentAuth.email,
     },
-    token: (await ControlManager.separateCookie(req.headers.cookie!)).auth
+    token,
   };
 };
 

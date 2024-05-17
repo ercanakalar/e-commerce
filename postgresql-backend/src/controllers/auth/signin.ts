@@ -29,8 +29,10 @@ const signIn = async (args: AuthSignIn, context: any) => {
     throw new BadRequestError('Wrong password, try again.');
   }
 
+  const newExpireToken = await PasswordManager.hashExpireToken()
+
   queryText = 'UPDATE auth SET expire_token = $1 WHERE email = $2';
-  const params = [existingAuthRow.expireToken, email];
+  const params = [newExpireToken, email];
 
   await new Database().query(queryText, params);
 
@@ -47,6 +49,9 @@ const signIn = async (args: AuthSignIn, context: any) => {
 
   // context.res.currentAuth('auth', authJwt, { httpOnly: true });
   context.res.cookie('auth', authJwt, { httpOnly: true });
+  context.req.headers['Authorization'] = `Bearer ${authJwt}`;
+  context.res.setHeader('Authorization', `Bearer ${authJwt}`);
+
   context.req.currentAuth = {
     id: existingAuthRow.id,
     email: existingAuthRow.email,
