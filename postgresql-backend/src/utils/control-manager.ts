@@ -25,7 +25,7 @@ export class ControlManager {
     return resultObject;
   }
 
-  async getBearer(bearer: string) {
+  static async getBearer(bearer: string) {
     const token = bearer.split(' ');
 
     return token[1];
