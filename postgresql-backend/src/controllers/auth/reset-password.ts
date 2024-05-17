@@ -15,7 +15,7 @@ const resetPassword = async (
 
   let queryText = `SELECT * FROM auth WHERE password_reset_token = $1`;
   const auth = await new Database().query(queryText, [token]);
-  
+
   // 1) If token has not expired, and there is auth, set the new password
   if (!auth?.rows[0]) {
     throw new BadRequestError('Token is invalid or has expired');
@@ -69,6 +69,8 @@ const resetPassword = async (
     process.env.JWT_KEY!
   );
   res.cookie('auth', authJwt, { httpOnly: true });
+  req.headers['Authorization'] = `Bearer ${token}`;
+  res.setHeader('Authorization', `Bearer ${token}`);
 
   res.status(200).json({
     message: 'You have successfully reset your password',

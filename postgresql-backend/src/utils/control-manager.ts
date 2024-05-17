@@ -1,4 +1,4 @@
-import { ICurrentAuthCookie } from "../types/auth/cookieTypes";
+import { ICurrentAuthCookie } from '../types/auth/cookieTypes';
 
 export class ControlManager {
   static async verifyToken(token: string) {
@@ -23,5 +23,11 @@ export class ControlManager {
     }
 
     return resultObject;
+  }
+
+  static async getBearer(bearer: string) {
+    const token = bearer.split(' ');
+
+    return token[1];
   }
 }

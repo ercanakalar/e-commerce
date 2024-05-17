@@ -66,6 +66,8 @@ const signUp = async (args: IArgs, context: IContext) => {
   );
 
   context.res.cookie('auth', authJwt, { httpOnly: true });
+  context.req.headers['Authorization'] = `Bearer ${authJwt}`;
+  context.res.setHeader('Authorization', `Bearer ${authJwt}`);
   context.req.currentAuth = {
     id: newAuthRow.id,
     email: newAuthRow.email,
