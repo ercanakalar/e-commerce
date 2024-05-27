@@ -9,6 +9,7 @@ import { QueryResult } from 'pg';
 
 const signIn = async (args: AuthSignIn, context: any) => {
   const { email, password } = args;
+  const passwordService = new PasswordManager();
 
   let queryText = `SELECT * FROM auth WHERE email = $1`;
 
@@ -21,7 +22,7 @@ const signIn = async (args: AuthSignIn, context: any) => {
 
   const existingAuthRow = existingAuth.rows[0];
 
-  const passwordMatch = await PasswordManager.compare(
+  const passwordMatch = passwordService.compare(
     existingAuthRow.password,
     password
   );
@@ -29,7 +30,7 @@ const signIn = async (args: AuthSignIn, context: any) => {
     throw new BadRequestError('Wrong password, try again.');
   }
 
-  const newExpireToken = await PasswordManager.hashExpireToken()
+  const newExpireToken = passwordService.hashExpireToken()
 
   queryText = 'UPDATE auth SET expire_token = $1 WHERE email = $2';
   const params = [newExpireToken, email];

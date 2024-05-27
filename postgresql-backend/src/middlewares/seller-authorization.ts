@@ -9,13 +9,15 @@ const sellerAuthorization = async (
   res: Response,
   next: NextFunction
 ) => {
-  const authToken: ICurrentAuthCookie = await ControlManager.separateCookie(
+  const controlService = new ControlManager()
+
+  const authToken: ICurrentAuthCookie = controlService.separateCookie(
     req.headers.cookie!
   );
   if (!authToken.auth) {
     res.status(401).send('Unauthorized');
   }
-  const auth = await ControlManager.verifyToken(authToken.auth!);
+  const auth = controlService.verifyToken(authToken.auth!);
 
   switch (auth.role) {
     case AuthRole.SELLER:

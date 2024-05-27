@@ -21,19 +21,22 @@ export const currentAuthMiddleware = async (
   res: Response,
   next: NextFunction
 ) => {
+  const passwordService = new PasswordManager();
+
   if (!req.headers.cookie) {
     throw new BadRequestError('Not authorized');
   }
-  const cookie = await PasswordManager.separateCookie(req.headers.cookie);
+  const cookie = passwordService.separateCookie(req.headers.cookie);
   if (!cookie.auth) throw new BadRequestError('Not authorized');
-  
+
   const payload = jwt.verify(cookie.auth, process.env.JWT_KEY!) as AuthPayload;
 
-  const auth: QueryResult<AuthCurrent> | undefined = await new Database().query(`
+  const auth: QueryResult<AuthCurrent> | undefined = await new Database()
+    .query(`
     SELECT id, email, password, first_name, last_name, role, expire_token, password_changed_at
     FROM auth
     WHERE id = ${payload.id}
-  `)
+  `);
 
   if (!auth) {
     throw new BadRequestError('Auth not found!');
@@ -41,7 +44,7 @@ export const currentAuthMiddleware = async (
   const authRow = auth.rows[0];
   const authChangePasswordTime = new Date(authRow.password_change_at).getTime();
   const isAuthChangedPasswordAfterLogged =
-    PasswordManager.isAuthChangedPasswordAfterTokenIssued(
+    passwordService.isAuthChangedPasswordAfterTokenIssued(
       payload.iat * 1000,
       authChangePasswordTime
     );
@@ -59,6 +62,6 @@ export const currentAuthMiddleware = async (
     lastName: authRow.last_name,
     expireToken: authRow.expire_token,
     iat: payload.iat,
-    role: authRow.role
+    role: authRow.role,
   };
 };

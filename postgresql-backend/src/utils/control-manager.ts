@@ -1,7 +1,7 @@
 import { ICurrentAuthCookie } from '../types/auth/cookieTypes';
 
 export class ControlManager {
-  static async verifyToken(token: string) {
+  verifyToken(token: string) {
     const base64String = token.split('.')[1];
     const decodedString = Buffer.from(base64String, 'base64').toString('utf8');
     const payload = JSON.parse(decodedString);
@@ -9,7 +9,7 @@ export class ControlManager {
     return payload;
   }
 
-  static async separateCookie(cookie: string) {
+  separateCookie(cookie: string) {
     const keyValuePairs = cookie.split('; ').flatMap((pair) => pair.split('='));
 
     const resultObject: ICurrentAuthCookie = {
@@ -25,7 +25,7 @@ export class ControlManager {
     return resultObject;
   }
 
-  static async getBearer(bearer: string) {
+  async getBearer(bearer: string) {
     const token = bearer.split(' ');
 
     return token[1];

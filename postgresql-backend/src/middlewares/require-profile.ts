@@ -6,14 +6,16 @@ import { ICurrentAuthBasicInfo } from '../types/auth/authModalType';
 import { Database } from '../config/db';
 
 export const requireProfile = async (req: Request) => {
+  const controlService = new ControlManager()
+
   if (!req.headers.cookie) {
     throw new NotAuthorizedError();
   }
-  const cookie = await ControlManager.separateCookie(req.headers.cookie);
+  const cookie = controlService.separateCookie(req.headers.cookie);
 
   if(!cookie.auth) throw new NotAuthorizedError();
 
-  const currentAuth: ICurrentAuthBasicInfo = await ControlManager.verifyToken(cookie.auth);
+  const currentAuth: ICurrentAuthBasicInfo = controlService.verifyToken(cookie.auth);
 
   if (!currentAuth) throw new NotAuthorizedError();
 

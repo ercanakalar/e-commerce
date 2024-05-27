@@ -12,6 +12,7 @@ const resetPassword = async (
   res: Response
 ) => {
   const { token, newPassword, confirmNewPassword } = arg;
+  const passwordService = new PasswordManager();
 
   let queryText = `SELECT * FROM auth WHERE password_reset_token = $1`;
   const auth = await new Database().query(queryText, [token]);
@@ -23,7 +24,7 @@ const resetPassword = async (
 
   const authRow = auth.rows[0];
 
-  const isNewPasswordSameWithOldPassword = await PasswordManager.compare(
+  const isNewPasswordSameWithOldPassword = await passwordService.compare(
     authRow.password,
     newPassword
   );
@@ -34,7 +35,7 @@ const resetPassword = async (
     );
   }
 
-  const passwordMatch = await PasswordManager.isMatchPasswords(
+  const passwordMatch = passwordService.isMatchPasswords(
     newPassword,
     confirmNewPassword
   );
@@ -42,10 +43,8 @@ const resetPassword = async (
     throw new BadRequestError('Passwords do not match');
   }
 
-  const hashedPassword = await PasswordManager.toHash(newPassword);
-  const hashedConfirmPassword = await PasswordManager.toHash(
-    confirmNewPassword
-  );
+  const hashedPassword = passwordService.toHash(newPassword);
+  const hashedConfirmPassword = passwordService.toHash(confirmNewPassword);
 
   // 2) Update passwordChangedAt property for the auth
   queryText = `UPDATE auth SET password = $1, confirm_password = $2, password_changed_at = CURRENT_TIMESTAMP, password_reset_token = $3, password_reset_expires = $4 WHERE id = $5`;
