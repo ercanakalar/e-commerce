@@ -6,25 +6,25 @@ import { ICurrentAuthCookie } from '../types/auth/cookieTypes';
 const scryptAsync = promisify(scrypt);
 
 export class PasswordManager {
-  static async toHash(password: string) {
+  async toHash(password: string) {
     const salt = randomBytes(8).toString('hex');
     const buf = (await scryptAsync(password, salt, 64)) as Buffer;
 
     return `${buf.toString('hex')}.${salt}`;
   }
 
-  static async compare(storedPassword: string, suppliedPassword: string) {
+  async compare(storedPassword: string, suppliedPassword: string) {
     const [hashedPassword, salt] = storedPassword.split('.');
     const buf = (await scryptAsync(suppliedPassword, salt, 64)) as Buffer;
 
     return buf.toString('hex') === hashedPassword;
   }
 
-  static async isMatchPasswords(password: string, confirmPassword: string) {
+  async isMatchPasswords(password: string, confirmPassword: string) {
     return password === confirmPassword;
   }
 
-  static isAuthChangedPasswordAfterTokenIssued(
+  isAuthChangedPasswordAfterTokenIssued(
     JWTTimeStamp: number,
     authChangePasswordTime: number
   ) {
@@ -35,7 +35,7 @@ export class PasswordManager {
     return false;
   }
 
-  static async hashExpireToken() {
+  hashExpireToken() {
     let newDate = new Date();
     newDate.setHours(newDate.getHours() + 168, newDate.getMinutes()); // 7 days
     const time = new Date(newDate).getTime();
@@ -49,7 +49,7 @@ export class PasswordManager {
     return expireToken;
   }
 
-  static async isExpired(authExpiredToken: string) {
+  isExpired(authExpiredToken: string) {
     const hashedToken: any = jwt.decode(authExpiredToken);
     const time = hashedToken.time;
 
@@ -62,14 +62,14 @@ export class PasswordManager {
     }
   }
 
-  static async newChangePasswordAt() {
+  newChangePasswordAt() {
     let newDate = new Date();
     newDate.setHours(newDate.getHours() + 3, newDate.getMinutes());
     const time = new Date(newDate).getTime();
     return time;
   }
 
-  static async separateCookie(cookie: string) {
+  separateCookie(cookie: string) {
     const keyValuePairs = cookie.split('; ').flatMap((pair) => pair.split('='));
 
     const resultObject: ICurrentAuthCookie = {
@@ -93,7 +93,7 @@ export class PasswordManager {
       .update(passwordResetToken)
       .digest('hex');
 
-    return { newResetToken};
+    return { newResetToken };
   }
 
   changedPasswordAfter(JWTTimestamp: number, passwordChangedAt: number) {
