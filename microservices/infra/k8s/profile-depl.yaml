@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: profile-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: profile
+  template:
+    metadata:
+      labels:
+        app: profile
+    spec:
+      containers:
+        - name: profile
+          image: ercanakalar/profile
+          env:
+            - name: POSTGRES_URI
+              value: 'postgresql://postgres:#postgresql$@postgres-srv:5432/auth'
