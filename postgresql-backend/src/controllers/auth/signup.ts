@@ -18,7 +18,7 @@ const signUp = async (args: IArgs, context: IContext) => {
     throw new BadRequestError('Email in use');
   }
 
-  const isMatchPasswords = await passwordService.isMatchPasswords(
+  const isMatchPasswords = passwordService.isMatchPasswords(
     password,
     confirmPassword
   );
