@@ -9,6 +9,8 @@ import { Auth } from '../../types/auth/auth.interface';
 
 const signUp = async (args: IArgs, context: IContext) => {
   const { firstName, lastName, email, password, confirmPassword } = args;
+  const passwordService = new PasswordManager();
+
   const existingAuth: QueryResult<Auth> | undefined =
     await new Database().query('SELECT * FROM auth WHERE email = $1', [email]);
 
@@ -16,7 +18,7 @@ const signUp = async (args: IArgs, context: IContext) => {
     throw new BadRequestError('Email in use');
   }
 
-  const isMatchPasswords = await PasswordManager.isMatchPasswords(
+  const isMatchPasswords = passwordService.isMatchPasswords(
     password,
     confirmPassword
   );
@@ -25,8 +27,8 @@ const signUp = async (args: IArgs, context: IContext) => {
     throw new BadRequestError('Passwords do not match');
   }
 
-  const hashedPassword = await PasswordManager.toHash(password);
-  const hashedConfirmPassword = await PasswordManager.toHash(confirmPassword);
+  const hashedPassword = passwordService.toHash(password);
+  const hashedConfirmPassword = passwordService.toHash(confirmPassword);
 
   const queryText = `
             INSERT INTO auth (first_name, last_name, email, password, confirm_password, expire_token)
@@ -41,7 +43,7 @@ const signUp = async (args: IArgs, context: IContext) => {
       email,
       hashedPassword,
       hashedConfirmPassword,
-      await PasswordManager.hashExpireToken(), // Assuming this returns a hashed token
+      passwordService.hashExpireToken(), // Assuming this returns a hashed token
     ]
   );
 

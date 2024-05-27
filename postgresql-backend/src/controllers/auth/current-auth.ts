@@ -5,12 +5,9 @@ import { Request, Response } from 'express';
 const currentAuth = async (req: Request, res: Response) => {
   if (!req.currentAuth) {
     throw new BadRequestError('Please sign in again!');
-  }
+  }  
 
-  console.log(req.currentAuth);
-  
-
-  const isExpired = await PasswordManager.isExpired(
+  const isExpired = new PasswordManager().isExpired(
     req.currentAuth.expireToken
   );
 
@@ -20,7 +17,7 @@ const currentAuth = async (req: Request, res: Response) => {
 
   const bearer: string | string[] = req.headers['authorization']!;
 
-  const token = await ControlManager.getBearer(bearer);
+  const token = new ControlManager().getBearer(bearer);
 
   return {
     message: 'You have access!',
