@@ -4,7 +4,7 @@ import React from 'react';
 const InfoModal = () => {
   return (
     <TouchableOpacity
-      style={[styles.button, styles.createPostButton]}
+      style={[styles.button]}
       onPress={() => console.log('write')}
     >
       <Text style={[styles.buttonText, styles.createPostButtonText]}>Info</Text>
@@ -16,7 +16,6 @@ export default InfoModal;
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#1E90FF',
     padding: 15,
     borderRadius: 5,
   },
@@ -26,8 +25,5 @@ const styles = StyleSheet.create({
   },
   createPostButtonText: {
     fontSize: 18,
-  },
-  createPostButton: {
-    backgroundColor: '#ffff',
   },
 });

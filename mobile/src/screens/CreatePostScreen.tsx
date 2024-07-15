@@ -1,6 +1,8 @@
 import React from 'react';
 import { Button, TextInput } from 'react-native';
+
 import { CreatePostScreenProps } from '../types/screens/createPostScreenType';
+import { saveStorage } from '../utils/localStorage';
 
 const CreatePostScreen = ({ navigation }: CreatePostScreenProps) => {
   const [postText, setPostText] = React.useState('');
@@ -17,6 +19,7 @@ const CreatePostScreen = ({ navigation }: CreatePostScreenProps) => {
       <Button
         title='Done'
         onPress={() => {
+          saveStorage('post', postText);
           navigation.navigate({
             name: 'Home',
             params: { post: postText },
