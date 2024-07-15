@@ -8,7 +8,15 @@ const Tab = createBottomTabNavigator();
 const TabSections = () => {
   return (
     <Tab.Navigator>
-      <Tab.Screen name='Home' component={HomeScreen} />
+      <Tab.Screen
+        name='Home'
+        component={HomeScreen}
+        options={{
+          headerStyle: {
+            backgroundColor: '#f4511e',
+          },
+        }}
+      />
       <Tab.Screen name='Settings' component={SettingsScreen} />
     </Tab.Navigator>
   );

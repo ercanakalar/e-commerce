@@ -3,9 +3,8 @@ import { Button, Text, View } from 'react-native';
 import { DetailsScreenProps } from '../types/screens/detailsScreenType';
 
 const DetailsScreen = ({ route, navigation }: DetailsScreenProps) => {
+  // console.log('DetailsScreen route.params?.post:', itemId);
   const { itemId, otherParam } = route.params;
-
-  console.log('DetailsScreen route.params?.post:', itemId);
 
   useEffect(() => {
     navigation.setOptions({
