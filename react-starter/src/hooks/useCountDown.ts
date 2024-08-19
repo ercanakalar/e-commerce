@@ -2,12 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { CountdownProps, ICountdown } from '../type/hooks/useCountDown-type';
 
-const useCountdown = ({
-  seconds,
-  autoStart = false,
-  onEnd,
-  format = 'mm:ss',
-}: CountdownProps): ICountdown => {
+const useCountdown = ({ seconds, autoStart = false, onEnd, format = 'mm:ss' }: CountdownProps): ICountdown => {
   const [countdown, setCountdown] = useState(seconds);
   const [running, setRunning] = useState(autoStart);
   const [remainingTime, setTime] = useState<string>('');
@@ -32,12 +27,7 @@ const useCountdown = ({
         .toString()
         .padStart(2, '0');
       const seconds = (newCountdown % 60).toString().padStart(2, '0');
-      setTime(
-        format
-          .replace('hh', hours)
-          .replace('mm', minutes)
-          .replace('ss', seconds)
-      );
+      setTime(format.replace('hh', hours).replace('mm', minutes).replace('ss', seconds));
       setCountdown(newCountdown);
     }
   }, [countdown, format, running]);

@@ -1,30 +1,45 @@
 import { FetchArgs, fetchBaseQuery, retry } from '@reduxjs/toolkit/query';
+import { toast } from 'react-toastify';
+import appConfig from '../../constants/appConfig';
 
-const baseQuery = (baseUrl?: { baseUrl: string }) =>
+const requestError = (error: any) => ({
+  message: error?.response?.statusText || 'An error occurred',
+  status: error?.response?.status || 500,
+  data: error?.response?.data || {},
+});
+
+interface IBaseQueryResult<T> {
+  data?: T;
+  error?: { data: any; errors: any };
+  meta?: { response?: Response };
+}
+
+interface IErrorType {
+  error: string;
+  message?: string;
+  code?: number;
+  [key: string]: any;
+}
+
+const baseQuery = () =>
   retry(
     async (args: FetchArgs, api, extraOptions) => {
-      await mutex.waitForUnlock();
-      const result = await fetchBaseQuery(
-        baseUrl ?? { baseUrl: appConfig.baseUrl }
-      )(
+      const result = await fetchBaseQuery({
+        baseUrl: appConfig.baseUrl,
+        prepareHeaders: (headers) => {
+          headers.set('Content-Type', 'application/json');
+          return headers;
+        },
+      })(
         {
           ...args,
-          headers: {
-            ...args.headers,
-            ...getHeaders(),
-          },
         },
-        {
-          ...api,
-        },
+        api,
         extraOptions
       );
-      const response = result as any as IBaseQueryResult<any>;
-      if (
-        response?.meta?.response &&
-        response.meta.response.status !== 200 &&
-        !!response.error.data
-      ) {
+      
+      const response = result as IBaseQueryResult<any>;
+      if (response?.meta?.response && response.meta.response.status !== 200 && response?.error?.data) {
         const error = requestError({
           response: {
             status: response.meta.response.status,
@@ -33,8 +48,8 @@ const baseQuery = (baseUrl?: { baseUrl: string }) =>
             errors: response.error.data.errors,
           },
         });
+
         if (error && error.message) {
-          console.log(error.message, 'error.message-000');
           toast.error(error.message, {
             position: 'top-left',
             autoClose: 5000,
@@ -44,21 +59,9 @@ const baseQuery = (baseUrl?: { baseUrl: string }) =>
           });
         }
 
-        // if (error.status === 401) {
-        //   return {
-        //     data: {
-        //       data: {
-        //         ...error,
-        //       },
-        //       status: response.meta.response.status,
-        //       success: false,
-        //     },
-        //   };
-        // }
-
         return {
           error: {
-            error: error as IErrorType,
+            error: error as unknown as IErrorType,
           },
         };
       }
@@ -66,4 +69,5 @@ const baseQuery = (baseUrl?: { baseUrl: string }) =>
     },
     { maxRetries: 0 }
   );
+
 export default baseQuery;
