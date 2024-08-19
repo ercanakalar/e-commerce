@@ -22,7 +22,7 @@ const signIn = async (args: AuthSignIn, context: any) => {
 
   const existingAuthRow = existingAuth.rows[0];
 
-  const passwordMatch = passwordService.compare(
+  const passwordMatch = await passwordService.compare(
     existingAuthRow.password,
     password
   );
