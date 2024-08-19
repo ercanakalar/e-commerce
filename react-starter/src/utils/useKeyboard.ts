@@ -46,11 +46,7 @@ const useKeyboard = () => {
   };
 
   const onlyAllowAlphaNumeric = (e: KeyboardEvent) => {
-    if (
-      !isMetaKey(e) &&
-      !turkishCharsetRegex.test(e.key) &&
-      !/^[0-9]*$/.test(e.key)
-    ) {
+    if (!isMetaKey(e) && !turkishCharsetRegex.test(e.key) && !/^[0-9]*$/.test(e.key)) {
       e.preventDefault();
     }
   };

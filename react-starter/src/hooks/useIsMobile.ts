@@ -2,9 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 
 const useIsMobile = (mobileScreenSize = 768) => {
   const [isMobile, setIsMobile] = useState(
-    typeof window === 'undefined'
-      ? false
-      : window?.matchMedia?.(`(max-width: ${mobileScreenSize}px)`)?.matches
+    typeof window === 'undefined' ? false : window?.matchMedia?.(`(max-width: ${mobileScreenSize}px)`)?.matches
   );
 
   const checkIsMobile = useCallback((event: any) => {
@@ -13,10 +11,7 @@ const useIsMobile = (mobileScreenSize = 768) => {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const mediaListener = window?.matchMedia(
-      `(max-width: ${mobileScreenSize}px)`
-    );
-    // try catch used to fallback for browser compatibility
+    const mediaListener = window?.matchMedia(`(max-width: ${mobileScreenSize}px)`);
     try {
       mediaListener.addEventListener('change', checkIsMobile);
     } catch {
@@ -31,10 +26,7 @@ const useIsMobile = (mobileScreenSize = 768) => {
     };
   }, [checkIsMobile, mobileScreenSize]);
 
-  if (
-    typeof window !== 'undefined' &&
-    typeof window?.matchMedia !== 'function'
-  ) {
+  if (typeof window !== 'undefined' && typeof window?.matchMedia !== 'function') {
     return null;
   }
 

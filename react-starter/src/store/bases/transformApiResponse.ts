@@ -1,11 +1,15 @@
-type BaseQueryResult<T> = {
-  data: T;
-  code?: number;
-  success?: boolean;
-};
+interface ApiResponse {
+  Response: string;
+  [key: string]: any;
+}
 
-export const transformApiResponse: any = (data: BaseQueryResult<any>) => {
-  // return { data, code: 0, success: true };
-  return data?.data;
-  // return { ...data.data, code: data.code, success: data.success };
+export const transformApiResponse = <T extends ApiResponse>(data: T): T => {
+  if (!data || typeof data !== 'object' || data.Response === 'False' || data.Error) {
+    throw new Error('Invalid or undefined data received from API');
+  }
+  if(data.errors) {
+    throw new Error(data.errors);
+  }
+
+  return data;
 };

@@ -22,10 +22,7 @@ class StringUtils {
   };
 
   static replacePlaceholders = (str: string, args: any) => {
-    return str.replace(
-      /{(\w+)}/g,
-      (match: string, index: string) => args[index] || match
-    );
+    return str.replace(/{(\w+)}/g, (match: string, index: string) => args[index] || match);
   };
 
   static formatWithArguments = (s: string | any, args: any[]) => {
@@ -49,10 +46,7 @@ class StringUtils {
       return phone;
     }
 
-    return phone.replace(
-      /(\+)([0-9]{2})([0-9]{3})([0-9]{3})([0-9]{2})([0-9]{2})/,
-      '$1$2 $3 $4 $5 $6'
-    );
+    return phone.replace(/(\+)([0-9]{2})([0-9]{3})([0-9]{3})([0-9]{2})([0-9]{2})/, '$1$2 $3 $4 $5 $6');
   };
 
   static toTitleCase = (string: string) => {
