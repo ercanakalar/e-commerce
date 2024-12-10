@@ -17,7 +17,7 @@ export class ApiService {
     });
   }
 
-  post(url: string, data: any) {
+  post<T>(url: string, data: T) {
     return this.httpClient.post(url, data, {
       headers: {
         'Content-Type': 'application/json',
@@ -27,8 +27,18 @@ export class ApiService {
     });
   }
 
-  put(url: string, data: any) {
+  put<T>(url: string, data: T) {
     return this.httpClient.put(url, data, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + localStorage.getItem('token'),
+      },
+      observe: 'response',
+    });
+  }
+
+  patch<T>(url: string, data: T) {
+    return this.httpClient.patch(url, data, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: 'Bearer ' + localStorage.getItem('token'),
