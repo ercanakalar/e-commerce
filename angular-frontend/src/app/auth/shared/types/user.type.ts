@@ -5,8 +5,26 @@ export type SignupUser = {
   confirmPassword: string;
 };
 
-export type SigninUser = {
-  username: string;
+export type SignUpRequest = {
+  firstName: string;
+  lastName: string;
+  email: string;
   password: string;
-  [key: string]: string;
+  confirmPassword: string;
+};
+
+export type SignInResponse = {
+  message: string;
+  data: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+  };
+  token: string;
+};
+
+export type SignInRequest = {
+  email: string;
+  password: string;
 };
