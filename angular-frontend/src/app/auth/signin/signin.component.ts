@@ -8,6 +8,7 @@ import {
 
 import { AuthInputComponent } from '../components/auth-input/auth-input.component';
 import { SubmitButtonComponent } from '../../components/submit-button/submit-button.component';
+import { AuthService } from '../shared/service/auth.service';
 
 @Component({
   selector: 'app-signin',
@@ -18,10 +19,16 @@ import { SubmitButtonComponent } from '../../components/submit-button/submit-but
 export class SigninComponent {
   public loginForm: FormGroup;
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+  ) {
     this.loginForm = this.fb.group({
-      username: ['', [Validators.required, Validators.minLength(3)]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      email: [
+        'test@test.example.com.tr',
+        [Validators.required, Validators.minLength(3)],
+      ],
+      password: ['admin1234', [Validators.required, Validators.minLength(6)]],
     });
   }
 
@@ -32,8 +39,8 @@ export class SigninComponent {
 
   login(): void {
     if (this.loginForm.valid) {
-      const { username, password } = this.loginForm.value;
-      console.log('Login successful:', { username, password });
+      const { email, password } = this.loginForm.value;
+      this.authService.signIn({ email, password });
     } else {
       Object.keys(this.loginForm.controls).forEach((key) => {
         this.loginForm.controls[key].markAsTouched();
@@ -44,6 +51,6 @@ export class SigninComponent {
   hasError(controlName: string, errorName: string): boolean {
     const control = this.loginForm.controls[controlName];
 
-    return control.touched && control.hasError(errorName);
+    return control?.touched && control.hasError(errorName);
   }
 }
