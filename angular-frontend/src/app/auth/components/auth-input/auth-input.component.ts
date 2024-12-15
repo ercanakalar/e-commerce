@@ -18,10 +18,7 @@ export class AuthInputComponent {
 
   @Output() changeText = new EventEmitter<string>();
 
-  constructor() {
-    console.log(this.error);
-    
-  }
+  constructor() {}
 
   onFocus() {
     this.isFocused = true;
