@@ -37,6 +37,8 @@ import favoriteResolvers from './models/favorite-model/favorite-resolvers';
 import orderTypeDefs from './models/order-model/order-schema';
 import orderResolvers from './models/order-model/order-resolvers';
 
+import { responseFormatterPlugin } from './formatter';
+
 class App {
   public app: express.Application;
   public httpServer: http.Server;
@@ -87,8 +89,14 @@ class App {
         favoriteResolvers,
         orderResolvers,
       ],
-      plugins: [ApolloServerPluginDrainHttpServer({ httpServer: this.httpServer })],
+      plugins: [
+        ApolloServerPluginDrainHttpServer({ httpServer: this.httpServer }),
+        responseFormatterPlugin(),
+      ],
       status400ForVariableCoercionErrors: true,
+      formatError: (error) => {
+        return error;
+      },
     });
 
     const { url } = await startStandaloneServer(this.server, {
