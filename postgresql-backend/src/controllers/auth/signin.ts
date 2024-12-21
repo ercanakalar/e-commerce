@@ -1,22 +1,25 @@
-import { Request, Response } from 'express';
+import { QueryResult } from 'pg';
 import jwt, { Jwt } from 'jsonwebtoken';
 
 import { PasswordManager } from '../../utils';
 import { BadRequestError } from '../../errors';
 import { AuthSignIn } from '../../types/auth/authModalType';
 import { Database } from '../../config/db';
-import { QueryResult } from 'pg';
+import { TimeManager } from '../../utils/time-manager';
 
 const signIn = async (args: AuthSignIn, context: any) => {
   const { email, password } = args;
   const passwordService = new PasswordManager();
+  const timeManager = new TimeManager();
 
   let queryText = `SELECT * FROM auth WHERE email = $1`;
 
-  const existingAuth: QueryResult<any> | undefined =
-    await new Database().query(queryText, [email]);
-    
-  if (!existingAuth) {
+  const existingAuth: QueryResult<any> | undefined = await new Database().query(
+    queryText,
+    [email]
+  );
+
+  if (!existingAuth?.rows.length) {
     throw new BadRequestError('Invalid credentials');
   }
 
@@ -30,7 +33,7 @@ const signIn = async (args: AuthSignIn, context: any) => {
     throw new BadRequestError('Wrong password, try again.');
   }
 
-  const newExpireToken = passwordService.hashExpireToken()
+  const newExpireToken = passwordService.hashExpireToken();
 
   queryText = 'UPDATE auth SET expire_token = $1 WHERE email = $2';
   const params = [newExpireToken, email];
@@ -44,6 +47,7 @@ const signIn = async (args: AuthSignIn, context: any) => {
       lastName: existingAuthRow.last_name,
       email: existingAuthRow.email,
       role: existingAuthRow.role,
+      exp: timeManager.createExpirationDate(),
     },
     process.env.JWT_KEY!
   );
@@ -61,8 +65,9 @@ const signIn = async (args: AuthSignIn, context: any) => {
     expireToken: existingAuthRow.expireToken!,
     role: existingAuthRow.role,
     iat: Date.now(),
+    exp: timeManager.createExpirationDate(),
   };
-  
+
   return {
     message: 'Auth signed in successfully!',
     data: {
