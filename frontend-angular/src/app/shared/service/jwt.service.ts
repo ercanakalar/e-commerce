@@ -2,20 +2,30 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import * as jwt_decode from 'jwt-decode';
 
+enum TokenType {
+  ACCESS_TOKEN = 'access_token',
+  REFRESH_TOKEN = 'refresh_token',
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class JwtService {
-  private TOKEN_KEY = 'authToken';
+  private ACCESS_TOKEN = 'access_token';
+  private REFRESH_TOKEN = 'refresh_token';
 
   constructor(private router: Router) {}
 
-  public setToken(token: string): void {
-    localStorage.setItem(this.TOKEN_KEY, token);
+  public setAccessToken(token: string): void {
+    localStorage.setItem(this.ACCESS_TOKEN, token);
   }
 
-  getToken(): string | null {
-    return localStorage.getItem(this.TOKEN_KEY);
+  public setRefreshToken(token: string): void {
+    localStorage.setItem(this.REFRESH_TOKEN, token);
+  }
+
+  getToken(key: TokenType): string | null {
+    return localStorage.getItem(key);
   }
 
   private decodeToken(token: string): any {
@@ -28,7 +38,9 @@ export class JwtService {
   }
 
   public isTokenExpired(): boolean {
-    const token = this.getToken();
+    const token =
+      this.getToken(TokenType.ACCESS_TOKEN) ||
+      this.getToken(TokenType.REFRESH_TOKEN);
     if (!token) return false;
 
     const decoded = this.decodeToken(token);

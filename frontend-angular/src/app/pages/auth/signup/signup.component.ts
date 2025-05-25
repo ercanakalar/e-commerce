@@ -7,7 +7,7 @@ import {
 } from '@angular/forms';
 
 import { AuthInputComponent } from '../components/auth-input/auth-input.component';
-import { SubmitButtonComponent } from '../../components/submit-button/submit-button.component';
+import { SubmitButtonComponent } from '../../../components/submit-button/submit-button.component';
 
 import { AuthService } from '../shared/service/auth.service';
 import { passwordMatchValidator } from '../shared/validators/password-validators';
@@ -27,9 +27,9 @@ export class SignupComponent {
   ) {
     this.signupForm = this.fb.group(
       {
-        firstName: ['123', [Validators.required, Validators.minLength(3)]],
-        lastName: ['123', [Validators.required, Validators.minLength(3)]],
-        email: ['123@123.com.tr', [Validators.required, Validators.email]],
+        firstName: ['', [Validators.required, Validators.minLength(3)]],
+        lastName: ['', [Validators.required, Validators.minLength(3)]],
+        email: ['', [Validators.required, Validators.email]],
         password: [
           '',
           [
@@ -76,6 +76,7 @@ export class SignupComponent {
 
   hasError(controlName: string, errorName: string): boolean {
     const control = this.signupForm.controls[controlName];
+    console.log();
 
     return control.touched && control.hasError(errorName);
   }

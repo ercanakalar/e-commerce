@@ -7,7 +7,7 @@ import {
 } from '@angular/forms';
 
 import { AuthInputComponent } from '../components/auth-input/auth-input.component';
-import { SubmitButtonComponent } from '../../components/submit-button/submit-button.component';
+import { SubmitButtonComponent } from '../../../components/submit-button/submit-button.component';
 import { AuthService } from '../shared/service/auth.service';
 
 @Component({
@@ -24,11 +24,8 @@ export class SigninComponent {
     private authService: AuthService,
   ) {
     this.loginForm = this.fb.group({
-      email: [
-        'test@test.example.com.tr',
-        [Validators.required, Validators.minLength(3)],
-      ],
-      password: ['admin1234', [Validators.required, Validators.minLength(6)]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
     });
   }
 

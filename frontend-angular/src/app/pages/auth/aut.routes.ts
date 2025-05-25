@@ -7,7 +7,6 @@ import { authGuard } from './shared/guards/auth.guard';
 export const authRoutes: Routes = [
   {
     path: 'login',
-
     component: SigninComponent,
   },
   {
