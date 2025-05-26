@@ -2,13 +2,13 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
   {
-    path: '',
+    path: 'auth',
     loadChildren: () =>
-      import('./pages/auth/auth.module').then((m) => m.AuthModule),
+      import('./pages/auth/auth.routes').then((m) => m.authRoutes),
   },
   {
-    path: 'home',
+    path: '',
     loadChildren: () =>
-      import('./pages/main/main.module').then((m) => m.MainModule),
+      import('./pages/main/main.routes').then((m) => m.mainRoutes),
   },
 ];

@@ -8,8 +8,4 @@ import { NotificationComponent } from './shared/components/notification/notifica
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
-export class AppComponent {
-  title = 'angular-frontend';
-
-  ngOnInit() {}
-}
+export class AppComponent {}
