@@ -1,30 +1,37 @@
+export interface ApiResponse<T> {
+  data: T;
+}
+
 export type SignupUser = {
-  username: string;
   email: string;
   password: string;
   confirmPassword: string;
 };
 
 export type SignUpRequest = {
-  firstName: string;
-  lastName: string;
   email: string;
   password: string;
   confirmPassword: string;
 };
 
 export type SignInResponse = {
-  message: string;
-  data: {
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-  };
-  token: string;
+  accessToken: string;
+  refreshToken: string;
+};
+
+export type SignUpResponse = {
+  accessToken: string;
+  refreshToken: string;
 };
 
 export type SignInRequest = {
   email: string;
   password: string;
+};
+
+export type ForgotPassword = {
+  email: string;
+};
+export type ForgotPasswordResponse = {
+  resetTokenUrl: string;
 };

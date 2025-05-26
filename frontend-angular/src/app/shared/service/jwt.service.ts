@@ -41,6 +41,7 @@ export class JwtService {
     const token =
       this.getToken(TokenType.ACCESS_TOKEN) ||
       this.getToken(TokenType.REFRESH_TOKEN);
+
     if (!token) return false;
 
     const decoded = this.decodeToken(token);
@@ -49,14 +50,12 @@ export class JwtService {
     }
 
     const currentTime = Math.floor(Date.now() / 1000);
-    console.log(decoded.exp < currentTime);
-
     return decoded.exp < currentTime;
   }
 
-  public handleTokenNavigation(): void {
+  public handleTokenNavigation(path: string): void {
     if (!this.isTokenExpired()) {
-      this.router.navigate(['/home']);
+      this.router.navigate([path]);
     } else {
       alert('Your session has expired. Please log in again.');
       this.router.navigate(['/login']);

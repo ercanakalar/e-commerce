@@ -27,11 +27,9 @@ export class SignupComponent {
   ) {
     this.signupForm = this.fb.group(
       {
-        firstName: ['', [Validators.required, Validators.minLength(3)]],
-        lastName: ['', [Validators.required, Validators.minLength(3)]],
-        email: ['', [Validators.required, Validators.email]],
+        email: ['test@test.com', [Validators.required, Validators.email]],
         password: [
-          '',
+          '123456',
           [
             Validators.required,
             Validators.minLength(6),
@@ -39,7 +37,7 @@ export class SignupComponent {
           ],
         ],
         confirmPassword: [
-          '',
+          '123456',
           [
             Validators.required,
             Validators.minLength(6),
@@ -53,11 +51,8 @@ export class SignupComponent {
 
   signup() {
     if (this.signupForm.valid) {
-      const { firstName, lastName, email, password, confirmPassword } =
-        this.signupForm.value;
+      const { email, password, confirmPassword } = this.signupForm.value;
       this.authService.signUp({
-        firstName,
-        lastName,
         email,
         password,
         confirmPassword,
@@ -76,8 +71,6 @@ export class SignupComponent {
 
   hasError(controlName: string, errorName: string): boolean {
     const control = this.signupForm.controls[controlName];
-    console.log();
-
     return control.touched && control.hasError(errorName);
   }
 

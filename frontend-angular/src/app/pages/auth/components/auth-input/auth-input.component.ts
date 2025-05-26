@@ -15,6 +15,7 @@ export class AuthInputComponent {
   @Input() src: string = '';
   @Input() type: string = 'text';
   @Input() error: string = '';
+  @Input() value: string = '';
 
   @Output() changeText = new EventEmitter<string>();
 

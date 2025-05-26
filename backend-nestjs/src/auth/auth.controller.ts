@@ -79,8 +79,6 @@ export class AuthController {
     @Body() resetPassword: ResetPassword,
     @Param('token') token: string,
   ) {
-    console.log('Reset Password Token:', token);
-    
     return this.authService.resetPassword(resetPassword, token);
   }
 
