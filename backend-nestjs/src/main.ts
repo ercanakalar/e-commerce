@@ -1,17 +1,11 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { Auth } from './auth/entities/auth.entity';
-import { IAuthPayload } from './auth/interface/auth.interface';
+import { ValidationPipe } from '@nestjs/common';
 
-declare module 'express' {
-  interface Request {
-    user: Auth; // Assuming 'user' contains the current user information
-    currentAuth: IAuthPayload; // Define your custom method signature here
-  }
-}
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(4000);
+  app.useGlobalPipes(new ValidationPipe());
+  await app.listen(3000);
 }
 bootstrap();

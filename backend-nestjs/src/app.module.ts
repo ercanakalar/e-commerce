@@ -1,31 +1,20 @@
 import { Module } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { Auth } from './auth/entities/auth.entity';
-import { MailService } from './mail/mail.service';
-import { MailModule } from './mail/mail.module';
+import { PrismaModule } from './prisma/prisma.module';
+import { NotificationModule } from './notification/notification.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AccessGuard } from './common/guards/access/access.guard';
+import { UserModule } from './user/user.module';
+import { PermissionsModule } from './permissions/permissions.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get('POSTGRESQL_HOST'),
-        port: configService.get('POSTGRESQL_PORT'),
-        username: configService.get('POSTGRESQL_USER'),
-        password: configService.get('POSTGRESQL_PASSWORD'),
-        database: configService.get('POSTGRESQL_DATABASE'),
-        entities: [Auth],
-        synchronize: true,
-      }),
-    }),
+    PrismaModule,
+    NotificationModule,
     AuthModule,
-    MailModule,
+    UserModule,
+    PermissionsModule,
   ],
-  providers: [MailService],
+  providers: [{ provide: APP_GUARD, useClass: AccessGuard }],
 })
-export class AppModule {}
+export class AppModule { }
