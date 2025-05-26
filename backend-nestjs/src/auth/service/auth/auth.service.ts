@@ -343,7 +343,8 @@ export class AuthService {
 
     return {
       message: 'Password reset token created successfully',
-      token: resetToken,
+      resetToken,
+      resetTokenUrl,
     };
   }
 

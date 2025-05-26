@@ -101,25 +101,30 @@ export class HelperService {
   }
 
   async createAccessToken(data: AccessTokenType) {
+    const expiresIn =
+      this.configService.get<string>('ACCESS_EXPIRES_IN') || '1h';
     return this.jwtService.signAsync(
       {
         ...data,
       },
       {
         secret: this.configService.get('ACCESS_KEY'),
-        expiresIn: this.configService.get('ACCESS_EXPIRES_IN'),
+        expiresIn,
       },
     );
   }
 
   async createRefreshToken(data: RefreshTokenType) {
+    const expiresIn =
+      this.configService.get<string>('REFRESH_EXPIRES_IN') || '7d';
+
     return this.jwtService.signAsync(
       {
         ...data,
       },
       {
         secret: this.configService.get('REFRESH_KEY'),
-        expiresIn: this.configService.get('REFRESH_EXPIRES_IN'),
+        expiresIn,
       },
     );
   }
@@ -128,6 +133,11 @@ export class HelperService {
     accessTokenData: AccessTokenType;
     refreshTokenData: RefreshTokenType;
   }) {
+    const accessExpiresIn =
+      this.configService.get<string>('ACCESS_EXPIRES_IN') || '1h';
+    const refreshExpiresIn =
+      this.configService.get<string>('REFRESH_EXPIRES_IN') || '7d';
+
     const { accessTokenData, refreshTokenData } = payload;
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
@@ -136,7 +146,7 @@ export class HelperService {
         },
         {
           secret: this.configService.get('ACCESS_KEY'),
-          expiresIn: this.configService.get('ACCESS_EXPIRES_IN'),
+          expiresIn: accessExpiresIn,
         },
       ),
       this.jwtService.signAsync(
@@ -145,7 +155,7 @@ export class HelperService {
         },
         {
           secret: this.configService.get('REFRESH_KEY'),
-          expiresIn: this.configService.get('REFRESH_EXPIRES_IN'),
+          expiresIn: refreshExpiresIn,
         },
       ),
     ]);
