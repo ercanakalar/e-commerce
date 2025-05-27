@@ -1,11 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import * as jwt_decode from 'jwt-decode';
-
-enum TokenType {
-  ACCESS_TOKEN = 'access_token',
-  REFRESH_TOKEN = 'refresh_token',
-}
+import { TokenType } from '../types/jwt.type';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +10,7 @@ export class JwtService {
   private ACCESS_TOKEN = 'access_token';
   private REFRESH_TOKEN = 'refresh_token';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
   public setAccessToken(token: string): void {
     localStorage.setItem(this.ACCESS_TOKEN, token);
@@ -57,7 +53,6 @@ export class JwtService {
     if (!this.isTokenExpired()) {
       this.router.navigate([path]);
     } else {
-      alert('Your session has expired. Please log in again.');
       this.router.navigate(['/login']);
     }
   }
