@@ -55,6 +55,13 @@ export class AuthService {
     if (!manuelAuth) {
       throw new InternalServerErrorException('Failed to create user');
     }
+
+    const userPermit = await this.prisma.permit.findUnique({
+      where: {
+        name: 'USER',
+      },
+    });
+
     const user = await this.prisma.user.upsert({
       where: {
         email,
@@ -66,6 +73,11 @@ export class AuthService {
             id: manuelAuth.id,
           },
         },
+        permit: {
+          connect: {
+            id: userPermit?.id || '',
+          },
+        },
       },
       create: {
         email,
@@ -74,12 +86,28 @@ export class AuthService {
             id: manuelAuth.id,
           },
         },
+        permit: {
+          connect: {
+            id: userPermit?.id || '',
+          },
+        },
+      },
+      include: {
+        permit: {
+          include: {
+            permissions: true,
+          },
+        },
       },
     });
 
     const { accessToken, refreshToken } =
       await this.helperService.generateTokens({
-        accessTokenData: { email, userId: user.id },
+        accessTokenData: {
+          email: user.email,
+          userId: user.id,
+          permissions: user.permit?.permissions,
+        },
         refreshTokenData: { email, userId: user.id },
       });
 
@@ -113,6 +141,7 @@ export class AuthService {
     }
 
     return {
+      message: 'You signup in successfully',
       accessToken,
       refreshToken,
     };
@@ -145,8 +174,8 @@ export class AuthService {
         },
         permit: {
           include: {
-            permissions: true
-          }
+            permissions: true,
+          },
         },
         email: true,
         id: true,
@@ -181,7 +210,11 @@ export class AuthService {
 
     const { accessToken, refreshToken } =
       await this.helperService.generateTokens({
-        accessTokenData: { email: user.email, userId: user.id, permissions: user.permit?.permissions },
+        accessTokenData: {
+          email: user.email,
+          userId: user.id,
+          permissions: user.permit?.permissions,
+        },
         refreshTokenData: { email: user.email, userId: user.id },
       });
 
@@ -196,6 +229,7 @@ export class AuthService {
     });
 
     return {
+      message: 'You signed in successfully',
       userId: user.id,
       accessToken,
       refreshToken,
