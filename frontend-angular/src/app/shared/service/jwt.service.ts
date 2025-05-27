@@ -24,7 +24,7 @@ export class JwtService {
     return localStorage.getItem(key);
   }
 
-  private decodeToken(token: string): any {
+  public decodeToken(token: string): any {
     try {
       return jwt_decode.jwtDecode(token);
     } catch (error) {

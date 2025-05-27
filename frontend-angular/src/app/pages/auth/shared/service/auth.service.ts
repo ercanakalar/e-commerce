@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { effect, Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 
 import { JwtService } from '../../../../shared/service/jwt.service';
@@ -28,8 +28,6 @@ export class AuthService {
     this.api
       .post(environment.BACKEND_API + 'auth/sign-in', variables)
       .subscribe((res: HttpResponse<any>) => {
-        console.log(res);
-
         const { accessToken, refreshToken } = res.body as SignInResponse;
         this.jwtService.setAccessToken(accessToken);
         this.jwtService.setRefreshToken(refreshToken);
@@ -41,8 +39,6 @@ export class AuthService {
     this.api
       .post(environment.BACKEND_API + 'auth/sign-up', variables)
       .subscribe((res: HttpResponse<any>) => {
-        console.log(res);
-
         const { accessToken, refreshToken } = res.body as SignUpResponse;
         this.jwtService.setAccessToken(accessToken);
         this.jwtService.setRefreshToken(refreshToken);
@@ -70,7 +66,6 @@ export class AuthService {
         variables,
       )
       .subscribe((res: HttpResponse<any>) => {
-        console.log(res);
         this.jwtService.handleTokenNavigation('home');
       });
   }

@@ -10,7 +10,7 @@ export const authGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
 
   if (!jwtService.getToken(TokenType.ACCESS_TOKEN) || !jwtService.getToken(TokenType.ACCESS_TOKEN)) {
-    router.navigate(['/login']);
+    // router.navigate(['/login']);
     return true;
   }
   router.navigate(['/home']);

@@ -11,17 +11,28 @@ export const notificationInterceptor: HttpInterceptorFn = (req, next) => {
       (event) => {
         if (event instanceof HttpResponse) {
           const body: any = event.body;
-          if (body.errors) {
-            return notificationService.showNotification(
-              'error',
-              body.errors[0].message,
-            );
-          }
-          const message = body.data?.message;
+          const message = body?.message;
           if (message) notificationService.showNotification('success', message);
         }
       },
-      (error) => console.log('Response error:', error),
+      (error) => {
+        if (error.error && error.error.message) {
+          return notificationService.showNotification(
+            'error',
+            error.error.message,
+          );
+        }
+        if (error.status === 0) {
+          return notificationService.showNotification(
+            'error',
+            'Network error, please try again later.',
+          );
+        }
+        return notificationService.showNotification(
+          'error',
+          'An unexpected error occurred.',
+        );
+      },
     ),
   );
 };
