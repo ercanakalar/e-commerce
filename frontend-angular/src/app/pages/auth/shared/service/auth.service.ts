@@ -14,6 +14,7 @@ import {
 } from '../types/user.type';
 
 import { environment } from '../../../../environments/environments.dev';
+import { TokenType } from '../../../../shared/types/jwt.type';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +23,11 @@ export class AuthService {
   constructor(
     private api: ApiService,
     private jwtService: JwtService,
-  ) {}
+  ) { }
+
+  getAccessToken(): string | null {
+    return localStorage.getItem(TokenType.ACCESS_TOKEN);
+  }
 
   signIn(variables: SignInRequest) {
     this.api
@@ -68,5 +73,18 @@ export class AuthService {
       .subscribe((res: HttpResponse<any>) => {
         this.jwtService.handleTokenNavigation('home');
       });
+  }
+
+  refreshToken() {
+    const refreshToken = this.jwtService.getToken(TokenType.REFRESH_TOKEN)
+    return this.api
+      .post(
+        environment.BACKEND_API + `auth/refresh`, refreshToken
+      )
+  }
+
+  logout() {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
   }
 }

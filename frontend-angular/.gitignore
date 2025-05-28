@@ -1,3 +1,5 @@
 /node_modules
 .angular
 .env
+/dist 
+package-lock.json
