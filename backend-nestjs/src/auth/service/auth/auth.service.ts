@@ -305,6 +305,11 @@ export class AuthService {
             tokenId: true,
           },
         },
+        permit: {
+          include: {
+            permissions: true,
+          },
+        },
         email: true,
         id: true,
       },
@@ -316,7 +321,11 @@ export class AuthService {
 
     const { accessToken, refreshToken: newRefreshToken } =
       await this.helperService.generateTokens({
-        accessTokenData: { email: user.email, userId: user.id },
+        accessTokenData: {
+          email: user.email,
+          userId: user.id,
+          permissions: user.permit?.permissions,
+        },
         refreshTokenData: { email: user.email, userId: user.id },
       });
 
@@ -326,7 +335,7 @@ export class AuthService {
       },
       data: {
         accessToken,
-        refreshToken: newRefreshToken,
+        refreshToken,
       },
     });
 
