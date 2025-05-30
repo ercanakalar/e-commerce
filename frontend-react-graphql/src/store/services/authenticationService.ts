@@ -1,3 +1,8 @@
+import { print } from 'graphql';
+
+import { signInSchema } from '../../graphql/signIn-schema';
+import { signUpSchema } from '../../graphql/signUp-schema';
+
 import baseQuery from '../bases/baseQuery';
 import { transformApiErrorResponse } from '../bases/transformApiErrorResponse';
 import { transformApiResponse } from '../bases/transformApiResponse';
@@ -15,7 +20,10 @@ export const authenticationService = createApi({
         url: '',
         method: 'POST',
         body: {
+          query: print(signUpSchema),
           variables: {
+            firstName: args.firstName,
+            lastName: args.lastName,
             email: args.email,
             password: args.password,
             confirmPassword: args.confirmPassword,
@@ -34,6 +42,7 @@ export const authenticationService = createApi({
         url: '',
         method: 'POST',
         body: {
+          query: print(signInSchema),
           variables: {
             email: args.email,
             password: args.password,

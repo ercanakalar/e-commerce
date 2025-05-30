@@ -8,6 +8,7 @@
     ],
     "conventionalCommits.scopes": [
         "Backend-NestJS:",
-        "Frontend-Angular:"
+        "Frontend-Angular:",
+        "Frontend-React"
     ]
 }
