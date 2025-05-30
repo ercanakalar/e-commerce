@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { TokenType } from '../types/jwt.type';
 
 @Injectable({
   providedIn: 'root',
@@ -11,17 +12,17 @@ export class ApiService {
     return this.httpClient.get(url, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
+        Authorization: 'Bearer ' + localStorage.getItem(TokenType.ACCESS_TOKEN),
       },
       observe: 'response',
     });
   }
 
-  post<T>(url: string, data: T) {
+  post<T>(url: string, data?: T) {
     return this.httpClient.post(url, data, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
+        Authorization: 'Bearer ' + localStorage.getItem(TokenType.ACCESS_TOKEN),
       },
       observe: 'response',
     });
@@ -31,7 +32,7 @@ export class ApiService {
     return this.httpClient.put(url, data, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
+        Authorization: 'Bearer ' + localStorage.getItem(TokenType.ACCESS_TOKEN),
       },
       observe: 'response',
     });
@@ -41,7 +42,7 @@ export class ApiService {
     return this.httpClient.patch(url, data, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
+        Authorization: 'Bearer ' + localStorage.getItem(TokenType.ACCESS_TOKEN),
       },
       observe: 'response',
     });
@@ -51,7 +52,7 @@ export class ApiService {
     return this.httpClient.delete(url, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + localStorage.getItem('accessToken'),
+        Authorization: 'Bearer ' + localStorage.getItem(TokenType.ACCESS_TOKEN),
       },
       observe: 'response',
     });

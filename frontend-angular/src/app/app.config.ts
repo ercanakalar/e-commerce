@@ -1,3 +1,4 @@
+import { refreshTokenInterceptor } from './shared/interceptors/refresh-token.interceptor';
 import { ApplicationConfig, inject } from '@angular/core';
 import {
   createUrlTreeFromSnapshot,
@@ -22,7 +23,10 @@ import { notificationInterceptor } from './shared/interceptors/notification.inte
 // export const appConfig: ApplicationConfig = {
 //   providers: [
 //     provideRouter(routes),
-//     provideHttpClient(withInterceptors([notificationInterceptor])),
+//     provideHttpClient(
+//       withInterceptors([notificationInterceptor, refreshTokenInterceptor]),
+//       withFetch(),
+//     ),
 //   ],
 // };
 
@@ -35,7 +39,6 @@ export const appConfig: ApplicationConfig = {
         onViewTransitionCreated: ({ transition, to }) => {
           const router = inject(Router);
           const toTree = createUrlTreeFromSnapshot(to, []);
-          // Skip the transition if the only thing changing is the fragment and queryParams
           if (
             router.isActive(toTree, {
               paths: 'exact',
@@ -55,6 +58,9 @@ export const appConfig: ApplicationConfig = {
       }),
       withPreloading(PreloadAllModules),
     ),
-    provideHttpClient(withFetch(), withInterceptors([notificationInterceptor])),
+    provideHttpClient(
+      withFetch(),
+      withInterceptors([notificationInterceptor, refreshTokenInterceptor]),
+    ),
   ],
 };

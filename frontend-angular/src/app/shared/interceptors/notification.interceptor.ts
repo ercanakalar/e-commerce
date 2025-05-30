@@ -1,6 +1,7 @@
 import { HttpInterceptorFn, HttpResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { tap } from 'rxjs';
+
 import { NotificationService } from '../service/notification.service';
 
 export const notificationInterceptor: HttpInterceptorFn = (req, next) => {
@@ -16,6 +17,8 @@ export const notificationInterceptor: HttpInterceptorFn = (req, next) => {
         }
       },
       (error) => {
+        console.log(error);
+        
         if (error.error && error.error.message) {
           return notificationService.showNotification(
             'error',

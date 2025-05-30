@@ -7,6 +7,6 @@ export const mainRoutes: Routes = [
   {
     path: '',
     component: HomeComponent,
-    canActivate: [permissionGuard("DO_COMMENTS")],
+    canActivate: [permissionGuard('ACCESS_DASHBOARD')],
   },
 ];

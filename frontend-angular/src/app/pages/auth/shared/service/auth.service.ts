@@ -23,10 +23,10 @@ export class AuthService {
   constructor(
     private api: ApiService,
     private jwtService: JwtService,
-  ) { }
+  ) {}
 
-  getAccessToken(): string | null {
-    return localStorage.getItem(TokenType.ACCESS_TOKEN);
+  getRefreshToken(): string | null {
+    return localStorage.getItem(TokenType.REFRESH_TOKEN);
   }
 
   signIn(variables: SignInRequest) {
@@ -76,11 +76,16 @@ export class AuthService {
   }
 
   refreshToken() {
-    const refreshToken = this.jwtService.getToken(TokenType.REFRESH_TOKEN)
-    return this.api
-      .post(
-        environment.BACKEND_API + `auth/refresh`, refreshToken
-      )
+    const refreshToken = this.jwtService.getToken(TokenType.REFRESH_TOKEN);
+    return this.api.post(environment.BACKEND_API + `auth/refresh-token`, {
+      refreshToken,
+    });
+  }
+
+  getUserById() {
+    return this.api.get(
+      environment.BACKEND_API + `user/1e416499-e485-4519-afa5-45ef3988bf97`,
+    );
   }
 
   logout() {

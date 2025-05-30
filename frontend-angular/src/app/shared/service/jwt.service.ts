@@ -10,7 +10,7 @@ export class JwtService {
   private ACCESS_TOKEN = 'access_token';
   private REFRESH_TOKEN = 'refresh_token';
 
-  constructor(private router: Router) { }
+  constructor(private router: Router) {}
 
   public setAccessToken(token: string): void {
     localStorage.setItem(this.ACCESS_TOKEN, token);
@@ -24,6 +24,11 @@ export class JwtService {
     return localStorage.getItem(key);
   }
 
+  public clear() {
+    localStorage.removeItem(this.ACCESS_TOKEN);
+    localStorage.removeItem(this.REFRESH_TOKEN);
+  }
+
   public decodeToken(token: string): any {
     try {
       return jwt_decode.jwtDecode(token);
@@ -34,9 +39,21 @@ export class JwtService {
   }
 
   public isTokenExpired(): boolean {
-    const token =
-      this.getToken(TokenType.ACCESS_TOKEN) ||
-      this.getToken(TokenType.REFRESH_TOKEN);
+    const token = this.getToken(TokenType.ACCESS_TOKEN);
+
+    if (!token) return false;
+
+    const decoded = this.decodeToken(token);
+    if (!decoded || !decoded.exp) {
+      return true;
+    }
+
+    const currentTime = Math.floor(Date.now() / 1000);
+    return decoded.exp < currentTime;
+  }
+
+  public isRefreshTokenExpired(): boolean {
+    const token = this.getToken(TokenType.REFRESH_TOKEN);
 
     if (!token) return false;
 

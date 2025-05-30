@@ -1,37 +1,31 @@
-import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
+import {
+  HttpErrorResponse,
+  HttpInterceptorFn,
+  HttpResponse,
+} from '@angular/common/http';
 import { inject } from '@angular/core';
-import { Router } from '@angular/router';
 import { catchError, switchMap, throwError } from 'rxjs';
 
 import { AuthService } from '../../pages/auth/shared/service/auth.service';
+import { JwtService } from '../service/jwt.service';
 
 export const refreshTokenInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
-  const router = inject(Router);
+  const jwtService = inject(JwtService);
 
-  const accessToken = authService.getAccessToken();
-
-  let authReq = req;
-  if (accessToken) {
-    authReq = req.clone({
-      setHeaders: { Authorization: `Bearer ${accessToken}` },
-    });
-  }
-
-  return next(authReq).pipe(
+  return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
-      if (error.status === 401 && !req.url.includes('refresh-token')) {
+      if (error.status === 401) {
         return authService.refreshToken().pipe(
-          switchMap((newToken) => {
+          switchMap((response: HttpResponse<any>) => {
+            const accessToken = response.body?.accessToken;
+            const refreshToken = response.body?.refreshToken;
             const refreshedReq = req.clone({
-              setHeaders: { Authorization: `Bearer ${newToken}` },
+              setHeaders: { Authorization: `Bearer ${accessToken}` },
             });
+            jwtService.setAccessToken(accessToken);
+            jwtService.setRefreshToken(refreshToken);
             return next(refreshedReq);
-          }),
-          catchError((refreshError) => {
-            authService.logout();
-            router.navigate(['/login']);
-            return throwError(() => refreshError);
           }),
         );
       }
