@@ -4,6 +4,8 @@ import { PrismaModule } from './prisma/prisma.module';
 import { NotificationModule } from './notification/notification.module';
 import { UserModule } from './user/user.module';
 import { PermissionsModule } from './permissions/permissions.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AccessGuard } from './common/guards/access/access.guard';
 
 @Module({
   imports: [
@@ -13,5 +15,6 @@ import { PermissionsModule } from './permissions/permissions.module';
     UserModule,
     PermissionsModule,
   ],
+  providers: [{ provide: APP_GUARD, useClass: AccessGuard }],
 })
 export class AppModule {}
