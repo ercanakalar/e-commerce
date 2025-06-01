@@ -11,11 +11,9 @@ import { SignUpRequest } from '../../../type/libs/auth';
 
 const SignUpForm = (props: any) => {
   const [signUpForm, setSignUpForm] = useState<SignUpRequest>({
-    firstName: 'firstName',
-    lastName: 'lastName',
-    email: 'test@test.example.com.tr',
-    password: 'admin1234',
-    confirmPassword: 'admin1234',
+    email: 'test@test.com',
+    password: '123456',
+    confirmPassword: '123456',
   });
   const [error, setError] = useState<string>('');
   const [signUp, { data, isLoading, isError, error: signUpError }] = useSignUpMutation();
@@ -48,14 +46,6 @@ const SignUpForm = (props: any) => {
     <Container className='signupContainer'>
       <form className='signupForm' onSubmit={handleSubmit}>
         <div className='fillContainer'>
-          <div className='inputContainer'>
-            <Label label='First Name' htmlFor='firstName' />
-            <Input id='firstName' className='signupInput' value={signUpForm.firstName} onChange={handleInputChange} />
-          </div>
-          <div className='inputContainer'>
-            <Label label='Last Name' htmlFor='lastName' />
-            <Input id='lastName' className='signupInput' value={signUpForm.lastName} onChange={handleInputChange} />
-          </div>
           <div className='inputContainer'>
             <Label label='E-Mail' htmlFor='email' />
             <Input id='email' className='signupInput' value={signUpForm.email} onChange={handleInputChange} />

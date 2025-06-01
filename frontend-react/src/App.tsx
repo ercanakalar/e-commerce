@@ -2,14 +2,14 @@ import { Suspense } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import Loading from './components/Loading';
-import Index from './pages';
+import SignUpPage from './pages/auth/SignUp';
 
 function App() {
   return (
     <Router>
       <Suspense fallback={<Loading />}>
         <Routes>
-          <Route path='/' Component={Index} />
+          <Route path='/signup' Component={SignUpPage} />
         </Routes>
       </Suspense>
     </Router>
